@@ -4,7 +4,6 @@
 #' @useDynLib ncpen
 #'
 #'
-
 #' @title
 #' non-convex penalized estimation for generalized linear models
 #'
@@ -15,21 +14,6 @@
 #' @param y.vec numeric vector; samples of dependent variable
 #' @param x.mat numeric matrix; samples of independent variables
 #' @param family character; model type; defalut is "gaussian"
-#' @param penalty="scad"
-#' @param lambda=NULL
-#' @param n.lambda=1e+2
-#' @param r.lambda=1e-3
-#' @param w.lambda=NULL
-#' @param tau=5
-#' @param gam=1e-6
-#' @param ridge=1e-6
-#' @param df.max=50
-#' @param proj.min=1e+2
-#' @param iter.max=1e+3
-#' @param b.eps=1e-6
-#' @param k.eps=1e-4
-#' @param x.standardize=TRUE
-#' @param intercept=TRUE
 #'
 #' @return
 #' This returns...... If integer overflow
@@ -59,7 +43,7 @@
 #' a = 3 + 4;
 #' a
 #'
-#' \dontrun{
+#' \dontrun{}
 #' @export
 ncpen = function(y.vec,x.mat,
                  family=c("gaussian","binomial","poisson"),
@@ -115,20 +99,7 @@ ncpen = function(y.vec,x.mat,
 #' @param family character; model type; \code{gaussian} for linear,
 #' \code{binomial} for logistic, and \code{poisson} for includes  ; defalut is "gaussian"
 #' @param penalty character;
-#' @param lambda=NULL
-#' @param n.lambda=1e+2
-#' @param r.lambda=1e-3
-#' @param w.lambda=NULL
-#' @param tau=5
-#' @param gam=1e-6
-#' @param ridge=1e-6
-#' @param df.max=50
-#' @param proj.min=1e+2
-#' @param iter.max=1e+3
-#' @param b.eps=1e-6
-#' @param k.eps=1e-4
-#' @param x.standardize=TRUE
-#' @param intercept=TRUE
+
 #'
 #' @return
 #' This returns...... If integer overflow
@@ -158,7 +129,7 @@ ncpen = function(y.vec,x.mat,
 #' a = 3 + 4;
 #' a
 #'
-#' \dontrun{
+#' \dontrun{}
 #' @export
 cv.ncpen = function(y.vec,x.mat,
                     family="gaussian",penalty="scad",n.fold=10,
@@ -252,18 +223,18 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 }
 
 #' @title
-#' PLOT.NCPEN
+#' plot.ncpen
 #'
 #' @description
-#' \code{qlasso.fun} returns ......
+#' \code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
+#' It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
 #'
-#' This is a generic function: methods can be defined for it directly
-#' or via the \code{\link{Summary}} group generic. For this to work properly,
-#' the arguments \code{abc} should be unnamed, and dispatch is on the
-#' first argument.
-#'
-#' @param q.mat A numeric matrix....
-#' @param l.vec A numeric vector....
+#' @param y.vec numeric vector; samples of dependent variable
+#' @param x.mat numeric matrix; samples of independent variables
+#' @param family character; model type; \code{gaussian} for linear,
+#' \code{binomial} for logistic, and \code{poisson} for includes  ; defalut is "gaussian"
+#' @param penalty character;
+
 #'
 #' @return
 #' This returns...... If integer overflow
@@ -293,10 +264,7 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 #' a = 3 + 4;
 #' a
 #'
-#' \dontrun{
-#' qlasso.fun("a")
-#' }
-#'
+#' \dontrun{}
 #' @export
 plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
      b.mat = ncpen.fit$coefficients[-1,]; lambda = ncpen.fit$lambda

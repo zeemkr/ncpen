@@ -2,14 +2,19 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{plot.ncpen}
 \alias{plot.ncpen}
-\title{PLOT.NCPEN}
+\title{plot.ncpen}
 \usage{
 \method{plot}{ncpen}(ncpen.fit, log.scale = FALSE, ...)
 }
 \arguments{
-\item{q.mat}{A numeric matrix....}
+\item{y.vec}{numeric vector; samples of dependent variable}
 
-\item{l.vec}{A numeric vector....}
+\item{x.mat}{numeric matrix; samples of independent variables}
+
+\item{family}{character; model type; \code{gaussian} for linear,
+\code{binomial} for logistic, and \code{poisson} for includes  ; defalut is "gaussian"}
+
+\item{penalty}{character;}
 }
 \value{
 This returns...... If integer overflow
@@ -21,12 +26,8 @@ This returns...... If integer overflow
   \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
 }
 \description{
-\code{qlasso.fun} returns ......
-
-This is a generic function: methods can be defined for it directly
-or via the \code{\link{Summary}} group generic. For this to work properly,
-the arguments \code{abc} should be unnamed, and dispatch is on the
-first argument.
+\code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
+It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
 }
 \note{
 Leave some notes here.
@@ -38,10 +39,7 @@ pen = "scad"
 a = 3 + 4;
 a
 
-\dontrun{
-qlasso.fun("a")
-}
-
+\dontrun{}
 }
 \references{
 Paper 1 by Big Name

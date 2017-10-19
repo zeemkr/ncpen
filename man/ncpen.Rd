@@ -17,8 +17,6 @@ ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 \item{x.mat}{numeric matrix; samples of independent variables}
 
 \item{family}{character; model type; defalut is "gaussian"}
-
-\item{intercept=TRUE}{}
 }
 \value{
 This returns...... If integer overflow
@@ -35,6 +33,15 @@ It covers Various non-convex penalties such as SCAD and MCP for linear, logistic
 }
 \note{
 Leave some notes here.
+}
+\examples{
+fam = "lin"
+pen = "scad"
+
+a = 3 + 4;
+a
+
+\dontrun{}
 }
 \references{
 Paper 1 by Big Name
