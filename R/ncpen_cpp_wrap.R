@@ -1,49 +1,109 @@
-#' @exportPattern "^[[:alpha:]]+"
+# @exportPattern "^[[:alpha:]]+"
 #' @import RcppArmadillo
-#' @importFrom Rcpp evalCpp
+# @importFrom Rcpp evalCpp
 #' @useDynLib ncpen
 #'
 #'
+#'
 #' @title
-#' non-convex penalized estimation for generalized linear models
+#' Fit a GLM with various nonconvex penalties
 #'
 #' @description
-#' \code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
-#' It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
+#' Fit a generalized linear model by penalized maximum likelihood estimation. The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}. Fit linear, logistic and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
 #'
-#' @param y.vec numeric vector; samples of dependent variable
-#' @param x.mat numeric matrix; samples of independent variables
-#' @param family character; model type; defalut is "gaussian"
 #'
-#' @return
-#' This returns...... If integer overflow
-#'   \url{http://en.wikipedia.org/wiki/Integer_overflow} occurs, the output
-#'   will be NA with a warning. Otherwise it will be a length-one numeric or
-#'   complex vector.
+#' @param y.vec numeric vector; response vector
+#' @param x.mat numeric matrix; design matrix; each row is an observation vector
+#' @param family character; model type depending on the response; default is "gaussian"
+#' @param penalty character; penalty function; default is "scad"
+#' @param lambda numeric vector; a user-specified sequence of \code{lambda} values
+#' @param n.lambda numeric; the number of lambda values; default is 100
+#' @param r.lambda numeric; the smallest value for \code{lambda}, as a fraction of lambda.max (derived from data) for which all coefficients are zero
+#' @param pen.weight numeric vector; penalty weights for each coefficient; a penalty weight can be zero in which the corresponding coefficient is always non-zero without shrinkage; note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflect this change
+#' @param tau numeric; concavity parameter of the concave penalties (see reference); default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sbridge}
+#' @param gamma numeric; addtional tunning parameter for the \code{classo} and \code{sbridge}; default is 1e-6
+#' @param ridge numeric; ridge effect (amount of ridge penalty); default is 1e-6
+#' @param df.max numeric; upper bound for the number of nonzero coefficients
+#' @param proj.min numeric; the minimum number of iterations which the projection is applied (see details); default is 100
+#' @param iter.max numeric; maximum number of iterations; default is 1e+3
+#' @param b.eps numeric; convergence threshold for L2 norms of coefficnets vector; default is 1e-6
+#' @param k.eps numeric; convergence threshold for KKT conditions; default is 1e-4
+#' @param x.standardize logical; standardization of \code{x.mat}, prior to fitting the model sequence. The coefficients are always returned on the original scale; default is \code{TRUE}
+#' @param intercept logical; intercept in the model; default is \code{TRUE}
 #'
-#'   Zero-length vectors have sum 0 by definition. See
-#'   \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
 #'
-#' @note
-#' Leave some notes here.
+#' @details
+#' The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm using concave convex procedure and coordiante descent algorithm. Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"}, and \deqn{ negative log-likelihood / n + penalty } for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link (logit for \code{binomial}; log for \code{poisson})
 #'
-#' @author
-#' Sunghoon Kwon, Dongshin Kim
+#' The algorithm fits the coefficients in the active set using the projection method after \code{proj.min} iteration instead of cycling coordinates, which makes the algorithm fast and stable. (xxx to be modified)
+#'
+#'
+#' @return An object with S3 class "ncpen" containing
+#'   \item{warningings}{warnings from \code{native_cpp_ncpen_fun_} (xxx should be modified) }
+#'   \item{family}{model type}
+#'   \item{x.standardize}{standardization of \code{x.mat}}
+#'   \item{intercept}{intercept in the model}
+#'   \item{coefficients}{matrix of fitted coefficients for a \code{lambda} sequence; the number of rows is the number of coefficients (\code{ncol(x.mat)+1} if \code{intercept=T} and \code{ncol(x.mat)} if \code{intercept=F}) and the number of colums is equal to \code{nlambda}}
+#'   \item{pen.weight}{penalty weights for each coefficient}
+#'   \item{lambda}{actual sequence of \code{lambda} values used}
+#'   \item{df}{the number of non-zero coefficients for each \code{lambda} value}
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
 #'
 #' @references
-#' Paper 1 by Big Name
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
 #'
 #' @seealso
-#' See this also....
+#' \code{\link{plot.ncpen}}, \code{\link{coef.ncpen}}, \code{\link{cv.ncpen}}
+#'
 #'
 #' @examples
-#' fam = "lin"
-#' pen = "scad"
 #'
-#' a = 3 + 4;
-#' a
+#' ### Linear regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
 #'
-#' \dontrun{}
+#' # 1. SCAD
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+#' coef(ncpen)
+#' plot(ncpen)
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="regression")
+#' gic.ncpen(ncpen,y.vec,x.mat)
+#'
+#' # 2. CLASSO
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="classo")
+#' plot(ncpen)
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="regression")
+#'
+#' # 3. TLP
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="tlp")
+#' plot(ncpen)
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="regression")
+#'
+#' ### Logistic regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="probability")
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="response")
+#'
+#' ### Poison regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="poisson")
+#' predict(ncpen, new.x.mat=x.mat[1:20,],type="response")
+#' gic.ncpen(ncpen,y.vec,x.mat)
+#' plot(ncpen)
 #' @export
 ncpen = function(y.vec,x.mat,
                  family=c("gaussian","binomial","poisson"),
@@ -88,48 +148,61 @@ ncpen = function(y.vec,x.mat,
 }
 
 #' @title
-#' non-convex penalized estimation for generalized linear models
+#' Cross-validation for ncpen
+#'
 #'
 #' @description
-#' \code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
-#' It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
+#' Performs k-fold cross-validation for noncovex penalized regression models over a sequence of the regularization parameter lambda.
 #'
-#' @param y.vec numeric vector; samples of dependent variable
-#' @param x.mat numeric matrix; samples of independent variables
-#' @param family character; model type; \code{gaussian} for linear,
-#' \code{binomial} for logistic, and \code{poisson} for includes  ; defalut is "gaussian"
-#' @param penalty character;
-
 #'
-#' @return
-#' This returns...... If integer overflow
-#'   \url{http://en.wikipedia.org/wiki/Integer_overflow} occurs, the output
-#'   will be NA with a warning. Otherwise it will be a length-one numeric or
-#'   complex vector.
+#' @param y.vec numeric vector; the response vector as in \code{ncpen}
+#' @param x.mat numeric matrix; the design matrix as in \code{ncpen}
+#' @param n.fold numeric; the number of folds; default is 10; the smallest value allowable is 3
+#' @param ... other arguments to \code{ncpen}
 #'
-#'   Zero-length vectors have sum 0 by definition. See
-#'   \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
 #'
-#' @note
-#' Leave some notes here.
+#' @details
+#' The function runs \code{ncpen} \code{n.fold+1} times; the first to get the sequence of \code{lambda}, and then the remainder to compute the fit with each of the folds omitted. It provides the cross validated-error based on the squared-error loss and the deviance loss. (xxx the code may be modified)
 #'
-#' @author
-#' Sunghoon Kwon, Dongshin Kim
+#'
+#' @return An object with S3 class "cv.ncpen" containing
+#'   \item{ncpen.fit}{the fitted \code{ncpen} object for the full data}
+#'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-valdation}
+#'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation}
+#'   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}}
+#'   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}}
+#'   \item{elambda}{the actual \code{lambda} sequence used for computing cv error}
+#'   \item{dlambda}{the actual \code{lambda} sequence used for computing cv deviance}
+#'   \item{opt.elambda}{the optimal value of \code{lambda} based on cv error}
+#'   \item{opt.dlambda}{the optimal value of \code{lambda} based on cv deviance}
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
 #'
 #' @references
-#' Paper 1 by Big Name
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
 #'
 #' @seealso
-#' See this also....
+#' \code{\link{ncpen}}, \code{\link{plot.cv.ncpen}}, \code{\link{coef.cv.ncpen}}
+#'
 #'
 #' @examples
-#' fam = "lin"
-#' pen = "scad"
+#' set.seed(1234)
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
 #'
-#' a = 3 + 4;
-#' a
+#' cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10)  # not run !!!
+#' coef.cv.ncpen(cvfit)
+#' plot.cv.ncpen(cvfit)
+#' fit = cvfit$ncpen.fit
+#' opt = which(cvfit$opt.elambda==fit$lambda)
+#' coef(fit)[,opt]
 #'
-#' \dontrun{}
 #' @export
 cv.ncpen = function(y.vec,x.mat,
                     family="gaussian",penalty="scad",n.fold=10,
@@ -157,7 +230,7 @@ cv.ncpen = function(y.vec,x.mat,
      lambda = ncpen.fit$lambda
      w.lambda = ncpen.fit$w.lambda
      for(fold in 1:n.fold){
-          cat("cv fold number:",fold,"\n")
+          # cat("cv fold number:",fold,"\n")
           tset = c(f.list1[[fold]],f.list2[[fold]])
           f.ncpen.fit = native_cpp_ncpen_fun_(y.vec[-tset],
                                               x.mat[-tset,],x.standardize,intercept,
@@ -197,12 +270,95 @@ cv.ncpen = function(y.vec,x.mat,
 ##################################################################################################################################
 ###### ncpen accessories  #####
 
+#' @title
+#' Extract the coefficients from a "ncpen" object
+#'
+#'
+#' @description
+#' This function returns the coefficients matrix for all lambda values
+#'
+#'
+#' @param object Fitted "ncpen" model object
+#'
+#'
+#' @return The coefficients matrix
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#'
+#' @seealso
+#' \code{\link{ncpen}}, \code{\link{plot.ncpen}}, \code{\link{predict.ncpen}}
+#'
+#'
+#' @examples
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+#' coef(ncpen)
+#'
+#' @export
 coef.ncpen = function(ncpen.fit){
      num = dim(ncpen.fit$coefficients)[1]
      if(ncpen.fit$intercept==TRUE) rownames(ncpen.fit$coefficients) = c("intercept",rep("",num-1))
      return(ncpen.fit$coefficients)
 }
 
+#' @title
+#' Compute the GIC values for selection of the regularizatin parameter lambda
+#'
+#'
+#' @description
+#' This function provides the selection of the regularization parameter lambda based on the generlized information criterion(GIC) including AIC and BIC. It computes the GIC values at a grid of values for the regularization parametr lambda.
+#'
+#'
+#' @param object Fitted "ncpen" model object
+#' @param y.vec the response vector as in \code{ncpen}
+#' @param x.mat the design matrix as in \code{ncpen}
+#' @param df.weight the weight factor for various information critera; for examples, AIC if \code{df.weight=2}, BIC if \code{df.weight=log(n)}; default is BIC.
+#' @param verbose logical; plot the GIC curve; default is \code{verbose=T}
+#'
+#'
+#' @return The coefficients matrix
+#'   \item{opt.beta }{the optimal coefficients vector selected by GIC }
+#'   \item{lambda }{the sequence of lambda values in the "ncpen" object}
+#'   \item{gic }{the GIC values at all lambda values}
+#'   \item{opt.lambda }{the optimal lambda value}
+#'   \item{plot }{the GIC curve}
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#' Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on High Dimensions. \emph{Journal of Machine Learning Research}, \bold{13}, 1037-1057.
+#'
+#'
+#' @seealso
+#' \code{\link{ncpen}}
+#'
+#'
+#' @examples
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+#' gic.ncpen(ncpen,y.vec,x.mat,verbose=T)
+#'
+#' @export
 gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=TRUE){
      n = length(y.vec);
      if(ncpen.fit$intercept==FALSE){
@@ -223,48 +379,39 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 }
 
 #' @title
-#' plot.ncpen
+#' Plot coefficients from a "ncpen" object
+#'
 #'
 #' @description
-#' \code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
-#' It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
+#' Produces a plot of the coefficients paths for a fitted "ncpen" object
 #'
-#' @param y.vec numeric vector; samples of dependent variable
-#' @param x.mat numeric matrix; samples of independent variables
-#' @param family character; model type; \code{gaussian} for linear,
-#' \code{binomial} for logistic, and \code{poisson} for includes  ; defalut is "gaussian"
-#' @param penalty character;
-
 #'
-#' @return
-#' This returns...... If integer overflow
-#'   \url{http://en.wikipedia.org/wiki/Integer_overflow} occurs, the output
-#'   will be NA with a warning. Otherwise it will be a length-one numeric or
-#'   complex vector.
+#' @param object Fitted "ncpen" model object
+#' @param log.scale logical; log scale of horizontal axis(a sequence of lambda values); default is FALSE
+#' @param ... other graphical parameters to \code{plot}
 #'
-#'   Zero-length vectors have sum 0 by definition. See
-#'   \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
 #'
-#' @note
-#' Leave some notes here.
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' @author
-#' Sunghoon Kwon, Dongshin Kim
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
 #'
 #' @references
-#' Paper 1 by Big Name
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
 #'
 #' @seealso
-#' See this also....
+#' \code{\link{ncpen}}
+#'
 #'
 #' @examples
-#' fam = "lin"
-#' pen = "scad"
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
 #'
-#' a = 3 + 4;
-#' a
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+#' plot(ncpen,log.scale=F)
 #'
-#' \dontrun{}
 #' @export
 plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
      b.mat = ncpen.fit$coefficients[-1,]; lambda = ncpen.fit$lambda
@@ -273,6 +420,65 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
      for(pos in 1:dim(b.mat)[1]){ lines(lambda,b.mat[pos,],col=pos,lty=pos) }
 }
 
+#' @title
+#' Make predictions from a "ncpen" object
+#'
+#'
+#' @description
+#' Similar to other predict methods, this function provides predictions from a fitted "ncpen" object.
+#'
+#'
+#' @param object fitted "ncpen" model object
+#' @param new.x.mat numeric matrix; matrix of new values at which predictions are to be made
+#' @param type character; type of prediction required; "regression" returns the linear predictors; "probability" returns the fitted probabilities, which is only available for \code{family="binomial"}; "response" gives the fitted values for "gaussian", the fitted class thresholded by \code{cut} value for "binomial", and the fitted means for "poisson"
+#' @param cut numeric; thresholding value of probability for logistic regression model; default is 0.5; this argument is not required for other models
+#'
+#'
+#' @return the matrix of the fitted values depends on \code{type}, for all lambda values
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#'
+#' @seealso
+#' \code{\link{ncpen}}
+#'
+#'
+#' @examples
+#'
+#' ### Linear regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+#' predict(ncpen, new.x.mat=x.mat[1:20,], type="regression")
+#'
+#' ### Logistic regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' predict(ncpen, new.x.mat=x.mat[1:20,], type="probability")
+#' predict(ncpen, new.x.mat=x.mat[1:20,], type="response")
+#'
+#' ### Poisson regression
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="poisson")
+#' predict(ncpen, new.x.mat=x.mat[1:20,], type="regression")
+#' predict(ncpen, new.x.mat=x.mat[1:20,], type="response")
+#'
+#' @export
 predict.ncpen = function(ncpen.fit,new.x.mat=NULL,type=c("regression","probability","response"),cut=0.5){
      if(is.null(new.x.mat)){
           stop("'new.x.mat' option should be supplied for prediction")
@@ -319,7 +525,44 @@ predict.ncpen = function(ncpen.fit,new.x.mat=NULL,type=c("regression","probabili
 ##################################################################################################################################
 ###### ncpen.cv accessories  #####
 
-
+#' @title
+#' Make predictions from a "cv.ncpen" object
+#'
+#'
+#' @description
+#' This function makes predictions from a cross-validated ncpen model. It provides the optimal coefficients vector selected by the cross-validation method.
+#'
+#'
+#' @param object fitted "cv.ncpen" model object
+#' @param type character; type of cross-validated errors as in \code{cv.nepen}
+#'
+#'
+#' @return the optimal coefficients vector selected by cross-validation method
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#'
+#' @seealso
+#' \code{\link{cv.ncpen}}, \code{\link{cv.ncpen.plot}}
+#'
+#'
+#' @examples
+#'
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' coef.cv.ncpen(cvfit, type="deviance")
+#'
+#' @export
 coef.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance")){
      type = match.arg(type)
      if(type=="error"){
@@ -330,6 +573,45 @@ coef.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance")){
      }
 }
 
+#' @title
+#' Plot cv curve from a "cv.ncpen" object
+#'
+#'
+#' @description
+#' Produces a plot of the cross-validated error curve from a fitted "cv.ncpen" object
+#'
+#'
+#' @param object fitted "cv.ncpen" model object
+#' @param type character; type of cross-validated errors as in \code{cv.nepen}
+#' @param log.scale logical; log scale of horizontal axis(a sequence of lambda values); default is FALSE
+#' @param ... other graphical parameters to \code{plot}
+#'
+#' @return the optimal coefficients vector selected by cross-validation method
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#'
+#' @seealso
+#' \code{\link{cv.ncpen}}, \code{\link{coef.cv.ncpen}}
+#'
+#'
+#' @examples
+#'
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' x.mat = s0$x.mat
+#' y.vec = s0$y.vec
+#'
+#' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' plot.cv.ncpen(cvfit, type="deviance")
+#'
+#' @export
 plot.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance"),log.scale=FALSE,...){
      type = match.arg(type)
      if(log.scale==TRUE){
@@ -344,5 +626,70 @@ plot.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance"),log.scale=FALSE
 
 }
 
+#' @title
+#' Generate a dataset for simulations
+#'
+#' @description
+#' Generate a synthetic dataset based on the correlation structure from generalized linear models.
+#'
+#'
+#' @param n numeric; the number of samples
+#' @param p numeric; the number of variables
+#' @param q numeric; the number of nonzero coefficients
+#' @param bmin numeric; value of the minimum coefficient
+#' @param bmax numeric; value of the maximum coefficient
+#' @param corr numeric; strength of correlations in the correlation structure
+#' @param family character; model type; default is "gaussian"
+#'
+#'
+#' @details
+#' The design matrix for regression models is generated from the multivariate normal distribution with the correlation structure. Then the response variables are computed with a specific model based on the true coefficients. For details, see the reference.
+#'
+#'
+#' @return An object with list class containing
+#'   \item{x.mat }{\code{n} times \code{p} design matrix}
+#'   \item{y.vec }{vector of responses}
+#'   \item{b.vec }{vector of true coefficients}
+#'
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
+#'
+#'
+#' @references
+#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#'
+#'
+#' @seealso
+#' \code{\link{ncpen}}
+#'
+#'
+#' @examples
+#' set.seed(1234)
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' head(s0$x.mat)
+#' head(s0$y.vec)
+#' head(s0$b.vec)
+#'
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.2,bmax=0.5,corr=0.7,family="binomial")
+#' head(s0$y.vec)
+#' head(s0$b.vec)
+#'
+#' s0 = sam.gen.fun(n=100,p=20,q=5,bmin=0.5,bmax=1,corr=0.3,family="poisson")
+#' head(s0$y.vec)
+#' head(s0$b.vec)
+#'
+#' @export
+sam.gen.fun = function(n=100,p=50,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian"){
+     co = corr^(abs(outer(c(1:p),c(1:p),"-"))); chco = chol(co)
+     x.mat = matrix(rnorm(n*p),n,p)%*%t(chco)
+     b.vec = seq(bmax,bmin,length.out=q)*(-1)^(1:q); b.vec = c(b.vec,rep(0,p-q))
+     xb.vec = as.vector(x.mat%*%b.vec); exb.vec = pmin(exp(xb.vec),exp(700))
+     if(family=="gaussian"){ y.vec = xb.vec + rnorm(n) }
+     if(family=="binomial"){ p.vec = exb.vec/(1+exb.vec); y.vec = rbinom(n,1,p.vec) }
+     if(family=="poisson"){ m.vec = exb.vec; y.vec = rpois(n,m.vec) }
+     return(list(x.mat=x.mat,y.vec=y.vec,b.vec=b.vec))
+}
 
 #-------------------------------------------------------------------------

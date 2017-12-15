@@ -259,3 +259,4 @@ step.data = function(vec, by = 0.50) {
      return (ret[,-1]);
 }
 # step.data(subset(raw.prepay.data, select = c("int_spread")), by = 0.5);
+

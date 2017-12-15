@@ -1,3 +1,4 @@
 # Build mannual
-if(file.exists("./doc/ncpen.pdf")) file.remove("./doc/ncpen.pdf");
-system("R CMD Rd2pdf -o ./doc/ncpen.pdf .");
+if(file.exists("./inst/doc/ncpen.pdf")) file.remove("./inst/doc/ncpen.pdf");
+system("R CMD Rd2pdf -o ./inst/doc/ncpen.pdf .");
+

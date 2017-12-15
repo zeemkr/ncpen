@@ -605,7 +605,7 @@ double get_qlasso_fun_del(int pos, arma::mat& q_mat, arma::vec& w_vec, double la
 }
 
 //qlasso.fun = function(q.mat,l.vec,b.vec,w.vec,lam,iter.max,b.eps,k.eps,p.eff,q.rank){
-const double SMALL_NUMBER = 1e-7;
+//const double SMALL_NUMBER = 1e-7;
 
 // // [[Rcpp::export]]
 // Rcpp::List qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec& w_vec,
@@ -1290,7 +1290,7 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0, bool x_std, bool intc,
      ret_buff.w_vec = w_vec;
      ret_buff.warnings = warning_code_vec;
 
-     std::cout << "CPP_NCPEN ver 0.1.9.0" << std::endl;
+     // std::cout << "CPP_NCPEN ver 0.1.9.0" << std::endl;
 
      return 0;
 

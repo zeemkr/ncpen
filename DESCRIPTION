@@ -2,13 +2,17 @@ Package: ncpen
 Type: Package
 Title: Nonconvex penalty estimation
 Version: 0.1.9
-Date: 2017-10-10
-Author: Dongshin Kim, Sunghoon Kwon, Sangin Lee
-Maintainer: Dongshin Kim <dongshin.kim@live.com>, Sunghoon Kwon <a@b.edu>, Sangin Lee <a@b.edu>
-Description: Estimates nonconvex penalty. This project is funded by Julian Virtue Professorship at Graziadio School of Business and Management at Pepperdine University, US.
+Date: 2017-12-13
+Author: Dongshin Kim, Sunghoon Kwon and Sangin Lee
+Maintainer: Dongshin Kim <dongshin.kim@live.com>, Sunghoon Kwon <shkwon0522@gmail.com>
+Description: Estimates nonconvex penalty.
+ This project is funded by Julian Virtue Professorship from 
+ Centerfor Applied Research at Graziadio School of Business and Management at 
+ Pepperdine University.
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: TRUE
 Imports: Rcpp (>= 0.12.12)
 LinkingTo: Rcpp, RcppArmadillo
+Depends: RcppArmadillo
 RoxygenNote: 6.0.1
