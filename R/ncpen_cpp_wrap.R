@@ -6,47 +6,60 @@
 #'
 #'
 #' @title
-#' Fit a GLM with various nonconvex penalties
+#' Fits a generalized linear model (GLM) with various nonconvex penalties
 #'
 #' @description
-#' Fit a generalized linear model by penalized maximum likelihood estimation. The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}. Fit linear, logistic and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
+#' Fits a generalized linear model by penalized maximum likelihood estimation.
+#' The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}.
+#' Fits gaussian (linear), binomial (logistic) and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
 #'
 #'
-#' @param y.vec numeric vector; response vector
-#' @param x.mat numeric matrix; design matrix; each row is an observation vector
-#' @param family character; model type depending on the response; default is "gaussian"
-#' @param penalty character; penalty function; default is "scad"
-#' @param lambda numeric vector; a user-specified sequence of \code{lambda} values
-#' @param n.lambda numeric; the number of lambda values; default is 100
-#' @param r.lambda numeric; the smallest value for \code{lambda}, as a fraction of lambda.max (derived from data) for which all coefficients are zero
-#' @param pen.weight numeric vector; penalty weights for each coefficient; a penalty weight can be zero in which the corresponding coefficient is always non-zero without shrinkage; note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflect this change
-#' @param tau numeric; concavity parameter of the concave penalties (see reference); default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sbridge}
-#' @param gamma numeric; addtional tunning parameter for the \code{classo} and \code{sbridge}; default is 1e-6
-#' @param ridge numeric; ridge effect (amount of ridge penalty); default is 1e-6
-#' @param df.max numeric; upper bound for the number of nonzero coefficients
-#' @param proj.min numeric; the minimum number of iterations which the projection is applied (see details); default is 100
-#' @param iter.max numeric; maximum number of iterations; default is 1e+3
-#' @param b.eps numeric; convergence threshold for L2 norms of coefficnets vector; default is 1e-6
-#' @param k.eps numeric; convergence threshold for KKT conditions; default is 1e-4
-#' @param x.standardize logical; standardization of \code{x.mat}, prior to fitting the model sequence. The coefficients are always returned on the original scale; default is \code{TRUE}
-#' @param intercept logical; intercept in the model; default is \code{TRUE}
+#' @param y.vec (numeric \code{\link{vector}}) response vector.
+#' @param x.mat (numeric \code{\link{matrix}}) design matrix. Each row is an observation vector.
+#' @param family (character) regression model. Default is "\code{gaussian}".
+#' @param penalty (character) penalty function. Default is "\code{scad}".
+#' @param lambda (numeric \code{\link{vector}}): user-specified sequence of \code{lambda} values.
+#' @param n.lambda (numeric) the number of \code{lambda} values. Default is 100.
+#' @param r.lambda (numeric) the smallest value for \code{lambda}, ???s as a fraction of \code{lambda.max} (which derived from data)
+#' for which all coefficients are zero. ???e
+#' @param pen.weight (numeric \code{\link{vector}}) penalty weights for each coefficient. If a penalty weigth is set to zero,
+#' the corresponding coefficient is always non-zero without shrinkage.
+#' Note: ???s the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflect this change. ???e
+#' @param tau (numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp},
+#' and 2 for \code{classo} and \code{sbridge}
+#' @param gamma (numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
+#' @param ridge (numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.
+#' @param df.max (numeric) the maximum number of nonzero coefficients.
+#' @param proj.min (numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 100.
+#' @param iter.max (numeric) maximum number of iterations. Default valu eis 1e+3.
+#' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-6.
+#' @param k.eps (numeric) convergence threshold for KKT conditions. Default value is 1e-4.
+#' @param x.standardize (logical) whether to standardize the \code{x.mat} prior to fitting the model.
+#' The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.
+#' @param intercept (logical) whether to include an intercept in the model. Default value is \code{TRUE}.
 #'
 #'
 #' @details
-#' The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm using concave convex procedure and coordiante descent algorithm. Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"}, and \deqn{ negative log-likelihood / n + penalty } for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link (logit for \code{binomial}; log for \code{poisson})
+#' The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm
+#' using concave convex procedure and coordiante descent algorithm.
+#' Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"}, and \deqn{ negative log-likelihood / n + penalty }
+#' for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link
+#' (logit for \code{binomial}; log for \code{poisson}).
 #'
-#' The algorithm fits the coefficients in the active set using the projection method after \code{proj.min} iteration instead of cycling coordinates, which makes the algorithm fast and stable. (xxx to be modified)
+#' The algorithm fits the coefficients in the active set using the projection method
+#' after \code{proj.min} iteration instead of cycling coordinates, which makes the algorithm fast and stable.
 #'
 #'
-#' @return An object with S3 class "ncpen" containing
-#'   \item{warningings}{warnings from \code{native_cpp_ncpen_fun_} (xxx should be modified) }
-#'   \item{family}{model type}
-#'   \item{x.standardize}{standardization of \code{x.mat}}
-#'   \item{intercept}{intercept in the model}
-#'   \item{coefficients}{matrix of fitted coefficients for a \code{lambda} sequence; the number of rows is the number of coefficients (\code{ncol(x.mat)+1} if \code{intercept=T} and \code{ncol(x.mat)} if \code{intercept=F}) and the number of colums is equal to \code{nlambda}}
-#'   \item{pen.weight}{penalty weights for each coefficient}
-#'   \item{lambda}{actual sequence of \code{lambda} values used}
-#'   \item{df}{the number of non-zero coefficients for each \code{lambda} value}
+#' @return An object with S3 class \code{ncpen}.
+#'   \item{family}{regression model.}
+#'   \item{x.standardize}{flag for standardization of \code{x.mat}.}
+#'   \item{intercept}{flag for an intercept in the model.}
+#'   \item{coefficients}{a matrix of fitted coefficients for a \code{lambda} sequence.
+#'   The number of rows is same as the number of coefficients (\code{ncol(x.mat)+1} if \code{intercept=TRUE} and
+#'   \code{ncol(x.mat)} if \code{intercept=FALSE}). The number of columns is equal to \code{nlambda}.}
+#'   \item{pen.weight}{penalty weights for each coefficient.}
+#'   \item{lambda}{sequence of \code{lambda} values used.}
+#'   \item{df}{the number of non-zero coefficients for each \code{lambda} value.}
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -65,7 +78,7 @@
 #' @examples
 #'
 #' ### Linear regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -87,7 +100,7 @@
 #' predict(ncpen, new.x.mat=x.mat[1:20,],type="regression")
 #'
 #' ### Logistic regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -96,7 +109,7 @@
 #' predict(ncpen, new.x.mat=x.mat[1:20,],type="response")
 #'
 #' ### Poison regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -137,12 +150,22 @@ ncpen = function(y.vec,x.mat,
                                        gam,tau,
                                        df.max,iter.max,b.eps,k.eps,proj.min,ridge,
                                        family, penalty);
-     ret = list(warnings=as.vector(ncpen.fit$warnings),
-                 family=family,x.standardize=x.standardize,intercept=intercept,
-                 coefficients=ncpen.fit$b.mat,
-                 w.lambda=w.lambda,                   ### w.lambda does not include the intercept
-                 lambda=as.vector(ncpen.fit$lam.vec),
-                 df=as.vector(ncpen.fit$d.vec));
+     # Throw warning messages from cpp
+     if(ncpen.fit$warnings[1] == 1) {
+          warning("(ncpen: warning code 1) increase p.max.");
+     }
+
+     if(ncpen.fit$warnings[2] == 1) {
+          warning("(ncpen: warning code 2) increase r.eff.");
+     }
+
+
+     ret = list(family=family,x.standardize=x.standardize,intercept=intercept,
+                coefficients=ncpen.fit$b.mat,
+                w.lambda=w.lambda,                   ### w.lambda does not include the intercept
+                lambda=as.vector(ncpen.fit$lam.vec),
+                df=as.vector(ncpen.fit$d.vec));
+
      class(ret) = "ncpen";
      return(ret);
 }
@@ -154,27 +177,26 @@ ncpen = function(y.vec,x.mat,
 #' @description
 #' Performs k-fold cross-validation for noncovex penalized regression models over a sequence of the regularization parameter lambda.
 #'
-#'
-#' @param y.vec numeric vector; the response vector as in \code{ncpen}
-#' @param x.mat numeric matrix; the design matrix as in \code{ncpen}
-#' @param n.fold numeric; the number of folds; default is 10; the smallest value allowable is 3
-#' @param ... other arguments to \code{ncpen}
+#' @param n.fold (numeric) the number of folds. Default value is 10. It should be 3 or greater.
+#' @param ... other paramemters are same as in \code{\link{ncpen}}.
 #'
 #'
 #' @details
-#' The function runs \code{ncpen} \code{n.fold+1} times; the first to get the sequence of \code{lambda}, and then the remainder to compute the fit with each of the folds omitted. It provides the cross validated-error based on the squared-error loss and the deviance loss. (xxx the code may be modified)
+#' The function runs the \code{ncpen} function for \code{n.fold+1} times.
+#' The first run is to get the sequence of \code{lambda} and ???s the rest of \code{n.fold} runs are to compute the fit with each of the folds omitted. ???e
+#' It provides the cross validated-error based on the squared-error loss and the deviance loss.
 #'
 #'
-#' @return An object with S3 class "cv.ncpen" containing
-#'   \item{ncpen.fit}{the fitted \code{ncpen} object for the full data}
-#'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-valdation}
-#'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation}
-#'   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}}
-#'   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}}
-#'   \item{elambda}{the actual \code{lambda} sequence used for computing cv error}
-#'   \item{dlambda}{the actual \code{lambda} sequence used for computing cv deviance}
-#'   \item{opt.elambda}{the optimal value of \code{lambda} based on cv error}
-#'   \item{opt.dlambda}{the optimal value of \code{lambda} based on cv deviance}
+#' @return An object with S3 class \code{cv.ncpen}.
+#'   \item{ncpen.fit}{the fitted \code{ncpen} object.}
+#'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-valdation.}
+#'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation.}
+#'   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}s.}
+#'   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}s.}
+#'   \item{elambda}{the \code{lambda} sequence used for computing cv error.}
+#'   \item{dlambda}{the \code{lambda} sequence used for computing cv deviance.}
+#'   \item{opt.elambda}{the optimal value of \code{lambda} based on cv error.}
+#'   \item{opt.dlambda}{the optimal value of \code{lambda} based on cv deviance.}
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -191,8 +213,7 @@ ncpen = function(y.vec,x.mat,
 #'
 #'
 #' @examples
-#' set.seed(1234)
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -257,12 +278,15 @@ cv.ncpen = function(y.vec,x.mat,
      for(fold in 1:n.fold){ dev.mat[fold,] = dev.list[[fold]][1:dleng] }
      dev.vec = colMeans(dev.mat); dev.opt = which.min(dev.vec)
 
-     return(list(ncpen.fit=ncpen.fit,
+     ret = list(ncpen.fit=ncpen.fit,
                  opt.ebeta=ncpen.fit$coefficients[,err.opt],opt.dbeta=ncpen.fit$coefficients[,dev.opt],
                  cv.error=err.vec,cv.deviance=dev.vec,
                  elambda=lambda[1:eleng],dlambda=lambda[1:dleng],
-                 opt.elambda=lambda[err.opt],opt.dlambda=lambda[dev.opt]
-     ))
+                 opt.elambda=lambda[err.opt],opt.dlambda=lambda[dev.opt]);
+
+     class(ret) = "cv.ncpen";
+
+     return (ret);
 }
 
 ##################################################################################################################################
@@ -271,17 +295,17 @@ cv.ncpen = function(y.vec,x.mat,
 ###### ncpen accessories  #####
 
 #' @title
-#' Extract the coefficients from a "ncpen" object
+#' Extract the coefficients from an \code{ncpen} object
 #'
 #'
 #' @description
-#' This function returns the coefficients matrix for all lambda values
+#' This function returns the coefficients matrix for all lambda values.
 #'
 #'
-#' @param object Fitted "ncpen" model object
+#' @param object Fitted \code{ncpen} object.
 #'
 #'
-#' @return The coefficients matrix
+#' @return The coefficients \code{\link{matrix}}.
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -298,13 +322,14 @@ cv.ncpen = function(y.vec,x.mat,
 #'
 #'
 #' @examples
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
 #' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
 #' coef(ncpen)
 #'
+#' @export coef.ncpen
 #' @export
 coef.ncpen = function(ncpen.fit){
      num = dim(ncpen.fit$coefficients)[1]
@@ -313,26 +338,28 @@ coef.ncpen = function(ncpen.fit){
 }
 
 #' @title
-#' Compute the GIC values for selection of the regularizatin parameter lambda
+#' Compute the GIC values for the selection of the regularizatin parameter lambda.
 #'
 #'
 #' @description
-#' This function provides the selection of the regularization parameter lambda based on the generlized information criterion(GIC) including AIC and BIC. It computes the GIC values at a grid of values for the regularization parametr lambda.
+#' This function provides the selection of the regularization parameter lambda based
+#' on the generlized information criterion (GIC) including AIC and BIC.
+#' It computes the GIC values at a grid of values for the regularization parameter lambda.
+#'
+#' @param object Fitted \code{ncpen} model object.
+#' @param y.vec the response vector.
+#' @param x.mat the design matrix.
+#' @param df.weight the weight factor for various information critera. For example, AIC if \code{df.weight=2},
+#' BIC if \code{df.weight=log(n)}. Default is BIC.
+#' @param verbose (logical) whether to plot the GIC curve. Default is \code{verbose=TRUE}.
 #'
 #'
-#' @param object Fitted "ncpen" model object
-#' @param y.vec the response vector as in \code{ncpen}
-#' @param x.mat the design matrix as in \code{ncpen}
-#' @param df.weight the weight factor for various information critera; for examples, AIC if \code{df.weight=2}, BIC if \code{df.weight=log(n)}; default is BIC.
-#' @param verbose logical; plot the GIC curve; default is \code{verbose=T}
-#'
-#'
-#' @return The coefficients matrix
-#'   \item{opt.beta }{the optimal coefficients vector selected by GIC }
-#'   \item{lambda }{the sequence of lambda values in the "ncpen" object}
-#'   \item{gic }{the GIC values at all lambda values}
-#'   \item{opt.lambda }{the optimal lambda value}
-#'   \item{plot }{the GIC curve}
+#' @return The coefficients \code{\link{matrix}}.
+#'   \item{opt.beta}{the optimal coefficients \code{\link{vector}} selected by GIC.}
+#'   \item{lambda}{the sequence of lambda values in the \code{ncpen} object.}
+#'   \item{gic}{the GIC values for all lambda values.}
+#'   \item{opt.lambda}{the optimal lambda value.}
+#'   \item{plot}{the GIC curve.}
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -351,7 +378,7 @@ coef.ncpen = function(ncpen.fit){
 #'
 #'
 #' @examples
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -379,16 +406,16 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 }
 
 #' @title
-#' Plot coefficients from a "ncpen" object
+#' Plots coefficients from an \code{ncpen} object.
 #'
 #'
 #' @description
-#' Produces a plot of the coefficients paths for a fitted "ncpen" object
+#' Produces a plot of the coefficients paths for a fitted \code{ncpen} object.
 #'
 #'
-#' @param object Fitted "ncpen" model object
-#' @param log.scale logical; log scale of horizontal axis(a sequence of lambda values); default is FALSE
-#' @param ... other graphical parameters to \code{plot}
+#' @param object Fitted \code{ncpen} model object.
+#' @param log.scale (logical) log scale of horizontal axis (a sequence of lambda values). Default value is FALSE.
+#' @param ... other graphical parameters to \code{\link{plot}}
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -405,13 +432,14 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 #'
 #'
 #' @examples
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5)
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
 #' ncpen = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
 #' plot(ncpen,log.scale=F)
 #'
+#' @export plot.ncpen
 #' @export
 plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
      b.mat = ncpen.fit$coefficients[-1,]; lambda = ncpen.fit$lambda
@@ -421,20 +449,25 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
 }
 
 #' @title
-#' Make predictions from a "ncpen" object
+#' Make predictions from an \code{ncpen} object.
 #'
 #'
 #' @description
-#' Similar to other predict methods, this function provides predictions from a fitted "ncpen" object.
+#' This function provides predictions from a fitted \code{ncpen} object.
 #'
 #'
-#' @param object fitted "ncpen" model object
-#' @param new.x.mat numeric matrix; matrix of new values at which predictions are to be made
-#' @param type character; type of prediction required; "regression" returns the linear predictors; "probability" returns the fitted probabilities, which is only available for \code{family="binomial"}; "response" gives the fitted values for "gaussian", the fitted class thresholded by \code{cut} value for "binomial", and the fitted means for "poisson"
-#' @param cut numeric; thresholding value of probability for logistic regression model; default is 0.5; this argument is not required for other models
+#' @param object fitted \code{ncpen} object.
+#' @param new.x.mat (numeric \code{\link{matrix}}). A matrix of new observations at which predictions are to be made.
+#' @param type (character) type of prediction.
+#' \code{"regression"} returns the linear predictoions;
+#' \code{"probability"} returns the fitted probabilities which is only available for \code{family="binomial"};
+#' \code{"response"} returns followings depending on the models: the fitted values for \code{"gaussian"},
+#' fitted class cut at \code{cut} value for \code{"binomial"}, and fitted means for \code{"poisson"}.
+#' @param cut (numeric) threshold value of probability for logistic regression model. Default value is 0.5.
+#' This argument is not required for models other than logistic (binomial).
 #'
 #'
-#' @return the matrix of the fitted values depends on \code{type}, for all lambda values
+#' @return the \code{\link{matrix}} of the fitted values depending on \code{type} for all lambda values.
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -453,7 +486,7 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
 #' @examples
 #'
 #' ### Linear regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -461,7 +494,7 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
 #' predict(ncpen, new.x.mat=x.mat[1:20,], type="regression")
 #'
 #' ### Logistic regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -470,7 +503,7 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
 #' predict(ncpen, new.x.mat=x.mat[1:20,], type="response")
 #'
 #' ### Poisson regression
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
@@ -478,6 +511,7 @@ plot.ncpen = function(ncpen.fit,log.scale=FALSE,...){
 #' predict(ncpen, new.x.mat=x.mat[1:20,], type="regression")
 #' predict(ncpen, new.x.mat=x.mat[1:20,], type="response")
 #'
+#' @export predict.ncpen
 #' @export
 predict.ncpen = function(ncpen.fit,new.x.mat=NULL,type=c("regression","probability","response"),cut=0.5){
      if(is.null(new.x.mat)){
@@ -526,18 +560,18 @@ predict.ncpen = function(ncpen.fit,new.x.mat=NULL,type=c("regression","probabili
 ###### ncpen.cv accessories  #####
 
 #' @title
-#' Make predictions from a "cv.ncpen" object
+#' Extracts the coefficients from a \code{cv.ncpen} object.
 #'
 #'
 #' @description
-#' This function makes predictions from a cross-validated ncpen model. It provides the optimal coefficients vector selected by the cross-validation method.
+#' This function returns the coefficients \code{\link{vector}}.
 #'
 #'
-#' @param object fitted "cv.ncpen" model object
-#' @param type character; type of cross-validated errors as in \code{cv.nepen}
+#' @param object fitted \code{cv.ncpen} object.
+#' @param type (character) a cross-validated error type which is either "error" or "deviance". Each error type is defined in \code{\link{cv.ncpen}}.
 #'
 #'
-#' @return the optimal coefficients vector selected by cross-validation method
+#' @return the optimal coefficients vector selected by cross-validation method.
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -555,13 +589,14 @@ predict.ncpen = function(ncpen.fit,new.x.mat=NULL,type=c("regression","probabili
 #'
 #' @examples
 #'
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
 #' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
 #' coef.cv.ncpen(cvfit, type="deviance")
 #'
+#' @export coef.cv.ncpen
 #' @export
 coef.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance")){
      type = match.arg(type)
@@ -574,19 +609,19 @@ coef.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance")){
 }
 
 #' @title
-#' Plot cv curve from a "cv.ncpen" object
+#' Plot cv curve from a \code{cv.ncpen} object
 #'
 #'
 #' @description
-#' Produces a plot of the cross-validated error curve from a fitted "cv.ncpen" object
+#' Produces a plot of the cross-validated error curve from a fitted \code{cv.ncpen} object.
 #'
 #'
-#' @param object fitted "cv.ncpen" model object
-#' @param type character; type of cross-validated errors as in \code{cv.nepen}
-#' @param log.scale logical; log scale of horizontal axis(a sequence of lambda values); default is FALSE
-#' @param ... other graphical parameters to \code{plot}
+#' @param object fitted \code{cv.ncpen} object.
+#' @param type (character) a cross-validated error type which is either "error" or "deviance". Each error type is defined in \code{\link{cv.ncpen}}.
+#' @param log.scale (logical) log scale of horizontal axis (a sequence of lambda values). Default value is FALSE.
+#' @param ... other graphical parameters to \code{plot}.
 #'
-#' @return the optimal coefficients vector selected by cross-validation method
+#' @return the optimal coefficients vector selected by cross-validation method.
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -604,13 +639,14 @@ coef.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance")){
 #'
 #' @examples
 #'
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
 #' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
 #' plot.cv.ncpen(cvfit, type="deviance")
 #'
+#' @export plot.cv.ncpen
 #' @export
 plot.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance"),log.scale=FALSE,...){
      type = match.arg(type)
@@ -627,29 +663,31 @@ plot.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance"),log.scale=FALSE
 }
 
 #' @title
-#' Generate a dataset for simulations
+#' Generate a simulated dataset.
 #'
 #' @description
 #' Generate a synthetic dataset based on the correlation structure from generalized linear models.
 #'
 #'
-#' @param n numeric; the number of samples
-#' @param p numeric; the number of variables
-#' @param q numeric; the number of nonzero coefficients
-#' @param bmin numeric; value of the minimum coefficient
-#' @param bmax numeric; value of the maximum coefficient
-#' @param corr numeric; strength of correlations in the correlation structure
-#' @param family character; model type; default is "gaussian"
+#' @param n (numeric) the number of samples.
+#' @param p (numeric) the number of variables.
+#' @param q (numeric) the number of nonzero coefficients.
+#' @param bmin (numeric) value of the minimum coefficient.
+#' @param bmax (numeric) value of the maximum coefficient.
+#' @param corr (numeric) strength of correlations in the correlation structure.
+#' @param family (character) model type. Default is \code{"gaussian"}.
+#' @param seed (numeric) seed number for random generation. If set to NA, no seed will be applied. Default value is NA.
 #'
 #'
 #' @details
-#' The design matrix for regression models is generated from the multivariate normal distribution with the correlation structure. Then the response variables are computed with a specific model based on the true coefficients. For details, see the reference.
+#' A design matrix for regression models is generated from the multivariate normal distribution with the correlation structure.
+#' Then the response variables are computed with a specific model based on the true coefficients. For details, see the reference.
 #'
 #'
 #' @return An object with list class containing
-#'   \item{x.mat }{\code{n} times \code{p} design matrix}
-#'   \item{y.vec }{vector of responses}
-#'   \item{b.vec }{vector of true coefficients}
+#'   \item{x.mat}{\code{n} times \code{p} design matrix.}
+#'   \item{y.vec}{\code{\link{vector}} of responses.}
+#'   \item{b.vec}{\code{\link{vector}} of true coefficients.}
 #'
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
@@ -666,22 +704,25 @@ plot.cv.ncpen = function(cv.ncpen.fit,type=c("error","deviance"),log.scale=FALSE
 #'
 #'
 #' @examples
-#' set.seed(1234)
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
 #' head(s0$x.mat)
 #' head(s0$y.vec)
 #' head(s0$b.vec)
 #'
-#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.2,bmax=0.5,corr=0.7,family="binomial")
+#' s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.2,bmax=0.5,corr=0.7,family="binomial", seed = 1234)
 #' head(s0$y.vec)
 #' head(s0$b.vec)
 #'
-#' s0 = sam.gen.fun(n=100,p=20,q=5,bmin=0.5,bmax=1,corr=0.3,family="poisson")
+#' s0 = sam.gen.fun(n=100,p=20,q=5,bmin=0.5,bmax=1,corr=0.3,family="poisson", seed = 1234)
 #' head(s0$y.vec)
 #' head(s0$b.vec)
 #'
 #' @export
-sam.gen.fun = function(n=100,p=50,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian"){
+sam.gen.fun = function(n=100,p=50,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = NA){
+     if( !(is.na(seed) | is.null(seed)) ) {
+          set.seed(seed);
+     }
+
      co = corr^(abs(outer(c(1:p),c(1:p),"-"))); chco = chol(co)
      x.mat = matrix(rnorm(n*p),n,p)%*%t(chco)
      b.vec = seq(bmax,bmin,length.out=q)*(-1)^(1:q); b.vec = c(b.vec,rep(0,p-q))
