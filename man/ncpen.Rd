@@ -2,53 +2,136 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{ncpen}
 \alias{ncpen}
-\title{non-convex penalized estimation for generalized linear models}
+\title{Fits a generalized linear model (GLM) with various nonconvex penalties}
 \usage{
 ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
-  penalty = c("scad", "mcp", "lasso", "classo", "sridge", "mbridge", "mlog"),
-  lambda = NULL, n.lambda = 100, r.lambda = 0.001, w.lambda = NULL,
-  tau = 5, gam = 1e-06, ridge = 1e-06, df.max = 50, proj.min = 100,
-  iter.max = 1000, b.eps = 1e-06, k.eps = 1e-04, x.standardize = TRUE,
+  penalty = c("scad", "mcp", "tlp", "lasso", "classo", "sridge", "mbridge",
+  "mlog"), lambda = NULL, n.lambda = 100, r.lambda = 0.001,
+  pen.weight = NULL, tau = switch(penalty, scad = 3.7, mcp = 3, tlp = 0.1,
+  lasso = 1, classo = 2, sridge = 2, mbridge = 0.1, mlog = 0.1),
+  gamma = 1e-06, ridge = 1e-06, df.max = 50, proj.min = 50,
+  iter.max = 1000, b.eps = 1e-07, k.eps = 1e-06, x.standardize = TRUE,
   intercept = TRUE)
 }
 \arguments{
-\item{y.vec}{numeric vector; samples of dependent variable}
+\item{y.vec}{(numeric vector) response vector.}
 
-\item{x.mat}{numeric matrix; samples of independent variables}
+\item{x.mat}{(numeric matrix) design matrix. Each row is an observation vector.}
 
-\item{family}{character; model type; defalut is "gaussian"}
+\item{family}{(character) regression model. Default is "\code{gaussian}".}
+
+\item{penalty}{(character) penalty function. Default is "\code{scad}".}
+
+\item{lambda}{(numeric vector): user-specified sequence of \code{lambda} values.}
+
+\item{n.lambda}{(numeric) the number of \code{lambda} values. Default is 100.}
+
+\item{r.lambda}{(numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.}
+
+\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weigth is set to zero,
+the corresponding coefficient is always non-zero without shrinkage.
+Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.}
+
+\item{tau}{(numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.}
+
+\item{gamma}{(numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
+
+\item{ridge}{(numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.}
+
+\item{df.max}{(numeric) the maximum number of nonzero coefficients. Default is 50.}
+
+\item{proj.min}{(numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.}
+
+\item{iter.max}{(numeric) maximum number of iterations. Default valu eis 1e+3.}
+
+\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-7.}
+
+\item{k.eps}{(numeric) convergence threshold for KKT conditions. Default value is 1e-6.}
+
+\item{x.standardize}{(logical) whether to standardize the \code{x.mat} prior to fitting the model.
+The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.}
+
+\item{intercept}{(logical) whether to include an intercept in the model. Default value is \code{TRUE}.}
 }
 \value{
-This returns...... If integer overflow
-  \url{http://en.wikipedia.org/wiki/Integer_overflow} occurs, the output
-  will be NA with a warning. Otherwise it will be a length-one numeric or
-  complex vector.
-
-  Zero-length vectors have sum 0 by definition. See
-  \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
+An object with S3 class \code{ncpen}.
+  \item{family}{regression model.}
+  \item{x.standardize}{flag for standardization of \code{x.mat}.}
+  \item{intercept}{flag for an intercept in the model.}
+  \item{coefficients}{a matrix of fitted coefficients for a \code{lambda} sequence.
+  The number of rows is same as the number of coefficients (\code{ncol(x.mat)+1} if \code{intercept=TRUE} and
+  \code{ncol(x.mat)} if \code{intercept=FALSE}). The number of columns is equal to \code{nlambda}.}
+  \item{pen.weight}{penalty weights for each coefficient.}
+  \item{lambda}{sequence of \code{lambda} values used.}
+  \item{df}{the number of non-zero coefficients for each \code{lambda} value.}
 }
 \description{
-\code{ncpen} fits generalized linear models by using penalized maximum likelihood estimation.
-It covers Various non-convex penalties such as SCAD and MCP for linear, logistic and poisson regression models.
+Fits a generalized linear model by penalized maximum likelihood estimation.
+The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}.
+Fits gaussian (linear), binomial (logistic) and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
 }
-\note{
-Leave some notes here.
+\details{
+The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm
+using concave convex procedure and coordiante descent algorithm.
+Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"},
+and \deqn{(negative  log-likelihood) / n + penalty }
+for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link
+(logit for \code{binomial}; log for \code{poisson}).
+
+The algorithm fits the coefficients in the active set using the projection method
+after \code{proj.min} iteration instead of cycling coordinates, which makes the algorithm fast and stable.
 }
 \examples{
-fam = "lin"
-pen = "scad"
 
-a = 3 + 4;
-a
+### Linear regression
+s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
+x.mat = s0$x.mat
+y.vec = s0$y.vec
 
-\dontrun{}
+# 1. SCAD
+fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+coef(fit)
+plot(fit)
+predict(fit, new.x.mat=x.mat[1:20,],type="regression")
+gic.ncpen(fit,y.vec,x.mat)
+
+# 2. CLASSO
+fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="classo")
+plot(fit)
+predict(fit, new.x.mat=x.mat[1:20,],type="regression")
+
+# 3. TLP
+fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="tlp")
+plot(fit)
+predict(fit, new.x.mat=x.mat[1:20,],type="regression")
+
+### Logistic regression
+s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
+x.mat = s0$x.mat
+y.vec = s0$y.vec
+
+fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+predict(fit, new.x.mat=x.mat[1:20,],type="probability")
+predict(fit, new.x.mat=x.mat[1:20,],type="response")
+
+### Poison regression
+s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson", seed = 1234)
+x.mat = s0$x.mat
+y.vec = s0$y.vec
+
+fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="poisson")
+predict(fit, new.x.mat=x.mat[1:20,],type="response")
+gic.ncpen(fit,y.vec,x.mat)
+plot(fit)
 }
 \references{
-Paper 1 by Big Name
+Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
 }
 \seealso{
-See this also....
+\code{\link{plot.ncpen}}, \code{\link{coef.ncpen}}, \code{\link{cv.ncpen}}
 }
 \author{
-Sunghoon Kwon, Dongshin Kim
+Dongshin Kim, Sunghoon Kwon, Sangin Lee
+
+Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 }
