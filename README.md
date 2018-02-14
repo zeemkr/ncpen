@@ -1,17 +1,19 @@
-# ncpen
-
 [![Travis-CI Build Status](https://travis-ci.org/zeemkr/ncpen.svg?branch=master)](https://travis-ci.org/zeemkr/ncpen)
 
-We introduce an R package called ncpen for estimating generalized linear models (GLM)
-with various nonconvex penalties. We consider a class of penalties which includes the least
-absolute shrinkage and selection operator (LASSO), smoothly clipped absolute deviation
-(SCAD), minimax concave penalty (MCP), moderately clipped LASSO (MCL), truncated
-LASSO penalty (TLP), and modied bridge penalty (MBP). In this paper, we develop a
-unied algorithm for penalized estimation using these penalties and the R package ncpen.
-The proposed algorithm includes recent technical advances for the optimization of penalized
-estimation; convex-concave procedure for nonconvex optimization, local quadratic approximation
-(LQA), a descent directional modication of LQA for GLM, coordinate-wise descent
-algorithm for quadratic `1-penalized problems, active set optimization for speed up of the
-algorithm, warm-start strategy for pathwise optimization, etc. The R package ncpen provides
-various functions and options for user-specic choices of an initial value, penalty terms,
-`2-regularization, observation and penalty weights, standardization and intercept.
+# ncpen
+
+This package fits the generalized linear models with various non-convex penalties.
+A unified algorithm is implmented in \bold{ncpen} based on the convex concave procedure or difference convex algorithm that can be applied to most of existing non-convex penalties.
+The available penalties in the pacakge are
+the least absolute shrinkage and selection operator(LASSO),
+smoothly clipped absolute deviation (SCAD),
+minimax concave penalty (MCP),
+truncated \eqn{\ell_1}-penalty (TLP),
+clipped LASSO (CLASSO),
+sparse bridge (SRIDGE),
+modified bridge (MBRIDGE),
+and modified log (MLOG) penalites.
+This package accepts a design matrix \eqn{X} and vector of responses \eqn{y},
+and produces the regularization path ovaer a grid of values for the tuning parameter \code{lambda}.
+Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
+\eqn{\ell_2}-regularization, penalty weights, standardization and intercept.
