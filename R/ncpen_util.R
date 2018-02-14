@@ -1,3 +1,16 @@
+#' @title
+#' Check whether column names are derivation of a same base.
+#'
+#' @description
+#' This is internal use only function.
+#'
+#' @param base.cols vector of base column names.
+#' @param a first column to be compared.
+#' @param b second coumn to be compared.
+#'
+#' @return
+#' TRUE if same base, FALSE otherwise.
+#'
 same.base = function(base.cols, a, b) {
      if(a==b) return(T);
      if(is.null(base.cols)) return (F);
@@ -14,6 +27,19 @@ same.base = function(base.cols, a, b) {
 # same.base("aa", "aa", "aa20")
 # same.base(NULL, "aa", "aa")
 
+#' @title
+#' Check whether a pair should be excluded from interactions.
+#'
+#' @description
+#' This is internal use only function.
+#'
+#' @param excluded.pair a pair.
+#' @param a first column to be compared.
+#' @param b second coumn to be compared.
+#'
+#' @return
+#' TRUE if exculuded, FALSE otherwise.
+#'
 excluded = function(excluded.pair, a, b) {
      if(is.null(excluded.pair)) return (F);
 
@@ -52,7 +78,7 @@ excluded = function(excluded.pair, a, b) {
 #' with indicator (0 or 1) variables for each category.
 #'
 #' @param vec a categorical vector.
-#' @param type \code{"all"} means to include all the categories. \code{"exclude.base"}
+#' @param exclude.base \code{FALSE} means to include all the categories. \code{TRUE}
 #' means to exlcude one category as a base case.
 #'  If \code{base} is not specified, a random category will be removed.
 #' @param base a base category removed from the indicator matrix. This option works
@@ -79,10 +105,10 @@ excluded = function(excluded.pair, a, b) {
 #'
 #'
 #' @export
-to.indicators = function(vec, type = "exclude.base", base = NULL, prefix = NULL) {
+to.indicators = function(vec, exclude.base = TRUE, base = NULL, prefix = NULL) {
      # Test block
      # vec = as.data.frame(b1);
-     # type = "exclude.one";
+     # exclude.base = T;
      # prefix = "cat_";
      # base = NULL;
      ############################
@@ -99,9 +125,7 @@ to.indicators = function(vec, type = "exclude.base", base = NULL, prefix = NULL)
      }
      colnames(vec) = prefix;
 
-     if(type == "all") {
-          return (model.matrix(~ . + 0, data = vec)[,]);
-     } else if(type == "exclude.base") {
+     if(exclude.base == TRUE) {
           if(is.null(base)) {
                return (model.matrix(~ . + 0, data = vec)[,-1]);
           } else {
@@ -113,6 +137,8 @@ to.indicators = function(vec, type = "exclude.base", base = NULL, prefix = NULL)
 
                return (ret);
           }
+     } else {
+          return (model.matrix(~ . + 0, data = vec)[,]);
      }
 }
 
@@ -130,7 +156,7 @@ to.indicators = function(vec, type = "exclude.base", base = NULL, prefix = NULL)
 #' @description
 #' \code{power.data} power data and return a \code{\link{data.frame}} with column names with tail.
 #'
-#' @param data a \code{\link{data.frame}} or \code{\link{matrx}} object.
+#' @param data a \code{\link{data.frame}} or \code{\link{matrix}} object.
 #' @param power power.
 #' @param tail tail text for column names for powered data. For example, if a column "sales" is powered by 4 (=\code{power})
 #' and \code{tail} is "_pow", then the output column name becomes "sales_pow4".
@@ -224,39 +250,43 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 # interact.data(df);
 # interact.data(df, base.cols = "aa");
 # interact.data(df, base.cols = "aa", exclude.pair = list(c("bb", "cc")));
+#
 
-step.data = function(vec, by = 0.50) {
-     # "st.min_(min + by) is reference
-     #vec = ncpen.data$int_spread;
-     #by = 0.5
+# Not made avaialble yet -----------------------------------------------
+# step.data = function(vec, by = 0.50) {
+#      # "st.min_(min + by) is reference
+#      #vec = ncpen.data$int_spread;
+#      #by = 0.5
+#
+#      field.name = names(vec)[1];
+#      #field.name = "aa"
+#      min.val = min(vec);
+#      max.val = max(vec);
+#
+#      l.bound = min.val + by;
+#      u.bound = l.bound + by;
+#
+#      step.var.str = sprintf("%s.%.2f_%.2f", field.name, l.bound, u.bound);
+#      step.var.str= gsub("-", "n", step.var.str); # - sign to n
+#
+#      ret = as.data.frame(vec);
+#      ret[, step.var.str] = 1*(l.bound <= ret[,1] & ret[,1] < u.bound);
+#      #head(ret);
+#      while(T) {
+#           l.bound = u.bound;
+#           if(l.bound > max.val) {
+#                break;
+#           }
+#           u.bound = l.bound+by;
+#
+#           step.var.str = sprintf("%s.%.2f_%.2f", field.name, l.bound, u.bound);
+#           step.var.str= gsub("-", "n", step.var.str); # - sign to n
+#           ret[, step.var.str] = 1*(l.bound <= ret[,1] & ret[,1] < u.bound);
+#      }
+#
+#      return (ret[,-1]);
+# }
+# # step.data(subset(raw.prepay.data, select = c("int_spread")), by = 0.5);
+#-----------------------------------------------------------------------
 
-     field.name = names(vec)[1];
-     #field.name = "aa"
-     min.val = min(vec);
-     max.val = max(vec);
-
-     l.bound = min.val + by;
-     u.bound = l.bound + by;
-
-     step.var.str = sprintf("%s.%.2f_%.2f", field.name, l.bound, u.bound);
-     step.var.str= gsub("-", "n", step.var.str); # - sign to n
-
-     ret = as.data.frame(vec);
-     ret[, step.var.str] = 1*(l.bound <= ret[,1] & ret[,1] < u.bound);
-     #head(ret);
-     while(T) {
-          l.bound = u.bound;
-          if(l.bound > max.val) {
-               break;
-          }
-          u.bound = l.bound+by;
-
-          step.var.str = sprintf("%s.%.2f_%.2f", field.name, l.bound, u.bound);
-          step.var.str= gsub("-", "n", step.var.str); # - sign to n
-          ret[, step.var.str] = 1*(l.bound <= ret[,1] & ret[,1] < u.bound);
-     }
-
-     return (ret[,-1]);
-}
-# step.data(subset(raw.prepay.data, select = c("int_spread")), by = 0.5);
 

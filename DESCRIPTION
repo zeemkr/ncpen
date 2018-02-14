@@ -10,7 +10,7 @@ Description: Estimates nonconvex penalty.
      This project is funded by Julian Virtue Professorship from 
      Center for Applied Research at Graziadio School of Business and Management at 
      Pepperdine University.
-License: GPL (>= 3)
+License: GPL (>= 3) + file LICENSE
 LazyData: TRUE
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: Rcpp, RcppArmadillo

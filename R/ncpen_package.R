@@ -1,28 +1,21 @@
-#' ncpen: A package for non-convex penalized estimations.
+#' ncpen: A package for non-convex penalized estimation in generalized linear models
 #'
-#' \bold{ncpen} estimaties generalized linear models with various non-convex penalties.
-#'
-#' \bold{ncpen} estimaties generalized linear models including gaussian (linear), poisson and binomial.
-#' The implemented penalties are
+#' This package fits the generalized linear models with various non-convex penalties.
+#' A unified algorithm is implmented in \bold{ncpen} based on the convex concave procedure or difference convex algorithm that can be applied to most of existing non-convex penalties.
+#' The available penalties in the pacakge are
+#' the least absolute shrinkage and selection operator(LASSO),
 #' smoothly clipped absolute deviation (SCAD),
 #' minimax concave penalty (MCP),
-#' truncated LASSO penalty (TLP),
-#' ???s clipped LASSO (CLASSO), ???e
-#' ???s bridge penalty (SRIDGE), ???e
-#' modified bridge penalty (MBRIDGE),
-#' ???s (MLOG), ???e
-#' and least absolute shrinkage and selection operator (LASSO).
+#' truncated \eqn{\ell_1}-penalty (TLP),
+#' clipped LASSO (CLASSO),
+#' sparse bridge (SRIDGE),
+#' modified bridge (MBRIDGE),
+#' and modified log (MLOG) penalites.
 #'
-#' The algorithm implements recent technical advances for the optimization of penalized estimations:
-#' convex-concave procedure for nonconvex optimization,
-#' local quadratic approximation (LQA),
-#' a descent directional modification of LQA for GLM,
-#' coordinate-wise descent algorithm for quadratic \eqn{l_1}-penalized problems,
-#' active set optimization for speed up of the algorithm,
-#' warm-start strategy for pathwise optimization and more.
-#'
-#' The package also provides various functions and options for user-specific choices of an initial values,
-#' penalty terms, \eqn{l_2}-regularization, observation and penalty weights, standardization and intercept.
+#' Accepts a design matrix \eqn{X} and vector of responses \eqn{y},
+#' and produces the regularization path ovaer a grid of values for the tuning parameter \code{lambda}.
+#' Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
+#' \eqn{\ell_2}-regularization, penalty weights, standardization and intercept.
 #'
 #' @docType package
 #' @name ncpen-package

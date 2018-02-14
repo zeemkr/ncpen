@@ -2,6 +2,22 @@
 
 # include "ncpen.h"
 
+//' @title
+//' Native object function.
+//'
+//' @description
+//' This is internal use only function.
+//'
+//' @param name .
+//' @param y_vec .
+//' @param x_mat .
+//' @param b_vec .
+//' @param r_eff .
+//'
+//'
+//' @return
+//' .
+//'
 // [[Rcpp::export]]
 double native_cpp_obj_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, double r_eff) {
      obj_fun_ptr obj_fun = get_obj_fun_ptr(name);
@@ -9,6 +25,22 @@ double native_cpp_obj_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat,
      return obj_fun(y_vec, x_mat, b_vec, r_eff);
 }
 
+//' @title
+//' Native object gradient function.
+//'
+//' @description
+//' This is internal use only function.
+//'
+//' @param name .
+//' @param y_vec .
+//' @param x_mat .
+//' @param b_vec .
+//' @param r_eff .
+//'
+//'
+//' @return
+//' .
+//'
 // [[Rcpp::export]]
 arma::vec native_cpp_obj_grad_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, double r_eff) {
      obj_grad_fun_ptr obj_grad_fun = get_obj_grad_fun_ptr(name);
@@ -17,6 +49,26 @@ arma::vec native_cpp_obj_grad_fun_(std::string name, arma::vec& y_vec, arma::mat
 }
 
 
+//' @title
+//' Native QLASSO function.
+//'
+//' @description
+//' This is internal use only function.
+//'
+//' @param q_mat .
+//' @param l_vec .
+//' @param b_vec0 .
+//' @param w_vec .
+//' @param lam .
+//' @param iter_max .
+//' @param b_eps .
+//' @param k_eps .
+//' @param p_eff .
+//' @param q_rank .
+//'
+//' @return
+//' .
+//'
 // [[Rcpp::export]]
 Rcpp::List native_cpp_qlasso_fun_(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec& w_vec,
                                    double lam, double iter_max, double b_eps, double k_eps, arma::uword p_eff, arma::uword q_rank) {
@@ -31,6 +83,30 @@ Rcpp::List native_cpp_qlasso_fun_(arma::mat& q_mat, arma::vec& l_vec, arma::vec&
 
 }
 
+//' @title
+//' Native point ncpen function.
+//'
+//' @description
+//' This is internal use only function.
+//'
+//' @param y_vec .
+//' @param x_mat .
+//' @param b_vec .
+//' @param w_vec .
+//' @param lam .
+//' @param gam .
+//' @param tau .
+//' @param iter_max .
+//' @param b_eps .
+//' @param k_eps .
+//' @param p_eff .
+//' @param r_eff .
+//' @param family .
+//' @param penalty .
+//'
+//' @return
+//' .
+//'
 // [[Rcpp::export]]
 Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, arma::vec& w_vec,
                                    double lam, double gam, double tau, double iter_max, double b_eps, double k_eps, arma::uword p_eff, double r_eff,
@@ -59,6 +135,33 @@ Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec
 
 }
 
+//' @title
+//' Native point ncpen function.
+//'
+//' @description
+//' This is internal use only function.
+//'
+//' @param y_vec .
+//' @param x_mat0 .
+//' @param x_std .
+//' @param intc .
+//' @param w_vec0 .
+//' @param lam_vec0 .
+//' @param r_lam .
+//' @param gam .
+//' @param tau .
+//' @param p_max .
+//' @param iter_max .
+//' @param b_eps .
+//' @param k_eps .
+//' @param p_eff .
+//' @param r_eff .
+//' @param family .
+//' @param penalty .
+//'
+//' @return
+//' .
+//'
 // [[Rcpp::export]]
 Rcpp::List native_cpp_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat0, bool x_std, bool intc,
                                  arma::vec& w_vec0, arma::vec& lam_vec0, double r_lam,

@@ -107,17 +107,3 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_ncpen_native_cpp_obj_fun_", (DL_FUNC) &_ncpen_native_cpp_obj_fun_, 5},
-    {"_ncpen_native_cpp_obj_grad_fun_", (DL_FUNC) &_ncpen_native_cpp_obj_grad_fun_, 5},
-    {"_ncpen_native_cpp_qlasso_fun_", (DL_FUNC) &_ncpen_native_cpp_qlasso_fun_, 10},
-    {"_ncpen_native_cpp_p_ncpen_fun_", (DL_FUNC) &_ncpen_native_cpp_p_ncpen_fun_, 14},
-    {"_ncpen_native_cpp_ncpen_fun_", (DL_FUNC) &_ncpen_native_cpp_ncpen_fun_, 17},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_ncpen(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
-}
