@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 Build utils.R
 ^cran-comments.md$
+^\.travis\.yml$
