@@ -16,18 +16,3 @@ devtools::use_travis();
 
 # R CMD check
 devtools::check();
-
-
-
-
-Sys.getenv("PATH");
-
-#devtools::use_package("RcppArmadillo", "Imports");
-
-library(installr);
-uninstall.packages(c("ncpen"));
-uninstall.packages(c("Rcpp", "RcppArmadillo"));
-install.packages(c("Rcpp", "RcppArmadillo"));
-
-install.packages("D:/Synced/OneDrive/Research/NCPEN/ncpen_0.1.10.zip", repos = NULL, type = "win.binary",
-                dependencies = TRUE);
