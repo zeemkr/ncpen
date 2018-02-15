@@ -15,7 +15,9 @@ devtools::use_travis();
 
 
 # R CMD check
-devtools::check();
+#devtools::check();
+devtools::check(args = c("--use-valgrind"));
+#devtools::build_win();
 
 # Release
 devtools::release();
