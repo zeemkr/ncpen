@@ -16,3 +16,6 @@ devtools::use_travis();
 
 # R CMD check
 devtools::check();
+
+# Release
+devtools::release();
