@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{gic.ncpen}
 \alias{gic.ncpen}
-\title{Compute the GIC values for the selection of the regularizatin parameter lambda.}
+\title{Compute the GIC values for the selection of the regularization parameter lambda.}
 \usage{
 gic.ncpen(ncpen.fit, y.vec, x.mat, df.weight = log(length(y.vec)),
   verbose = TRUE)
@@ -14,7 +14,7 @@ gic.ncpen(ncpen.fit, y.vec, x.mat, df.weight = log(length(y.vec)),
 
 \item{x.mat}{the design matrix.}
 
-\item{df.weight}{the weight factor for various information critera. For example, AIC if \code{df.weight=2},
+\item{df.weight}{the weight factor for various information criteria. For example, AIC if \code{df.weight=2},
 BIC if \code{df.weight=log(n)}. Default is BIC.}
 
 \item{verbose}{(logical) whether to plot the GIC curve. Default is \code{verbose=TRUE}.}
@@ -29,7 +29,7 @@ The coefficients \code{\link{matrix}}.
 }
 \description{
 This function provides the selection of the regularization parameter lambda based
-on the generlized information criterion (GIC) including AIC and BIC.
+on the generalized information criterion (GIC) including AIC and BIC.
 It computes the GIC values at a grid of values for the regularization parameter lambda.
 }
 \examples{

@@ -11,10 +11,10 @@ excluded(excluded.pair, a, b)
 
 \item{a}{first column to be compared.}
 
-\item{b}{second coumn to be compared.}
+\item{b}{second column to be compared.}
 }
 \value{
-TRUE if exculuded, FALSE otherwise.
+TRUE if excluded, FALSE otherwise.
 }
 \description{
 This is internal use only function.

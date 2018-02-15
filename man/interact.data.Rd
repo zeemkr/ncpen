@@ -9,10 +9,10 @@ interact.data(data, base.cols = NULL, exclude.pair = NULL)
 \arguments{
 \item{data}{a \code{\link{data.frame}} or \code{\link{matrix}} to interact.}
 
-\item{base.cols}{indicates coulumns from one category.
+\item{base.cols}{indicates columns from one category.
 Interactions among variables from a same base.col will be avoided. For example, if three indicator columns,
 "ChannelR", "ChannelC" and "ChannelB", are created from a categorical column "Channel", then the interaction among them
-can be excluded by assining \code{base.cols=c("Channel")}. Multiple \code{base.cols} are possible.}
+can be excluded by assigning \code{base.cols=c("Channel")}. Multiple \code{base.cols} are possible.}
 
 \item{exclude.pair}{the pairs will be excluded from interactions. This should be a \code{\link{list}} object of pairs.
 For example, \code{list(c("a1", "a2"), c("d1", "d2"))}.}

@@ -30,7 +30,7 @@
 #' @param ridge (numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.
 #' @param df.max (numeric) the maximum number of nonzero coefficients. Default is 50.
 #' @param proj.min (numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.
-#' @param iter.max (numeric) maximum number of iterations. Default valu eis 1e+3.
+#' @param iter.max (numeric) maximum number of iterations. Default value is 1e+3.
 #' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.
 #' @param k.eps (numeric) convergence threshold for KKT conditions. Default value is 1e-6.
 #' @param x.standardize (logical) whether to standardize the \code{x.mat} prior to fitting the model.
@@ -178,7 +178,7 @@ ncpen = function(y.vec,x.mat,
 #'
 #'
 #' @description
-#' Performs k-fold cross-validation for noncovex penalized regression models over a sequence of the regularization parameter lambda.
+#' Performs k-fold cross-validation for nonconvex penalized regression models over a sequence of the regularization parameter lambda.
 #'
 #' @param y.vec (numeric vector) response vector.
 #' @param x.mat (numeric matrix) design matrix. Each row is an observation vector.
@@ -187,11 +187,11 @@ ncpen = function(y.vec,x.mat,
 #' @param lambda (numeric vector): user-specified sequence of \code{lambda} values.
 #' @param n.lambda (numeric) the number of \code{lambda} values. Default is 100.
 #' @param r.lambda (numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.
-#' @param pen.weight (numeric vector) penalty weights for each coefficient. If a penalty weigth is set to zero,
+#' @param pen.weight (numeric vector) penalty weights for each coefficient. If a penalty weight is set to zero,
 #' the corresponding coefficient is always non-zero without shrinkage.
 #' Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.
 #' @param tau (numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.
-#' @param gamma (numeric) addtional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
+#' @param gamma (numeric) additional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
 #' @param ridge (numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.
 #' @param df.max (numeric) the maximum number of nonzero coefficients. Default is 50.
 #' @param proj.min (numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.
@@ -213,7 +213,7 @@ ncpen = function(y.vec,x.mat,
 #' @return An object with S3 class \code{cv.ncpen}.
 #'   \item{ncpen.fit}{the fitted \code{ncpen} object.}
 #'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-validation.}
-#'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation.}
+#'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-validation.}
 #'   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}s.}
 #'   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}s.}
 #'   \item{elambda}{the \code{lambda} sequence used for computing cv error.}

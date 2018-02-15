@@ -35,7 +35,7 @@ same.base = function(base.cols, a, b) {
 #'
 #' @param excluded.pair a pair.
 #' @param a first column to be compared.
-#' @param b second coumn to be compared.
+#' @param b second column to be compared.
 #'
 #' @return
 #' TRUE if excluded, FALSE otherwise.

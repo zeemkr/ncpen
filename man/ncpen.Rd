@@ -28,13 +28,13 @@ ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 
 \item{r.lambda}{(numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.}
 
-\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weigth is set to zero,
+\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weight is set to zero,
 the corresponding coefficient is always non-zero without shrinkage.
 Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.}
 
 \item{tau}{(numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.}
 
-\item{gamma}{(numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
+\item{gamma}{(numeric) additional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
 
 \item{ridge}{(numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.}
 
@@ -42,9 +42,9 @@ Note: the penalty weights are internally rescaled to sum to the number of variab
 
 \item{proj.min}{(numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.}
 
-\item{iter.max}{(numeric) maximum number of iterations. Default valu eis 1e+3.}
+\item{iter.max}{(numeric) maximum number of iterations. Default value is 1e+3.}
 
-\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-7.}
+\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.}
 
 \item{k.eps}{(numeric) convergence threshold for KKT conditions. Default value is 1e-6.}
 
@@ -72,7 +72,7 @@ Fits gaussian (linear), binomial (logistic) and poisson regression models with v
 }
 \details{
 The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm
-using concave convex procedure and coordiante descent algorithm.
+using concave convex procedure and coordinate descent algorithm.
 Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"},
 and \deqn{(negative  log-likelihood) / n + penalty }
 for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link

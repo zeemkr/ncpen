@@ -30,13 +30,13 @@ cv.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 
 \item{r.lambda}{(numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.}
 
-\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weigth is set to zero,
+\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weight is set to zero,
 the corresponding coefficient is always non-zero without shrinkage.
 Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.}
 
 \item{tau}{(numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.}
 
-\item{gamma}{(numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
+\item{gamma}{(numeric) additional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
 
 \item{ridge}{(numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.}
 
@@ -44,9 +44,9 @@ Note: the penalty weights are internally rescaled to sum to the number of variab
 
 \item{proj.min}{(numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.}
 
-\item{iter.max}{(numeric) maximum number of iterations. Default valu eis 1e+3.}
+\item{iter.max}{(numeric) maximum number of iterations. Default value is 1e+3.}
 
-\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-7.}
+\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.}
 
 \item{k.eps}{(numeric) convergence threshold for KKT conditions. Default value is 1e-6.}
 
@@ -55,13 +55,13 @@ The estimated coefficients are always restored to the original scale. Default va
 
 \item{intercept}{(logical) whether to include an intercept in the model. Default value is \code{TRUE}.}
 
-\item{...}{other paramemters are same as in \code{\link{ncpen}}.}
+\item{...}{other parameters are same as in \code{\link{ncpen}}.}
 }
 \value{
 An object with S3 class \code{cv.ncpen}.
   \item{ncpen.fit}{the fitted \code{ncpen} object.}
-  \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-valdation.}
-  \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation.}
+  \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-validation.}
+  \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-validation.}
   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}s.}
   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}s.}
   \item{elambda}{the \code{lambda} sequence used for computing cv error.}
@@ -70,7 +70,7 @@ An object with S3 class \code{cv.ncpen}.
   \item{opt.dlambda}{the optimal value of \code{lambda} based on cv deviance.}
 }
 \description{
-Performs k-fold cross-validation for noncovex penalized regression models over a sequence of the regularization parameter lambda.
+Performs k-fold cross-validation for nonconvex penalized regression models over a sequence of the regularization parameter lambda.
 }
 \details{
 The function runs the \code{ncpen} function for \code{n.fold+1} times.

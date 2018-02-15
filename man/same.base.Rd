@@ -11,7 +11,7 @@ same.base(base.cols, a, b)
 
 \item{a}{first column to be compared.}
 
-\item{b}{second coumn to be compared.}
+\item{b}{second column to be compared.}
 }
 \value{
 TRUE if same base, FALSE otherwise.
