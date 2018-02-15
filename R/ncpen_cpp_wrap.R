@@ -22,16 +22,16 @@
 #' @param lambda (numeric vector): user-specified sequence of \code{lambda} values.
 #' @param n.lambda (numeric) the number of \code{lambda} values. Default is 100.
 #' @param r.lambda (numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.
-#' @param pen.weight (numeric vector) penalty weights for each coefficient. If a penalty weigth is set to zero,
+#' @param pen.weight (numeric vector) penalty weights for each coefficient. If a penalty weight is set to zero,
 #' the corresponding coefficient is always non-zero without shrinkage.
 #' Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.
 #' @param tau (numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.
-#' @param gamma (numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
+#' @param gamma (numeric) additional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
 #' @param ridge (numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.
 #' @param df.max (numeric) the maximum number of nonzero coefficients. Default is 50.
 #' @param proj.min (numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.
 #' @param iter.max (numeric) maximum number of iterations. Default valu eis 1e+3.
-#' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-7.
+#' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.
 #' @param k.eps (numeric) convergence threshold for KKT conditions. Default value is 1e-6.
 #' @param x.standardize (logical) whether to standardize the \code{x.mat} prior to fitting the model.
 #' The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.
@@ -40,7 +40,7 @@
 #'
 #' @details
 #' The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm
-#' using concave convex procedure and coordiante descent algorithm.
+#' using concave convex procedure and coordinate descent algorithm.
 #' Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"},
 #' and \deqn{(negative  log-likelihood) / n + penalty }
 #' for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link
@@ -191,18 +191,18 @@ ncpen = function(y.vec,x.mat,
 #' the corresponding coefficient is always non-zero without shrinkage.
 #' Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.
 #' @param tau (numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.
-#' @param gamma (numeric) addtional tunning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
+#' @param gamma (numeric) addtional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.
 #' @param ridge (numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.
 #' @param df.max (numeric) the maximum number of nonzero coefficients. Default is 50.
 #' @param proj.min (numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.
-#' @param iter.max (numeric) maximum number of iterations. Default valu eis 1e+3.
-#' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficnets vector. Default value is 1e-7.
+#' @param iter.max (numeric) maximum number of iterations. Default value is 1e+3.
+#' @param b.eps (numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.
 #' @param k.eps (numeric) convergence threshold for KKT conditions. Default value is 1e-6.
 #' @param x.standardize (logical) whether to standardize the \code{x.mat} prior to fitting the model.
 #' The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.
 #' @param intercept (logical) whether to include an intercept in the model. Default value is \code{TRUE}.
 #' @param n.fold (numeric) the number of folds. Default value is 10. It should be 3 or greater.
-#' @param ... other paramemters are same as in \code{\link{ncpen}}.
+#' @param ... other parameters are same as in \code{\link{ncpen}}.
 #'
 #'
 #' @details
@@ -212,7 +212,7 @@ ncpen = function(y.vec,x.mat,
 #'
 #' @return An object with S3 class \code{cv.ncpen}.
 #'   \item{ncpen.fit}{the fitted \code{ncpen} object.}
-#'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-valdation.}
+#'   \item{opt.ebeta}{the optimal coefficients vector selected by using the squared-error loss in the cross-validation.}
 #'   \item{opt.dbeta}{the optimal coefficients vector selected by using the deviance loss in the cross-valdation.}
 #'   \item{cv.error}{the averaged cross-validated error for each value of \code{lambda}s.}
 #'   \item{cv.deviance}{the averaged cross-validated deviance for each value of \code{lambda}s.}
@@ -383,18 +383,18 @@ coef.ncpen = function(object, ...){
 
 
 #' @title
-#' Compute the GIC values for the selection of the regularizatin parameter lambda.
+#' Compute the GIC values for the selection of the regularization parameter lambda.
 #'
 #'
 #' @description
 #' This function provides the selection of the regularization parameter lambda based
-#' on the generlized information criterion (GIC) including AIC and BIC.
+#' on the generalized information criterion (GIC) including AIC and BIC.
 #' It computes the GIC values at a grid of values for the regularization parameter lambda.
 #'
 #' @param ncpen.fit Fitted \code{ncpen} model object.
 #' @param y.vec the response vector.
 #' @param x.mat the design matrix.
-#' @param df.weight the weight factor for various information critera. For example, AIC if \code{df.weight=2},
+#' @param df.weight the weight factor for various information criteria. For example, AIC if \code{df.weight=2},
 #' BIC if \code{df.weight=log(n)}. Default is BIC.
 #' @param verbose (logical) whether to plot the GIC curve. Default is \code{verbose=TRUE}.
 #'

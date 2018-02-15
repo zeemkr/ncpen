@@ -3,7 +3,7 @@
 # ncpen
 
 This package fits the generalized linear models with various non-convex penalties.
-A unified algorithm is implmented in **ncpen** based on the convex concave procedure or difference convex algorithm that can be applied to most of existing non-convex penalties.
+A unified algorithm is implemented in **ncpen** based on the convex concave procedure or difference convex algorithm that can be applied to most of existing non-convex penalties.
 The available penalties in the pacakge are
 the least absolute shrinkage and selection operator(LASSO),
 smoothly clipped absolute deviation (SCAD),

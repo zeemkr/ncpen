@@ -6,7 +6,7 @@
 #'
 #' @param base.cols vector of base column names.
 #' @param a first column to be compared.
-#' @param b second coumn to be compared.
+#' @param b second column to be compared.
 #'
 #' @return
 #' TRUE if same base, FALSE otherwise.
@@ -38,7 +38,7 @@ same.base = function(base.cols, a, b) {
 #' @param b second coumn to be compared.
 #'
 #' @return
-#' TRUE if exculuded, FALSE otherwise.
+#' TRUE if excluded, FALSE otherwise.
 #'
 excluded = function(excluded.pair, a, b) {
      if(is.null(excluded.pair)) return (F);
@@ -79,14 +79,14 @@ excluded = function(excluded.pair, a, b) {
 #'
 #' @param vec a categorical vector.
 #' @param exclude.base \code{FALSE} means to include all the categories. \code{TRUE}
-#' means to exlcude one category as a base case.
+#' means to exclude one category as a base case.
 #'  If \code{base} is not specified, a random category will be removed.
 #' @param base a base category removed from the indicator matrix. This option works
 #'  only when the \code{type} variable is set to \code{"exclude.base"}.
 #' @param prefix a prefix to be used for column names of the output matrix.
 #' Default is "cat_" if \code{prefix} is \code{NULL}.
 #' For example, if a category vector has values of c("a", "b", "c"),
-#' cloumn names of the output matrix will be "cat_aa", "cat_bb" and "cat_cc".
+#' column names of the output matrix will be "cat_aa", "cat_bb" and "cat_cc".
 #' If \code{vec} is a \code{\link{data.frame}} and \code{prefix} is \code{NULL},
 #' then the \code{vec}'s column name followed by "_" will be used as a prefix.
 #'
@@ -191,10 +191,10 @@ power.data = function(data, power, tail = "_pow") {
 #' \code{interact.data} interacts all the data in a \code{\link{data.frame}} or \code{\link{matrix}}.
 #'
 #' @param data a \code{\link{data.frame}} or \code{\link{matrix}} to interact.
-#' @param base.cols indicates coulumns from one category.
+#' @param base.cols indicates columns from one category.
 #' Interactions among variables from a same base.col will be avoided. For example, if three indicator columns,
 #' "ChannelR", "ChannelC" and "ChannelB", are created from a categorical column "Channel", then the interaction among them
-#' can be excluded by assining \code{base.cols=c("Channel")}. Multiple \code{base.cols} are possible.
+#' can be excluded by assigning \code{base.cols=c("Channel")}. Multiple \code{base.cols} are possible.
 #' @param exclude.pair the pairs will be excluded from interactions. This should be a \code{\link{list}} object of pairs.
 #' For example, \code{list(c("a1", "a2"), c("d1", "d2"))}.
 #'
