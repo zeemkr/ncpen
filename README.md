@@ -18,4 +18,4 @@ and produces the regularization path ovaer a grid of values for the tuning param
 Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
 *l*2-regularization, penalty weights, standardization and intercept.
 
-For an example, see [ncepn example](https://github.com/zeemkr/ncpen/blob/master/ncepn_example.pdf).
+For an example use, see [ncepn example](https://github.com/zeemkr/ncpen/blob/master/ncepn_example.pdf).
