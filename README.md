@@ -17,3 +17,5 @@ This package accepts a design matrix **X** and vector of responses **y**,
 and produces the regularization path ovaer a grid of values for the tuning parameter *lambda*.
 Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
 *l*2-regularization, penalty weights, standardization and intercept.
+
+For an example, see [ncepn example](https://github.com/zeemkr/ncpen/blob/master/ncepn_example.pdf).
