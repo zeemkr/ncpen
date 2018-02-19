@@ -29,7 +29,11 @@ Center for Applied Research at Graziadio School of Business and Management at
 Pepperdine University.
 }
 \references{
-Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems. \emph{Computational Statistics and Data Analysis}, \bold{94}, 275-286.
+
+Choi, H., Kim, Y. and Kwon, S. (2013). Sparse bridge estimation with a diverging number of parameters. \emph{Statistics and Its Interface}, \bold{6}, 231-242.
 }
 \author{
 Dongshin Kim, Sunghoon Kwon and Sangin Lee

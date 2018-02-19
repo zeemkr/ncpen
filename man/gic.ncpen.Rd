@@ -42,7 +42,7 @@ gic.ncpen(fit,y.vec,x.mat,verbose=TRUE)
 
 }
 \references{
-Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 
 Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on High Dimensions. \emph{Journal of Machine Learning Research}, \bold{13}, 1037-1057.
 }

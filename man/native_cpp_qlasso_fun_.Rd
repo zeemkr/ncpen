@@ -32,5 +32,5 @@ native_cpp_qlasso_fun_(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, b_eps, k_eps,
 .
 }
 \description{
-This is internal use only function.
+This is internal use only function. Manual left blank on purpose.
 }

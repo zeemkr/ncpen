@@ -6,7 +6,7 @@
 //' Native object function.
 //'
 //' @description
-//' This is internal use only function.
+//' This is internal use only function. Manual left blank on purpose.
 //'
 //' @param name .
 //' @param y_vec .
@@ -29,7 +29,7 @@ double native_cpp_obj_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat,
 //' Native object gradient function.
 //'
 //' @description
-//' This is internal use only function.
+//' This is internal use only function. Manual left blank on purpose.
 //'
 //' @param name .
 //' @param y_vec .
@@ -53,7 +53,7 @@ arma::vec native_cpp_obj_grad_fun_(std::string name, arma::vec& y_vec, arma::mat
 //' Native QLASSO function.
 //'
 //' @description
-//' This is internal use only function.
+//' This is internal use only function. Manual left blank on purpose.
 //'
 //' @param q_mat .
 //' @param l_vec .
@@ -87,7 +87,7 @@ Rcpp::List native_cpp_qlasso_fun_(arma::mat& q_mat, arma::vec& l_vec, arma::vec&
 //' Native point ncpen function.
 //'
 //' @description
-//' This is internal use only function.
+//' This is internal use only function. Manual left blank on purpose.
 //'
 //' @param y_vec .
 //' @param x_mat .
@@ -139,7 +139,7 @@ Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec
 //' Native point ncpen function.
 //'
 //' @description
-//' This is internal use only function.
+//' This is internal use only function. Manual left blank on purpose.
 //'
 //' @param y_vec .
 //' @param x_mat0 .

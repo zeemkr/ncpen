@@ -21,5 +21,5 @@ native_cpp_obj_grad_fun_(name, y_vec, x_mat, b_vec, r_eff)
 .
 }
 \description{
-This is internal use only function.
+This is internal use only function. Manual left blank on purpose.
 }

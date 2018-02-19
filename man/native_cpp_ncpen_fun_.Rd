@@ -46,5 +46,5 @@ native_cpp_ncpen_fun_(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam,
 .
 }
 \description{
-This is internal use only function.
+This is internal use only function. Manual left blank on purpose.
 }

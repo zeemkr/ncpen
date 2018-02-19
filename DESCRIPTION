@@ -1,8 +1,8 @@
 Package: ncpen
 Type: Package
 Title: Nonconvex penalty estimation
-Version: 0.1.11
-Date: 2018-2-14
+Version: 0.2.0
+Date: 2018-02-19
 Authors@R: c(person("Dongshin", "Kim", email = "dongshin.kim@live.com",role = c("aut", "cre")),
              person("Sunghoon", "Kwon", email = "shkwon0522@gmail.com",role = c("aut")),
              person("Sangin", "Lee", email = "sanginlee44@gmail.com",role = c("aut")))

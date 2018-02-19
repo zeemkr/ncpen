@@ -5,7 +5,7 @@
 #' Native object function.
 #'
 #' @description
-#' This is internal use only function.
+#' This is internal use only function. Manual left blank on purpose.
 #'
 #' @param name .
 #' @param y_vec .
@@ -25,7 +25,7 @@ native_cpp_obj_fun_ <- function(name, y_vec, x_mat, b_vec, r_eff) {
 #' Native object gradient function.
 #'
 #' @description
-#' This is internal use only function.
+#' This is internal use only function. Manual left blank on purpose.
 #'
 #' @param name .
 #' @param y_vec .
@@ -45,7 +45,7 @@ native_cpp_obj_grad_fun_ <- function(name, y_vec, x_mat, b_vec, r_eff) {
 #' Native QLASSO function.
 #'
 #' @description
-#' This is internal use only function.
+#' This is internal use only function. Manual left blank on purpose.
 #'
 #' @param q_mat .
 #' @param l_vec .
@@ -69,7 +69,7 @@ native_cpp_qlasso_fun_ <- function(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, b
 #' Native point ncpen function.
 #'
 #' @description
-#' This is internal use only function.
+#' This is internal use only function. Manual left blank on purpose.
 #'
 #' @param y_vec .
 #' @param x_mat .
@@ -97,7 +97,7 @@ native_cpp_p_ncpen_fun_ <- function(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, i
 #' Native point ncpen function.
 #'
 #' @description
-#' This is internal use only function.
+#' This is internal use only function. Manual left blank on purpose.
 #'
 #' @param y_vec .
 #' @param x_mat0 .

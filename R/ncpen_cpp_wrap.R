@@ -68,7 +68,12 @@
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+#'
+#' Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems. \emph{Computational Statistics and Data Analysis}, \bold{94}, 275-286.
+#'
+#' Choi, H., Kim, Y. and Kwon, S. (2013). Sparse bridge estimation with a diverging number of parameters. \emph{Statistics and Its Interface}, \bold{6}, 231-242.
+#'
 #'
 #'
 #' @seealso
@@ -228,7 +233,11 @@ ncpen = function(y.vec,x.mat,
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+#'
+#' Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems. \emph{Computational Statistics and Data Analysis}, \bold{94}, 275-286.
+#'
+#' Choi, H., Kim, Y. and Kwon, S. (2013). Sparse bridge estimation with a diverging number of parameters. \emph{Statistics and Its Interface}, \bold{6}, 231-242.
 #'
 #'
 #' @seealso
@@ -275,7 +284,7 @@ cv.ncpen = function(y.vec,x.mat,
      lambda = ncpen.fit$lambda
      pen.weight = ncpen.fit$pen.weight
      for(fold in 1:n.fold){
-          cat("cv fold number:",fold,"\n")
+          # cat("cv fold number:",fold,"\n")
           tset = c(f.list1[[fold]],f.list2[[fold]])
           f.ncpen.fit = native_cpp_ncpen_fun_(y.vec[-tset],
                                               x.mat[-tset,],x.standardize,intercept,
@@ -355,7 +364,7 @@ cv.ncpen = function(y.vec,x.mat,
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 #'
 #'
 #' @seealso
@@ -411,9 +420,8 @@ coef.ncpen = function(object, ...){
 #'
 #' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
-#'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 #'
 #' Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on High Dimensions. \emph{Journal of Machine Learning Research}, \bold{13}, 1037-1057.
 #'
@@ -469,7 +477,7 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 #'
 #'
 #' @seealso
@@ -525,7 +533,7 @@ plot.ncpen = function(x,log.scale=FALSE,...){
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 #'
 #'
 #' @seealso
@@ -632,7 +640,8 @@ predict.ncpen = function(object,new.x.mat=NULL,type=c("regression","probability"
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+#'
 #'
 #'
 #' @seealso
@@ -683,7 +692,8 @@ coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+#'
 #'
 #'
 #' @seealso
@@ -754,7 +764,8 @@ plot.cv.ncpen = function(x,type=c("error","deviance"),log.scale=FALSE, ...){
 #'
 #'
 #' @references
-#' Kim, D., Kwon, S. and Lee, S. (2017). A unified algorithm for various penalized regression models: \bold{R} Package \bold{ncpen}.
+#' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+#'
 #'
 #'
 #' @seealso

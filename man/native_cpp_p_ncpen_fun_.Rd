@@ -40,5 +40,5 @@ native_cpp_p_ncpen_fun_(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, iter_max,
 .
 }
 \description{
-This is internal use only function.
+This is internal use only function. Manual left blank on purpose.
 }
