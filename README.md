@@ -8,7 +8,7 @@ The available penalties in the pacakge are
 the least absolute shrinkage and selection operator(LASSO),
 smoothly clipped absolute deviation (SCAD),
 minimax concave penalty (MCP),
-truncated $l_1$-penalty (TLP),
+truncated *l*1-penalty (TLP),
 clipped LASSO (CLASSO),
 sparse bridge (SRIDGE),
 modified bridge (MBRIDGE),
@@ -16,6 +16,6 @@ and modified log (MLOG) penalties.
 This package accepts a design matrix **X** and vector of responses **y**,
 and produces the regularization path over a grid of values for the tuning parameter lambda.
 Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
-$l_2$-regularization, penalty weights, standardization and intercept.
+*l*2-regularization, penalty weights, standardization and intercept.
 
 For an example use, see [ncepn example](https://github.com/zeemkr/ncpen/blob/master/ncepn_example.pdf).
