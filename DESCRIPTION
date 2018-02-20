@@ -13,6 +13,7 @@ Description: An implementation of unified algorithm for nonconvex penalty estima
      Center for Applied Research at Graziadio School of Business and Management at 
      Pepperdine University.
 License: GPL (>= 3)
+URL: https://github.com/zeemkr/ncpen
 LazyData: TRUE
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: Rcpp, RcppArmadillo
