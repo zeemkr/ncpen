@@ -8,3 +8,6 @@ output: html_document
 ## ncpen R package
 
 We are releasing ncpen R pakcage: non-convex penalty estimation. Any comnents are welcome.
+
+URL: https://github.com/zeemkr/ncpen
+Bug Reports: https://github.com/zeemkr/ncpen/issues
