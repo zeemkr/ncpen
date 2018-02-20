@@ -6,7 +6,7 @@ This is a resubmission. In this submission, we have addressed comments on our in
      * What the ncpen package does.
      * References.
 
-* File license is omitted and cph roles are added to Authors@R filed.
+* File license is omitted and "cph" roles are added to Authors@R filed.
 
 ### Test environments
 * Windows Server 2016, R 3.4.3
@@ -15,6 +15,8 @@ This is a resubmission. In this submission, we have addressed comments on our in
 
 ### R CMD check results
 0 errors | 0 warnings | 0 notes
+
+
 
   
 ## Initial submission
