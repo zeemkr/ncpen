@@ -3,14 +3,20 @@ Type: Package
 Title: Nonconvex Penalty Estimation
 Version: 0.2.0
 Date: 2018-02-19
-Authors@R: c(person("Dongshin", "Kim", email = "dongshin.kim@live.com",role = c("aut", "cre")),
-             person("Sunghoon", "Kwon", email = "shkwon0522@gmail.com",role = c("aut")),
-             person("Sangin", "Lee", email = "sanginlee44@gmail.com",role = c("aut")))
-Description: Estimates nonconvex penalty.
+Authors@R: c(person("Dongshin", "Kim", email = "dongshin.kim@live.com",role = c("aut", "cre", "cph")),
+             person("Sunghoon", "Kwon", email = "shkwon0522@gmail.com",role = c("aut", "cph")),
+             person("Sangin", "Lee", email = "sanginlee44@gmail.com",role = c("aut", "cph")))
+Description: An implementation of unified algorithm for nonconvex penalty estimations.
+
+     For a data set with many variables (high-dimensional data), the ncpen package automatically
+     selects relevant variables producing a parsimonious regression model.
+     
      This project is funded by Julian Virtue Professorship from 
      Center for Applied Research at Graziadio School of Business and Management at 
      Pepperdine University.
-License: GPL (>= 3) + file LICENSE
+License: GPL (>= 3)
+URL: https://github.com/zeemkr/ncpen
+BugReports: https://github.com/zeemkr/ncpen/issues
 LazyData: TRUE
 Imports: Rcpp (>= 0.11.2)
 LinkingTo: Rcpp, RcppArmadillo
