@@ -8,20 +8,20 @@ This is a resubmission. In this submission, we have addressed comments on our in
 
 * File license is omitted and cph roles are added to Authors@R filed.
 
-# Test environments
+### Test environments
 * Windows Server 2016, R 3.4.3
 * Windows 10, R 3.4.3
 * Ubuntu 14.04.5 LTS (on Travis CI), R 3.4.2
 
-# R CMD check results
+### R CMD check results
 0 errors | 0 warnings | 0 notes
 
   
 ## Initial submission
-# Test environments
+### Test environments
 * Windows Server 2016, R 3.4.3
 * Windows 10, R 3.4.3
 * Ubuntu 14.04.5 LTS (on Travis CI), R 3.4.2
 
-# R CMD check results
+### R CMD check results
 0 errors | 0 warnings | 0 notes
