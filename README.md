@@ -26,5 +26,5 @@ For an example use, see [ncepn example](https://github.com/zeemkr/ncpen/blob/mas
 Graziadio School of Business and Management at Pepperdine University.)
 
 **References**
-Kwon, S., Lee, S. and Kim, Y. (2015) <https://doi.org/10.1016/j.csda.2015.07.001>,
-Lee, S., Kwon, S. and Kim, Y. (2016) <https://doi.org/10.1016/j.csda.2015.08.019>.
+* Kwon, S., Lee, S. and Kim, Y. (2015) <https://doi.org/10.1016/j.csda.2015.07.001>,
+* Lee, S., Kwon, S. and Kim, Y. (2016) <https://doi.org/10.1016/j.csda.2015.08.019>.
