@@ -1,9 +1,9 @@
 ## Resubmission
-This is a resubmission. In this submission, we have addressed comments on our initial submission.
+This is a resubmission. We appreciate your helpful comments.
+In this submission, we have addressed comments on our initial submission.
 
 * Description filed in DESCRIPTION file includes more elaborated description about the package:
-     * What the noncovex penalty is.
-     * What the ncpen package does.
+     * What this package does and what noncovex penalties are implemented.
      * References.
 
 * File LICENSE is omitted and "cph" roles are added to Authors@R filed.
