@@ -3,16 +3,15 @@
 # ncpen
 
 `ncpen` package fits the generalized linear models with various nonconvex penalties.
-A unified algorithm is implemented in `ncpen` based on the convex concave procedure or difference convex algorithm and the algorithm can be applied to most of the existing nonconvex penalties.
-The available penalties in the pacakge are
-the least absolute shrinkage and selection operator(LASSO),
+A unified algorithm is implemented based on the convex concave procedure
+and the algorithm can be applied to most of the existing nonconvex penalties.
+The algorithm also supports convex penalty:
+least absolute shrinkage and selection operator (LASSO).
+Supported nonconvex penalties include
 smoothly clipped absolute deviation (SCAD),
-minimax concave penalty (MCP),
-truncated *l*1-penalty (TLP),
-clipped LASSO (CLASSO),
-sparse bridge (SRIDGE),
-modified bridge (MBRIDGE),
-and modified log (MLOG) penalties.
+minimax concave penalty (MCP), truncated LASSO penalty (TLP),
+clipped LASSO (CLASSO), sparse ridge (SRIDGE),
+modified bridge (MBRIDGE) and modified log (MLOG).
 This package accepts a design matrix **X** and vector of responses **y**,
 and produces the regularization path over a grid of values for the tuning parameter lambda.
 Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
