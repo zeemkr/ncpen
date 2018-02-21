@@ -1,17 +1,21 @@
 Package: ncpen
 Type: Package
-Title: Nonconvex Penalty Estimation
+Title: Nonconvex Penalized Estimation for Generalized Linear Models
 Version: 0.2.0
-Date: 2018-02-19
+Date: 2018-02-20
 Authors@R: c(person("Dongshin", "Kim", email = "dongshin.kim@live.com",role = c("aut", "cre", "cph")),
              person("Sunghoon", "Kwon", email = "shkwon0522@gmail.com",role = c("aut", "cph")),
              person("Sangin", "Lee", email = "sanginlee44@gmail.com",role = c("aut", "cph")))
-Description: An implementation of unified algorithm for nonconvex penalty estimations.
-     For a data set with many variables (high-dimensional data), the ncpen package automatically
-     selects relevant variables producing a parsimonious regression model.
-     (This project is funded by Julian Virtue Professorship from 
-     Center for Applied Research at Graziadio School of Business and Management at 
-     Pepperdine University.)
+Description: An efficient unified algorithm for estimating the nonconvex penalized
+    linear, logistic and Poisson regression models. The unified algorithm is implemented
+    based on the convex concave procedure and can be applied to most of the existing nonconvex penalties.
+    Supported nonconvex penalties include SCAD, MCP, TLP, Clipped LASSO, SRIDGE, MBRIDGE, MLOG
+    as well as LASSO (convex penalty). For a data set with many variables (high-dimensional data),
+    the algorithm selects relevant variables producing a parsimonious regression model.
+    Kwon, S., Lee, S. and Kim, Y. (2015) <https://doi.org/10.1016/j.csda.2015.07.001>,
+    Lee, S., Kwon, S. and Kim, Y. (2016) <https://doi.org/10.1016/j.csda.2015.08.019>.
+    (This project is funded by Julian Virtue Professorship from Center for Applied Research at
+    Graziadio School of Business and Management at Pepperdine University.)
 License: GPL (>= 3)
 URL: https://github.com/zeemkr/ncpen
 BugReports: https://github.com/zeemkr/ncpen/issues
