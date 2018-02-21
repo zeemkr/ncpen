@@ -3,7 +3,8 @@ This is a resubmission. We appreciate your helpful comments.
 In this submission, we have addressed comments on our initial submission.
 
 * Description filed in DESCRIPTION file includes more elaborated description about the package:
-     * What this package does and what noncovex penalties are implemented.
+     * What this package does.
+     * Supported noncovex penalties.
      * References.
 
 * File LICENSE is omitted and "cph" roles are added to Authors@R filed.
