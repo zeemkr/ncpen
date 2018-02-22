@@ -28,6 +28,7 @@ an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/bl
 Graziadio School of Business and Management at Pepperdine University.)
 
 **Authors**
+
 Dongshin Kim, Sunghoon Kwon, Sangin Lee
 
 **References**
