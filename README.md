@@ -22,7 +22,7 @@ For a data set with many variables (high-dimensional data),
 the algorithm selects relevant variables producing a parsimonious regression model.
 
 A recent manual is avaialbe at [ncpen manual](https://github.com/zeemkr/ncpen_resources/blob/master/ncpen.pdf) and for
-an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/blob/master/ncepn_example.pdf).
+an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/tree/master/example_mortgage).
 
 (This project is funded by Julian Virtue Professorship from Center for Applied Research at
 Graziadio School of Business and Management at Pepperdine University.)
