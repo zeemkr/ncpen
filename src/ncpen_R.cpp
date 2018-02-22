@@ -136,7 +136,7 @@ Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec
 }
 
 //' @title
-//' Native point ncpen function.
+//' Native ncpen function.
 //'
 //' @description
 //' This is internal use only function. Manual left blank on purpose.

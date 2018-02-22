@@ -64,7 +64,6 @@
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -229,7 +228,6 @@ ncpen = function(y.vec,x.mat,
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -360,7 +358,6 @@ cv.ncpen = function(y.vec,x.mat,
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -418,7 +415,6 @@ coef.ncpen = function(object, ...){
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #' @references
 #' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
@@ -473,7 +469,6 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -529,7 +524,6 @@ plot.ncpen = function(x,log.scale=FALSE,...){
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -636,7 +630,6 @@ predict.ncpen = function(object,new.x.mat=NULL,type=c("regression","probability"
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -688,7 +681,6 @@ coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references
@@ -760,7 +752,6 @@ plot.cv.ncpen = function(x,type=c("error","deviance"),log.scale=FALSE, ...){
 #'
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #'
-#' Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 #'
 #'
 #' @references

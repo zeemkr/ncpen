@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{native_cpp_ncpen_fun_}
 \alias{native_cpp_ncpen_fun_}
-\title{Native point ncpen function.}
+\title{Native ncpen function.}
 \usage{
 native_cpp_ncpen_fun_(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam,
   tau, p_max, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty)

@@ -33,6 +33,4 @@ Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computatio
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee
-
-Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 }

@@ -2,5 +2,4 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^Build utils\.R$
-^ncepn_example\.pdf$
 ^cran-comments\.md$

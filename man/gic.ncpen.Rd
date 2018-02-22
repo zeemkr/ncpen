@@ -51,6 +51,4 @@ Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on Hi
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee
-
-Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 }

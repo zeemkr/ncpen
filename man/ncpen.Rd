@@ -136,6 +136,4 @@ Choi, H., Kim, Y. and Kwon, S. (2013). Sparse bridge estimation with a diverging
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee
-
-Maintainer: Dongshin Kim<dongshin.kim@outlook.com>, Sunghoon Kwon<shkwon0522@gmail.com>
 }

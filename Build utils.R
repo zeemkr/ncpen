@@ -1,7 +1,8 @@
 # Build mannual
 roxygen2::roxygenize('.', roclets=c('rd', 'collate', 'namespace', 'vignette'));
-if(file.exists("./inst/doc/ncpen.pdf")) file.remove("./inst/doc/ncpen.pdf");
-system("R CMD Rd2pdf -o ./inst/doc/ncpen.pdf .");
+outpath = paste(dirname(getwd()), "/doc/ncpen.pdf", sep = "");
+if(file.exists(outpath)) file.remove(outpath);
+system(paste("R CMD Rd2pdf -o ", outpath, " .", sep = ""));
 
 # To resolve dll registration warnings. -------------------------------
 # tools::package_native_routine_registration_skeleton(".");
