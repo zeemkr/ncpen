@@ -1,5 +1,4 @@
 [![Travis-CI Build Status](https://travis-ci.org/zeemkr/ncpen.svg?branch=master)](https://travis-ci.org/zeemkr/ncpen)
-[![downloads](http://cranlogs.r-pkg.org/badges/ncpen)](https://cran.r-project.org/package=ncpen)
 
 
 # ncpen
