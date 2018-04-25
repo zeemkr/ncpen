@@ -17,8 +17,18 @@
 #'
 #' @param y.vec (numeric vector) response vector.
 #' @param x.mat (numeric matrix) design matrix. Each row is an observation vector.
-#' @param family (character) regression model. Default is "\code{gaussian}".
-#' @param penalty (character) penalty function. Default is "\code{scad}".
+#' @param family (character) regression model. Supported models are \code{gaussian},
+#' \code{binomial} and \code{poisson}. Default is \code{gaussian}.
+#' @param penalty (character) penalty function. Supported penalties are
+#' \code{scad} (smoothly clipped absolute deviation),
+#' \code{mcp} (minimax concave penalty),
+#' \code{tlp} (truncated LASSO penalty),
+#' \code{lasso} (least absolute shrinkage and selection operator),
+#' \code{classo} (clipped LASSO),
+#' \code{sridge} (sparse ridge),
+#' \code{mbridge} (modified bridge) and
+#' \code{mlog} (modified log).
+#' Default is \code{scad}.
 #' @param lambda (numeric vector): user-specified sequence of \code{lambda} values.
 #' @param n.lambda (numeric) the number of \code{lambda} values. Default is 100.
 #' @param r.lambda (numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.
@@ -186,8 +196,19 @@ ncpen = function(y.vec,x.mat,
 #'
 #' @param y.vec (numeric vector) response vector.
 #' @param x.mat (numeric matrix) design matrix. Each row is an observation vector.
-#' @param family (character) regression model. Default is "\code{gaussian}".
-#' @param penalty (character) penalty function. Default is "\code{scad}".
+#' @param family (character) regression model. Supported models are \code{gaussian},
+#' \code{binomial} and \code{poisson}. Default is \code{gaussian}.
+#' @param penalty (character) penalty function. Supported penalties are
+#' \code{scad} (smoothly clipped absolute deviation),
+#' \code{mcp} (minimax concave penalty),
+#' \code{tlp} (truncated LASSO penalty),
+#' \code{lasso} (least absolute shrinkage and selection operator),
+#' \code{classo} (clipped LASSO),
+#' \code{sridge} (sparse ridge),
+#' \code{mbridge} (modified bridge) and
+#' \code{mlog} (modified log).
+#' Default is \code{scad}.
+#' @param n.fold (numeric) the number of folds. Default value is 10. It should be 3 or greater.
 #' @param lambda (numeric vector): user-specified sequence of \code{lambda} values.
 #' @param n.lambda (numeric) the number of \code{lambda} values. Default is 100.
 #' @param r.lambda (numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.
@@ -205,7 +226,6 @@ ncpen = function(y.vec,x.mat,
 #' @param x.standardize (logical) whether to standardize the \code{x.mat} prior to fitting the model.
 #' The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.
 #' @param intercept (logical) whether to include an intercept in the model. Default value is \code{TRUE}.
-#' @param n.fold (numeric) the number of folds. Default value is 10. It should be 3 or greater.
 #' @param ... other parameters are same as in \code{\link{ncpen}}.
 #'
 #'
@@ -324,7 +344,7 @@ cv.ncpen = function(y.vec,x.mat,
      for(fold in 1:n.fold){ dev.mat[fold,] = dev.list[[fold]][1:dleng] }
      dev.vec = colMeans(dev.mat); dev.opt = which.min(dev.vec)
 
-     return(list(ncpen.fit=ncpen.fit,
+     ret = list(ncpen.fit=ncpen.fit,
                  opt.ebeta=ncpen.fit$coefficients[,err.opt],
                  opt.dbeta=ncpen.fit$coefficients[,dev.opt],
                  cv.error=err.vec,
@@ -332,8 +352,10 @@ cv.ncpen = function(y.vec,x.mat,
                  elambda=lambda[1:eleng],
                  dlambda=lambda[1:dleng],
                  opt.elambda=lambda[err.opt],
-                 opt.dlambda=lambda[dev.opt]
-     ))
+                 opt.dlambda=lambda[dev.opt]);
+
+     class(ret) = "cv.ncpen";
+     return (ret);
 }
 
 
