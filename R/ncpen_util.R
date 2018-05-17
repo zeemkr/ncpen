@@ -85,7 +85,7 @@ excluded = function(excluded.pair, a, b) {
 #'  only when the \code{type} variable is set to \code{"exclude.base"}.
 #' @param prefix a prefix to be used for column names of the output matrix.
 #' Default is "cat_" if \code{prefix} is \code{NULL}.
-#' For example, if a category vector has values of c("a", "b", "c"),
+#' For example, if a category vector has values of c("aa", "bb", "cc"),
 #' column names of the output matrix will be "cat_aa", "cat_bb" and "cat_cc".
 #' If \code{vec} is a \code{\link{data.frame}} and \code{prefix} is \code{NULL},
 #' then the \code{vec}'s column name followed by "_" will be used as a prefix.
@@ -241,6 +241,76 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
      interact.str = substr(interact.str, 1, nchar(interact.str)-2); # truncate the last "+".
      # print(interact.str);
      return (model.matrix(formula(interact.str), data = as.data.frame(data))[,-1]);
+}
+
+#' @title
+#' Convert a \code{\link{data.frame}} to \code{\link{matrix}}
+#'
+#' @description
+#' \code{to.x.matrix} automates the processes of \code{\link{to.indicators}} and \code{\link{interact.data}}.
+#' First, it converts categorical variables to a serise of indicators.
+#' All other numerical and logical variables are preserved.
+#' Then, if \code{interact.all == TRUE}, all the variables are interacted.
+#'
+#' @param df a \code{\link{data.frame}} which includes numercial, logical and categorical columns.
+#' @param interact.all indicates whether to interall all the columns (\code{TRUE}) or not (\code{FALSE}).
+#' @param base.cols indicates columns derived from a same column. For example, if \code{age_sq}is \code{age^2},
+#' then \code{"age"} is a base column. Catergorical columns will be automatically considered as base columns.
+#' @param exclude.pair the pairs will be excluded from interactions. This should be a \code{\link{list}} object of pairs.
+#' For example, \code{list(c("a1", "a2"), c("d1", "d2"))}.
+#'
+#' @return
+#' This returns an object of \code{\link{matrix}}.
+#'
+#'
+#' @examples
+#' df = data.frame(num = c(1, 2, 3, 4, 5),
+#'                 ctr = c("K", "O", "R", "R", "K"),
+#'                 logi = c(TRUE, TRUE, FALSE, FALSE, TRUE),
+#'                 age = c(10, 20, 30, 40, 50),
+#'                 age_sq = c(10, 20, 30, 40, 50)^2,
+#'                 loc = c("b", "a", "c", "a", "b"),
+#'                 FTHB = c(1,0,1,0,1),
+#'                 PRM  = c(0,1,0,1,0),
+#'                 PMI  = c(1,1,0,0,0));
+#'
+#' to.x.matrix(df, interact.all = T, base.cols = c("age"), exclude.pair = list(c("FTHB", "PRM")));
+#'
+#'
+#'
+#' @export
+to.x.matrix = function(df, interact.all = FALSE, base.cols = NULL, exclude.pair  = NULL) {
+     # prepay.data = read.csv(file = "https://raw.githubusercontent.com/zeemkr/data/master/mtg_term_2011_2012.csv");
+     # head(prepay.data);
+     # df = prepay.data[, 3:ncol(prepay.data)];
+     # head(df);
+     # df$logic = T;
+     # interract.all = T;
+     # base.cols = NULL; # c("CHANNEL", "loan_age");
+     # exclude.pair = list(c("FTHB", "Purchase"), c("FTHB", "Primary"));
+
+     raw.colnames = colnames(df);
+     buff = NULL;
+     for(i in 1:ncol(df)) {
+          # i = 16;
+          if(is.numeric(df[,i]) | is.logical(df[,i])) {
+               buff = cbind(buff, df[,i]);
+               colnames(buff)[ncol(buff)] = raw.colnames[i];
+          } else if(is.factor(df[,i]) | is.character(df[,i]) ) {
+               idcs = to.indicators(df[, i], exclude.base = TRUE, prefix = paste(raw.colnames[i], "_", sep = ""));
+               buff = cbind(buff, idcs);
+               base.cols = c(base.cols, raw.colnames[i]);
+          }
+     }
+
+     # remove duplicated base cols.
+     base.cols = base.cols[!duplicated(base.cols)];
+
+     if(interact.all == TRUE) {
+          buff = cbind(buff, interact.data(buff, base.cols, exclude.pair));
+     }
+
+     return (buff);
 }
 
 # df = data.frame(1:3, 4:6, 7:9, 10:12, 13:15);
