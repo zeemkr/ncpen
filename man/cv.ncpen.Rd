@@ -91,9 +91,11 @@ s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", see
 x.mat = s0$x.mat
 y.vec = s0$y.vec
 
-cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10)  # not run !!!
-coef.cv.ncpen(cvfit)
-plot.cv.ncpen(cvfit)
+cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
+coef(cvfit)
+plot(cvfit)
+
+# Below same as coef(cvfit)
 fit = cvfit$ncpen.fit
 opt = which(cvfit$opt.elambda==fit$lambda)
 coef(fit)[,opt]

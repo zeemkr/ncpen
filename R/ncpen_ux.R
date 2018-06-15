@@ -23,6 +23,7 @@
 #' \code{mlog} (modified log).
 #' Default is \code{scad}.
 #' @param n.fold (numeric) the number of folds. Default value is 10. It should be 3 or greater.
+#' @param df.max (numeric) the expected maximum number of non-zero coefficients. Default value is 50.
 #' @param intercept (logical) whether to include an intercept in the model. Default value is \code{TRUE}.
 #' @param ... other parameters are same as in \code{\link{ncpen}}.
 #'

@@ -12,17 +12,17 @@
 #' TRUE if same base, FALSE otherwise.
 #'
 same.base = function(base.cols, a, b) {
-     if(a==b) return(T);
-     if(is.null(base.cols)) return (F);
+     if(a==b) return(TRUE);
+     if(is.null(base.cols)) return (FALSE);
 
      for(base in base.cols) {
           index = regexpr(base, c(a, b));
           if(index[1] > 0 & index[1] == index[2]) {
-               return (T);
+               return (TRUE);
           }
      }
 
-     return (F);
+     return (FALSE);
 }
 # same.base("aa", "aa", "aa20")
 # same.base(NULL, "aa", "aa")
@@ -264,6 +264,8 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #' Then, if \code{interact.all == TRUE}, all the variables are interacted.
 #'
 #' @param df a \code{\link{data.frame}} which includes numercial, logical and categorical columns.
+#' @param base a base category removed from the indicator variables. This \code{base} will work as the
+#' base case for all the categorical variables.
 #' @param interact.all indicates whether to interall all the columns (\code{TRUE}) or not (\code{FALSE}).
 #' @param base.cols indicates columns derived from a same column. For example, if \code{age_sq} is \code{age^2},
 #' then \code{"age"} is a base column. Catergorical columns will be automatically considered as base columns.
@@ -285,7 +287,7 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #'                 PRM  = c(0,1,0,1,0),
 #'                 PMI  = c(1,1,0,0,0));
 #'
-#' to.x.matrix(df, interact.all = T, base.cols = c("age"), exclude.pair = list(c("FTHB", "PRM")));
+#' to.x.matrix(df, interact.all = TRUE, base.cols = c("age"), exclude.pair = list(c("FTHB", "PRM")));
 #'
 #'
 #'
