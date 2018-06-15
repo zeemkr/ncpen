@@ -179,7 +179,7 @@ ncpen = function(y.vec,x.mat,
      # 20180615 -------------------------
      # fix coefficient names
      ncp.coef = ncpen.fit$b.mat;
-     if(!is.null(colnames(x.mat))) {
+     if(!is.null(colnames(x.mat))) { # if matrix has colnames
           if(intercept == TRUE) {
                rownames(ncp.coef) = c("intercept", colnames(x.mat));
           } else {
