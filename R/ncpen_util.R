@@ -127,7 +127,8 @@ to.indicators = function(vec, exclude.base = TRUE, base = NULL, prefix = NULL) {
 
      if(exclude.base == TRUE) {
           if(is.null(base)) {
-               return (model.matrix(~ . + 0, data = vec)[,-1]);
+               ret = model.matrix(~ . + 0, data = vec)[, -1];
+               # return (model.matrix(~ . + 0, data = vec)[,-1]);
           } else {
                ret = model.matrix(~ . + 0, data = vec)[,];
                rm.col = which(colnames(ret)==paste(prefix, base, sep = ""));
@@ -135,11 +136,21 @@ to.indicators = function(vec, exclude.base = TRUE, base = NULL, prefix = NULL) {
                     ret = ret[, -rm.col];
                }
 
-               return (ret);
+               # return (ret);
           }
      } else {
-          return (model.matrix(~ . + 0, data = vec)[,]);
+          ret = model.matrix(~ . + 0, data = vec)[,];
+          # return (model.matrix(~ . + 0, data = vec)[,]);
      }
+
+     # if vec has only two categories, model.matrix return a vector without column names.
+     # so convert it to matrixk and give column name
+     if(is.vector(ret)) {
+          ret = as.data.frame(ret);
+          colnames(ret) = prefix;
+     }
+
+     return (ret);
 }
 
 # a1 = 4:10;
@@ -244,7 +255,7 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 }
 
 #' @title
-#' Convert a \code{\link{data.frame}} to \code{\link{matrix}}
+#' Convert a \code{\link{data.frame}} to a \code{ncpen} usable \code{\link{matrix}}.
 #'
 #' @description
 #' \code{to.x.matrix} automates the processes of \code{\link{to.indicators}} and \code{\link{interact.data}}.
@@ -254,7 +265,7 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #'
 #' @param df a \code{\link{data.frame}} which includes numercial, logical and categorical columns.
 #' @param interact.all indicates whether to interall all the columns (\code{TRUE}) or not (\code{FALSE}).
-#' @param base.cols indicates columns derived from a same column. For example, if \code{age_sq}is \code{age^2},
+#' @param base.cols indicates columns derived from a same column. For example, if \code{age_sq} is \code{age^2},
 #' then \code{"age"} is a base column. Catergorical columns will be automatically considered as base columns.
 #' @param exclude.pair the pairs will be excluded from interactions. This should be a \code{\link{list}} object of pairs.
 #' For example, \code{list(c("a1", "a2"), c("d1", "d2"))}.
@@ -279,7 +290,7 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #'
 #'
 #' @export
-to.x.matrix = function(df, interact.all = FALSE, base.cols = NULL, exclude.pair  = NULL) {
+to.x.matrix = function(df, base = NULL, interact.all = FALSE, base.cols = NULL, exclude.pair  = NULL) {
      # prepay.data = read.csv(file = "https://raw.githubusercontent.com/zeemkr/data/master/mtg_term_2011_2012.csv");
      # head(prepay.data);
      # df = prepay.data[, 3:ncol(prepay.data)];
@@ -297,7 +308,10 @@ to.x.matrix = function(df, interact.all = FALSE, base.cols = NULL, exclude.pair 
                buff = cbind(buff, df[,i]);
                colnames(buff)[ncol(buff)] = raw.colnames[i];
           } else if(is.factor(df[,i]) | is.character(df[,i]) ) {
-               idcs = to.indicators(df[, i], exclude.base = TRUE, prefix = paste(raw.colnames[i], "_", sep = ""));
+               idcs = to.indicators(df[, i], exclude.base = TRUE, base = base, prefix = paste(raw.colnames[i], "_", sep = ""));
+               if(is.vector(idcs)) {
+
+               }
                buff = cbind(buff, idcs);
                base.cols = c(base.cols, raw.colnames[i]);
           }
@@ -310,7 +324,7 @@ to.x.matrix = function(df, interact.all = FALSE, base.cols = NULL, exclude.pair 
           buff = cbind(buff, interact.data(buff, base.cols, exclude.pair));
      }
 
-     return (buff);
+     return (as.matrix(buff));
 }
 
 # df = data.frame(1:3, 4:6, 7:9, 10:12, 13:15);

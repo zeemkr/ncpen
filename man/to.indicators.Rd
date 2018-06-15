@@ -18,7 +18,7 @@ only when the \code{type} variable is set to \code{"exclude.base"}.}
 
 \item{prefix}{a prefix to be used for column names of the output matrix.
 Default is "cat_" if \code{prefix} is \code{NULL}.
-For example, if a category vector has values of c("a", "b", "c"),
+For example, if a category vector has values of c("aa", "bb", "cc"),
 column names of the output matrix will be "cat_aa", "cat_bb" and "cat_cc".
 If \code{vec} is a \code{\link{data.frame}} and \code{prefix} is \code{NULL},
 then the \code{vec}'s column name followed by "_" will be used as a prefix.}

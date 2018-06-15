@@ -169,16 +169,27 @@ ncpen = function(y.vec,x.mat,
 
      # Throw warning messages from cpp
      if(ncpen.fit$warnings[1] == 1) {
-          warning("(ncpen: warning code 1) increase p.max.");
+          warning("(ncpen: warning code 1) increase df.max.");
      }
 
      if(ncpen.fit$warnings[2] == 1) {
           warning("(ncpen: warning code 2) increase r.eff.");
      }
 
-
+     # 20180615 -------------------------
+     # fix coefficient names
+     ncp.coef = ncpen.fit$b.mat;
+     if(!is.null(colnames(x.mat))) {
+          if(intercept == TRUE) {
+               rownames(ncp.coef) = c("intercept", colnames(x.mat));
+          } else {
+               rownames(ncp.coef) = colnames(x.mat);
+          }
+     }
+     # -----------------------------------
      ret = list(family=family,x.standardize=x.standardize,intercept=intercept,
-                coefficients=ncpen.fit$b.mat,
+                #coefficients=ncpen.fit$b.mat,
+                coefficients=ncp.coef,
                 pen.weight=pen.weight,                   ### pen.weight does not include the intercept
                 lambda=as.vector(ncpen.fit$lam.vec),
                 df=as.vector(ncpen.fit$d.vec));
@@ -267,9 +278,11 @@ ncpen = function(y.vec,x.mat,
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
-#' cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10)  # not run !!!
-#' coef.cv.ncpen(cvfit)
-#' plot.cv.ncpen(cvfit)
+#' cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
+#' coef(cvfit)
+#' plot(cvfit)
+#'
+#' # Below same as coef(cvfit)
 #' fit = cvfit$ncpen.fit
 #' opt = which(cvfit$opt.elambda==fit$lambda)
 #' coef(fit)[,opt]
@@ -404,8 +417,11 @@ coef.ncpen = function(object, ...){
      # S3 naming standard
      ncpen.fit = object;
 
-     num = dim(ncpen.fit$coefficients)[1]
-     if(ncpen.fit$intercept==TRUE) rownames(ncpen.fit$coefficients) = c("intercept",rep("",num-1))
+     # 20180615 ----------------------------
+     # fix coefficient names.
+     # num = dim(ncpen.fit$coefficients)[1]
+     # if(ncpen.fit$intercept==TRUE) rownames(ncpen.fit$coefficients) = c("intercept",rep("",num-1))
+     # -------------------------------------
      return(ncpen.fit$coefficients)
 }
 
@@ -680,10 +696,10 @@ coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
 
      type = match.arg(type)
      if(type=="error"){
-          return(cvfit$opt.ebeta)
+          return(data.frame(coefficient = cvfit$opt.ebeta));
      }
      if(type=="deviance"){
-          return(cvfit$opt.dbeta)
+          return(data.frame(coefficient = cvfit$opt.dbeta));
      }
 }
 

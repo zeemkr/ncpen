@@ -18,9 +18,19 @@ ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 
 \item{x.mat}{(numeric matrix) design matrix. Each row is an observation vector.}
 
-\item{family}{(character) regression model. Default is "\code{gaussian}".}
+\item{family}{(character) regression model. Supported models are \code{gaussian},
+\code{binomial} and \code{poisson}. Default is \code{gaussian}.}
 
-\item{penalty}{(character) penalty function. Default is "\code{scad}".}
+\item{penalty}{(character) penalty function. Supported penalties are
+\code{scad} (smoothly clipped absolute deviation),
+\code{mcp} (minimax concave penalty),
+\code{tlp} (truncated LASSO penalty),
+\code{lasso} (least absolute shrinkage and selection operator),
+\code{classo} (clipped LASSO),
+\code{sridge} (sparse ridge),
+\code{mbridge} (modified bridge) and
+\code{mlog} (modified log).
+Default is \code{scad}.}
 
 \item{lambda}{(numeric vector): user-specified sequence of \code{lambda} values.}
 
