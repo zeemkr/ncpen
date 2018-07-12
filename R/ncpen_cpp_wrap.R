@@ -1,24 +1,27 @@
 #' @exportPattern "^[[:alpha:]]+"
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics abline lines plot
-#' @importFrom stats formula median model.matrix rbinom rnorm rpois
+#' @importFrom stats formula median model.matrix rbinom rnorm rpois as.formula
 #' @useDynLib ncpen, .registration = TRUE
 #'
 #'
 #'
 #' @title
-#' Fits a generalized linear model (GLM) with various nonconvex penalties
+#' Nonconvex Penalized Estimations
 #'
 #' @description
-#' Fits a generalized linear model by penalized maximum likelihood estimation.
-#' The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}.
-#' Fits gaussian (linear), binomial (logistic) and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
+#' Fits generalized linear models by penalized maximum likelihood estimation.
+#' The coefficients path is computed for the penalized regression model over a grid of
+#' values for the regularization parameter \eqn{\lambda}.
+#' Fits Gaussian (linear), binomial Logit, multinomial Logit,
+#' Cox proportional hazard, and Poisson regression models
+#' with various non-convex penalties.
 #'
 #'
 #' @param y.vec (numeric vector) response vector.
 #' @param x.mat (numeric matrix) design matrix. Each row is an observation vector.
 #' @param family (character) regression model. Supported models are \code{gaussian},
-#' \code{binomial} and \code{poisson}. Default is \code{gaussian}.
+#' \code{binomial}, \code{multinomial}, \code{cox} and \code{poisson}. Default is \code{gaussian}.
 #' @param penalty (character) penalty function. Supported penalties are
 #' \code{scad} (smoothly clipped absolute deviation),
 #' \code{mcp} (minimax concave penalty),
@@ -133,7 +136,7 @@
 #' plot(fit)
 #' @export
 ncpen = function(y.vec,x.mat,
-                 family=c("gaussian","binomial","poisson"),
+                 family=c("gaussian","binomial", "multinomial", "cox", "poisson"),
                  penalty=c("scad","mcp","tlp","lasso","classo","sridge","mbridge","mlog"),
                  lambda=NULL,n.lambda=1e+2,r.lambda=1e-3,
                  pen.weight=NULL,
@@ -142,12 +145,12 @@ ncpen = function(y.vec,x.mat,
                  df.max=50, proj.min=50,
                  iter.max=1e+3,b.eps=1e-7,k.eps=1e-6,
                  x.standardize=TRUE,intercept=TRUE){
-     family = match.arg(family)
+     family = match.arg(family); if(family == "linear") family = "gaussian";
      penalty = match.arg(penalty)
      n = dim(x.mat)[1]
      p = dim(x.mat)[2]
      if(is.null(lambda)){
-          lambda = rep(-1,n.lambda)
+          lambda = exp(seq(log(1),log(0.01),length.out=n.lambda))
      }
      if(is.null(pen.weight)){
           pen.weight = rep(1,p)
@@ -160,32 +163,33 @@ ncpen = function(y.vec,x.mat,
      if(sum(pen.weight==0)==p){
           stop("the number of zero (unpenalized) elements in pen.weight should be samller than the number of input variables")
      }
-     ncpen.fit = native_cpp_ncpen_fun_(y.vec,
-                                       x.mat,x.standardize,intercept,
-                                       pen.weight,lambda,r.lambda,
-                                       gamma,tau,
-                                       df.max,iter.max,b.eps,k.eps,proj.min,ridge,
-                                       family, penalty);
+     ncpen.fit = native_cpp_ncpen_fun_(y.vec, x.mat, pen.weight, lambda, gamma, tau, 1,
+                                       df.max,iter.max,b.eps,k.eps,proj.min,
+                                       family, penalty,FALSE,rep(0,p),50);
+     # ncpen.fit = ncpen.fun(y.vec, x.mat, pen.weight, lambda, gamma, tau, alp=1,
+     #                       df.max,iter.max,b.eps,k.eps,proj.min,
+     #                       family, penalty,loc=F,ob.vec=NULL,div=50);
 
-     # Throw warning messages from cpp
-     if(ncpen.fit$warnings[1] == 1) {
-          warning("(ncpen: warning code 1) increase df.max.");
-     }
 
-     if(ncpen.fit$warnings[2] == 1) {
-          warning("(ncpen: warning code 2) increase r.eff.");
-     }
-
-     # 20180615 -------------------------
-     # fix coefficient names
+     # # Throw warning messages from cpp
+     # if(ncpen.fit$warnings[1] == 1) {
+     #      warning("(ncpen: warning code 1) increase df.max.");
+     # }
+     #
+     # if(ncpen.fit$warnings[2] == 1) {
+     #      warning("(ncpen: warning code 2) increase r.eff.");
+     # }
+     #
+     # # 20180615 -------------------------
+     # # fix coefficient names
      ncp.coef = ncpen.fit$b.mat;
-     if(!is.null(colnames(x.mat))) { # if matrix has colnames
-          if(intercept == TRUE) {
-               rownames(ncp.coef) = c("intercept", colnames(x.mat));
-          } else {
-               rownames(ncp.coef) = colnames(x.mat);
-          }
-     }
+     # if(!is.null(colnames(x.mat))) { # if matrix has colnames
+     #      if(intercept == TRUE) {
+     #           rownames(ncp.coef) = c("intercept", colnames(x.mat));
+     #      } else {
+     #           rownames(ncp.coef) = colnames(x.mat);
+     #      }
+     # }
      # -----------------------------------
      ret = list(family=family,x.standardize=x.standardize,intercept=intercept,
                 #coefficients=ncpen.fit$b.mat,
@@ -199,7 +203,7 @@ ncpen = function(y.vec,x.mat,
 }
 
 #' @title
-#' Cross-validation for ncpen
+#' Cross-validation for \bold{ncpen}
 #'
 #'
 #' @description
@@ -208,7 +212,7 @@ ncpen = function(y.vec,x.mat,
 #' @param y.vec (numeric vector) response vector.
 #' @param x.mat (numeric matrix) design matrix. Each row is an observation vector.
 #' @param family (character) regression model. Supported models are \code{gaussian},
-#' \code{binomial} and \code{poisson}. Default is \code{gaussian}.
+#' \code{binomial}, \code{multinomial}, \code{cox} and \code{poisson}. Default is \code{gaussian}.
 #' @param penalty (character) penalty function. Supported penalties are
 #' \code{scad} (smoothly clipped absolute deviation),
 #' \code{mcp} (minimax concave penalty),
@@ -278,31 +282,37 @@ ncpen = function(y.vec,x.mat,
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
-#' cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
-#' coef(cvfit)
-#' plot(cvfit)
+#' #cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
+#' #coef(cvfit)
+#' #plot(cvfit)
 #'
 #' # Below same as coef(cvfit)
-#' fit = cvfit$ncpen.fit
-#' opt = which(cvfit$opt.elambda==fit$lambda)
-#' coef(fit)[,opt]
+#' #fit = cvfit$ncpen.fit
+#' #opt = which(cvfit$opt.elambda==fit$lambda)
+#' #coef(fit)[,opt]
 #'
 #' @export
 cv.ncpen = function(y.vec,x.mat,
-                    family=c("gaussian","binomial","poisson"),
+                    family=c("gaussian","binomial", "multinomial", "cox", "poisson"),
                     penalty=c("scad","mcp","tlp","lasso","classo","sridge","mbridge","mlog"),
                     n.fold=10,
-                    lambda=NULL,n.lambda=1e+2,r.lambda=1e-3,pen.weight=NULL,
+                    lambda=NULL,n.lambda=1e+2,r.lambda=1e-3,
+                    pen.weight=NULL,
                     tau=switch(penalty,scad=3.7,mcp=3,tlp=0.1,lasso=1,classo=2,sridge=2,mbridge=0.1,mlog=0.1),
                     gamma=1e-6,ridge=1e-6,
                     df.max=50, proj.min=50,
                     iter.max=1e+3,b.eps=1e-7,k.eps=1e-6,
                     x.standardize=TRUE,intercept=TRUE){
-     family = match.arg(family)
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
+     family = match.arg(family); if(family == "linear") family = "gaussian";
      penalty = match.arg(penalty)
      if(n.fold<2) stop("n.fold must be larger than 2")
      ncpen.fit = ncpen(y.vec,x.mat,family,penalty,lambda,n.lambda,r.lambda,pen.weight,
                        tau,gamma,ridge,df.max,proj.min,iter.max,b.eps,k.eps,x.standardize,intercept)
+
      n = dim(x.mat)[1]
      p = dim(x.mat)[2]
      if(family=="gaussian"){ cut = median(y.vec) } else { cut = 0 }
@@ -318,18 +328,21 @@ cv.ncpen = function(y.vec,x.mat,
           # cat("cv fold number:",fold,"\n")
           tset = c(f.list1[[fold]],f.list2[[fold]])
           f.ncpen.fit = native_cpp_ncpen_fun_(y.vec[-tset],
-                                              x.mat[-tset,],x.standardize,intercept,
-                                              pen.weight,lambda,r.lambda,
-                                              gamma,tau,
-                                              df.max,iter.max,b.eps,k.eps,proj.min,ridge,
-                                              family, penalty);
-          if(intercept==TRUE){
-               xb.mat = cbind(1,x.mat[tset,])%*%f.ncpen.fit$b.mat;
-               xb.mat = pmin(xb.mat,700)
-          } else {
-               xb.mat = x.mat[tset,]%*%f.ncpen.fit$b.mat;
-               xb.mat = pmin(xb.mat,700)
-          }
+                                              x.mat[-tset,],
+                                              pen.weight,lambda,
+                                              gamma,tau,1,
+                                              df.max,iter.max,b.eps,k.eps,proj.min,
+                                              family, penalty,FALSE,rep(0,p),50);
+
+
+
+          # if(intercept==TRUE){
+          #      xb.mat = cbind(1,x.mat[tset,])%*%f.ncpen.fit$b.mat;
+          #      xb.mat = pmin(xb.mat,700)
+          # } else {
+          xb.mat = x.mat[tset,]%*%f.ncpen.fit$b.mat;
+          xb.mat = pmin(xb.mat,700)
+          # }
           if(family=="gaussian"){
                ny.mat = xb.mat
           }
@@ -358,14 +371,14 @@ cv.ncpen = function(y.vec,x.mat,
      dev.vec = colMeans(dev.mat); dev.opt = which.min(dev.vec)
 
      ret = list(ncpen.fit=ncpen.fit,
-                 opt.ebeta=ncpen.fit$coefficients[,err.opt],
-                 opt.dbeta=ncpen.fit$coefficients[,dev.opt],
-                 cv.error=err.vec,
-                 cv.deviance=dev.vec,
-                 elambda=lambda[1:eleng],
-                 dlambda=lambda[1:dleng],
-                 opt.elambda=lambda[err.opt],
-                 opt.dlambda=lambda[dev.opt]);
+                opt.ebeta=ncpen.fit$coefficients[,err.opt],
+                opt.dbeta=ncpen.fit$coefficients[,dev.opt],
+                cv.error=err.vec,
+                cv.deviance=dev.vec,
+                elambda=lambda[1:eleng],
+                dlambda=lambda[1:dleng],
+                opt.elambda=lambda[err.opt],
+                opt.dlambda=lambda[dev.opt]);
 
      class(ret) = "cv.ncpen";
      return (ret);
@@ -377,7 +390,7 @@ cv.ncpen = function(y.vec,x.mat,
 #######   ncpen accessories  #######
 
 #' @title
-#' Extract the coefficients from an \code{ncpen} object
+#' Extract the Coefficients from an \code{ncpen} Object
 #'
 #'
 #' @description
@@ -427,7 +440,7 @@ coef.ncpen = function(object, ...){
 
 
 #' @title
-#' Compute the GIC values for the selection of the regularization parameter lambda.
+#' Compute the GIC Values for the Selection of the Regularization Parameter lambda.
 #'
 #'
 #' @description
@@ -474,6 +487,10 @@ coef.ncpen = function(object, ...){
 #'
 #' @export
 gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=TRUE){
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
      n = length(y.vec);
      if(ncpen.fit$intercept==FALSE){
           xb.mat = x.mat%*%ncpen.fit$coefficients
@@ -493,7 +510,7 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 }
 
 #' @title
-#' Plots coefficients from an \code{ncpen} object.
+#' Plots Coefficients from an \code{ncpen} Object.
 #'
 #'
 #' @description
@@ -528,6 +545,10 @@ gic.ncpen = function(ncpen.fit,y.vec,x.mat,df.weight=log(length(y.vec)),verbose=
 #' @export plot.ncpen
 #' @export
 plot.ncpen = function(x,log.scale=FALSE,...){
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
      # S3 standard naming
      ncpen.fit = x;
 
@@ -538,7 +559,7 @@ plot.ncpen = function(x,log.scale=FALSE,...){
 }
 
 #' @title
-#' Make predictions from an \code{ncpen} object.
+#' Make Predictions from an \code{ncpen} Object.
 #'
 #'
 #' @description
@@ -603,6 +624,10 @@ plot.ncpen = function(x,log.scale=FALSE,...){
 #' @export predict.ncpen
 #' @export
 predict.ncpen = function(object,new.x.mat=NULL,type=c("regression","probability","response"),cut=0.5, ...){
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
      # S3 standard naming
      ncpen.fit = object;
 
@@ -651,7 +676,7 @@ predict.ncpen = function(object,new.x.mat=NULL,type=c("regression","probability"
 ###### ncpen.cv accessories  #######
 
 #' @title
-#' Extracts the optimal vector of coefficients from a \code{cv.ncpen} object.
+#' Extracts the Optimal Vector of Coefficients from a \code{cv.ncpen} Object.
 #'
 #'
 #' @description
@@ -685,12 +710,16 @@ predict.ncpen = function(object,new.x.mat=NULL,type=c("regression","probability"
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
-#' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-#' coef.cv.ncpen(cvfit, type="deviance")
+#' #cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' #coef.cv.ncpen(cvfit, type="deviance")
 #'
 #' @export coef.cv.ncpen
 #' @export
 coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
      # S3 naming standard
      cvfit = object;
 
@@ -704,7 +733,7 @@ coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
 }
 
 #' @title
-#' Plot cv curve from a \code{cv.ncpen} object
+#' Plot Cross-validation Curve from a \code{cv.ncpen} Object
 #'
 #'
 #' @description
@@ -736,12 +765,17 @@ coef.cv.ncpen = function(object,type=c("error","deviance"), ...){
 #' x.mat = s0$x.mat
 #' y.vec = s0$y.vec
 #'
-#' cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-#' plot.cv.ncpen(cvfit, type="deviance")
+#' #cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#' #plot.cv.ncpen(cvfit, type="deviance")
 #'
 #' @export plot.cv.ncpen
 #' @export
 plot.cv.ncpen = function(x,type=c("error","deviance"),log.scale=FALSE, ...){
+     # remove this--------------------
+     return (NULL);
+     # -------------------------------
+
+
      # For S3 generic/method consistency
      cvfit = x;
 
@@ -761,7 +795,7 @@ plot.cv.ncpen = function(x,type=c("error","deviance"),log.scale=FALSE, ...){
 
 
 #' @title
-#' Generate a simulated dataset.
+#' Generate a Simulated Dataset.
 #'
 #' @description
 #' Generate a synthetic dataset based on the correlation structure from generalized linear models.
