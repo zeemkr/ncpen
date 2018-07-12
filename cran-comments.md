@@ -7,7 +7,7 @@ Update include
 ### Test environments
 * Windows Server 2016, R 3.5.1
 * Windows 10, R 3.5.1
-* Ubuntu 14.04.5 LTS (on Travis CI), R 3.4.2
+* Ubuntu 14.04.5 LTS (on Travis CI), R 3.5.0
 
 ### R CMD check results
 0 errors | 0 warnings | 0 notes
