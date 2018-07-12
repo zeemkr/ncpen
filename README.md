@@ -1,6 +1,5 @@
 [![Travis-CI Build Status](https://travis-ci.org/zeemkr/ncpen.svg?branch=master)](https://travis-ci.org/zeemkr/ncpen)
 
-
 # ncpen
 
 `ncpen` package fits the generalized linear models with various nonconvex penalties.
@@ -24,7 +23,7 @@ A recent manual is avaialbe at [ncpen manual](https://github.com/zeemkr/ncpen_re
 an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/tree/master/example_mortgage).
 
 (This project is funded by Julian Virtue Professorship from Center for Applied Research at
-Graziadio School of Business and Management at Pepperdine University.)
+Pepperdine Graziadio Business School.)
 
 **Authors**
 

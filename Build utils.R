@@ -1,3 +1,8 @@
+# TODO ------------------------------------
+# coefficient names
+# intercept check
+# -----------------------------------------
+
 # Build mannual
 roxygen2::roxygenize('.', roclets=c('rd', 'collate', 'namespace', 'vignette'));
 outpath = paste(dirname(getwd()), "/doc/ncpen.pdf", sep = "");
@@ -24,4 +29,8 @@ devtools::check(args = c("--use-valgrind"));
 devtools::release();
 
 devtools::submit_cran();
+
+library(cranlogs);
+cran_downloads(from = "2018-06-01", to = "2018-06-29", packages = c("ncpen"));
+cran_downloads(from = "2018-06-01", to = "2018-06-29", packages = c("ncvreg"));
 
