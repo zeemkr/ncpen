@@ -11,14 +11,13 @@
 #' @param y_vec .
 #' @param x_mat .
 #' @param b_vec .
-#' @param r_eff .
 #'
 #'
 #' @return
 #' .
 #'
-native_cpp_obj_fun_ <- function(name, y_vec, x_mat, b_vec, r_eff) {
-    .Call(`_ncpen_native_cpp_obj_fun_`, name, y_vec, x_mat, b_vec, r_eff)
+native_cpp_obj_fun_ <- function(name, y_vec, x_mat, b_vec) {
+    .Call(`_ncpen_native_cpp_obj_fun_`, name, y_vec, x_mat, b_vec)
 }
 
 #' @title
@@ -31,14 +30,32 @@ native_cpp_obj_fun_ <- function(name, y_vec, x_mat, b_vec, r_eff) {
 #' @param y_vec .
 #' @param x_mat .
 #' @param b_vec .
-#' @param r_eff .
 #'
 #'
 #' @return
 #' .
 #'
-native_cpp_obj_grad_fun_ <- function(name, y_vec, x_mat, b_vec, r_eff) {
-    .Call(`_ncpen_native_cpp_obj_grad_fun_`, name, y_vec, x_mat, b_vec, r_eff)
+native_cpp_obj_grad_fun_ <- function(name, y_vec, x_mat, b_vec) {
+    .Call(`_ncpen_native_cpp_obj_grad_fun_`, name, y_vec, x_mat, b_vec)
+}
+
+#' @title
+#' Native object Hessian function.
+#'
+#' @description
+#' This is internal use only function. Manual left blank on purpose.
+#'
+#' @param name .
+#' @param y_vec .
+#' @param x_mat .
+#' @param b_vec .
+#'
+#'
+#' @return
+#' .
+#'
+native_cpp_obj_hess_fun_ <- function(name, y_vec, x_mat, b_vec) {
+    .Call(`_ncpen_native_cpp_obj_hess_fun_`, name, y_vec, x_mat, b_vec)
 }
 
 #' @title
@@ -78,19 +95,19 @@ native_cpp_qlasso_fun_ <- function(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, b
 #' @param lam .
 #' @param gam .
 #' @param tau .
+#' @param alp .
 #' @param iter_max .
 #' @param b_eps .
 #' @param k_eps .
 #' @param p_eff .
-#' @param r_eff .
 #' @param family .
 #' @param penalty .
 #'
 #' @return
 #' .
 #'
-native_cpp_p_ncpen_fun_ <- function(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty) {
-    .Call(`_ncpen_native_cpp_p_ncpen_fun_`, y_vec, x_mat, b_vec, w_vec, lam, gam, tau, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty)
+native_cpp_p_ncpen_fun_ <- function(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, alp, iter_max, b_eps, k_eps, p_eff, family, penalty) {
+    .Call(`_ncpen_native_cpp_p_ncpen_fun_`, y_vec, x_mat, b_vec, w_vec, lam, gam, tau, alp, iter_max, b_eps, k_eps, p_eff, family, penalty)
 }
 
 #' @title
@@ -101,26 +118,26 @@ native_cpp_p_ncpen_fun_ <- function(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, i
 #'
 #' @param y_vec .
 #' @param x_mat0 .
-#' @param x_std .
-#' @param intc .
 #' @param w_vec0 .
 #' @param lam_vec0 .
-#' @param r_lam .
 #' @param gam .
 #' @param tau .
-#' @param p_max .
+#' @param alp .
+#' @param d_max .
 #' @param iter_max .
 #' @param b_eps .
 #' @param k_eps .
 #' @param p_eff .
-#' @param r_eff .
 #' @param family .
 #' @param penalty .
+#' @param loc .
+#' @param ob_vec .
+#' @param div .
 #'
 #' @return
 #' .
 #'
-native_cpp_ncpen_fun_ <- function(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam, tau, p_max, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty) {
-    .Call(`_ncpen_native_cpp_ncpen_fun_`, y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam, tau, p_max, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty)
+native_cpp_ncpen_fun_ <- function(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max, iter_max, b_eps, k_eps, p_eff, family, penalty, loc, ob_vec, div) {
+    .Call(`_ncpen_native_cpp_ncpen_fun_`, y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max, iter_max, b_eps, k_eps, p_eff, family, penalty, loc, ob_vec, div)
 }
 

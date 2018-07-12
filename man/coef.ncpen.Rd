@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{coef.ncpen}
 \alias{coef.ncpen}
-\title{Extract the coefficients from an \code{ncpen} object}
+\title{Extract the Coefficients from an \code{ncpen} Object}
 \usage{
 \method{coef}{ncpen}(object, ...)
 }

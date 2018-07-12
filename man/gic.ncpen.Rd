@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{gic.ncpen}
 \alias{gic.ncpen}
-\title{Compute the GIC values for the selection of the regularization parameter lambda.}
+\title{Compute the GIC Values for the Selection of the Regularization Parameter lambda.}
 \usage{
 gic.ncpen(ncpen.fit, y.vec, x.mat, df.weight = log(length(y.vec)),
   verbose = TRUE)

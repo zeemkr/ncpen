@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{predict.ncpen}
 \alias{predict.ncpen}
-\title{Make predictions from an \code{ncpen} object.}
+\title{Make Predictions from an \code{ncpen} Object.}
 \usage{
 \method{predict}{ncpen}(object, new.x.mat = NULL, type = c("regression",
   "probability", "response"), cut = 0.5, ...)

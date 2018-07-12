@@ -2,16 +2,16 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{cv.ncpen}
 \alias{cv.ncpen}
-\title{Cross-validation for ncpen}
+\title{Cross-validation for \bold{ncpen}}
 \usage{
-cv.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
-  penalty = c("scad", "mcp", "tlp", "lasso", "classo", "sridge", "mbridge",
-  "mlog"), n.fold = 10, lambda = NULL, n.lambda = 100, r.lambda = 0.001,
-  pen.weight = NULL, tau = switch(penalty, scad = 3.7, mcp = 3, tlp = 0.1,
-  lasso = 1, classo = 2, sridge = 2, mbridge = 0.1, mlog = 0.1),
-  gamma = 1e-06, ridge = 1e-06, df.max = 50, proj.min = 50,
-  iter.max = 1000, b.eps = 1e-07, k.eps = 1e-06, x.standardize = TRUE,
-  intercept = TRUE)
+cv.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "multinomial",
+  "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso", "classo",
+  "sridge", "mbridge", "mlog"), n.fold = 10, lambda = NULL,
+  n.lambda = 100, r.lambda = 0.001, pen.weight = NULL,
+  tau = switch(penalty, scad = 3.7, mcp = 3, tlp = 0.1, lasso = 1, classo = 2,
+  sridge = 2, mbridge = 0.1, mlog = 0.1), gamma = 1e-06, ridge = 1e-06,
+  df.max = 50, proj.min = 50, iter.max = 1000, b.eps = 1e-07,
+  k.eps = 1e-06, x.standardize = TRUE, intercept = TRUE)
 }
 \arguments{
 \item{y.vec}{(numeric vector) response vector.}
@@ -19,7 +19,7 @@ cv.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 \item{x.mat}{(numeric matrix) design matrix. Each row is an observation vector.}
 
 \item{family}{(character) regression model. Supported models are \code{gaussian},
-\code{binomial} and \code{poisson}. Default is \code{gaussian}.}
+\code{binomial}, \code{multinomial}, \code{cox} and \code{poisson}. Default is \code{gaussian}.}
 
 \item{penalty}{(character) penalty function. Supported penalties are
 \code{scad} (smoothly clipped absolute deviation),
@@ -91,14 +91,14 @@ s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", see
 x.mat = s0$x.mat
 y.vec = s0$y.vec
 
-cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
-coef(cvfit)
-plot(cvfit)
+#cvfit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian",n.fold=10, intercept = TRUE)
+#coef(cvfit)
+#plot(cvfit)
 
 # Below same as coef(cvfit)
-fit = cvfit$ncpen.fit
-opt = which(cvfit$opt.elambda==fit$lambda)
-coef(fit)[,opt]
+#fit = cvfit$ncpen.fit
+#opt = which(cvfit$opt.elambda==fit$lambda)
+#coef(fit)[,opt]
 
 }
 \references{

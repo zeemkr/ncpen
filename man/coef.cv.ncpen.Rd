@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{coef.cv.ncpen}
 \alias{coef.cv.ncpen}
-\title{Extracts the optimal vector of coefficients from a \code{cv.ncpen} object.}
+\title{Extracts the Optimal Vector of Coefficients from a \code{cv.ncpen} Object.}
 \usage{
 \method{coef}{cv.ncpen}(object, type = c("error", "deviance"), ...)
 }
@@ -25,8 +25,8 @@ s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", see
 x.mat = s0$x.mat
 y.vec = s0$y.vec
 
-cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-coef.cv.ncpen(cvfit, type="deviance")
+#cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#coef.cv.ncpen(cvfit, type="deviance")
 
 }
 \references{

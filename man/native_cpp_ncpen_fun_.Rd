@@ -4,29 +4,25 @@
 \alias{native_cpp_ncpen_fun_}
 \title{Native ncpen function.}
 \usage{
-native_cpp_ncpen_fun_(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam,
-  tau, p_max, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty)
+native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max,
+  iter_max, b_eps, k_eps, p_eff, family, penalty, loc, ob_vec, div)
 }
 \arguments{
 \item{y_vec}{.}
 
 \item{x_mat0}{.}
 
-\item{x_std}{.}
-
-\item{intc}{.}
-
 \item{w_vec0}{.}
 
 \item{lam_vec0}{.}
-
-\item{r_lam}{.}
 
 \item{gam}{.}
 
 \item{tau}{.}
 
-\item{p_max}{.}
+\item{alp}{.}
+
+\item{d_max}{.}
 
 \item{iter_max}{.}
 
@@ -36,11 +32,15 @@ native_cpp_ncpen_fun_(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam,
 
 \item{p_eff}{.}
 
-\item{r_eff}{.}
-
 \item{family}{.}
 
 \item{penalty}{.}
+
+\item{loc}{.}
+
+\item{ob_vec}{.}
+
+\item{div}{.}
 }
 \value{
 .

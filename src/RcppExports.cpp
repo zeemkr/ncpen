@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // native_cpp_obj_fun_
-double native_cpp_obj_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, double r_eff);
-RcppExport SEXP _ncpen_native_cpp_obj_fun_(SEXP nameSEXP, SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP, SEXP r_effSEXP) {
+double native_cpp_obj_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec);
+RcppExport SEXP _ncpen_native_cpp_obj_fun_(SEXP nameSEXP, SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -16,14 +16,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type x_mat(x_matSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type b_vec(b_vecSEXP);
-    Rcpp::traits::input_parameter< double >::type r_eff(r_effSEXP);
-    rcpp_result_gen = Rcpp::wrap(native_cpp_obj_fun_(name, y_vec, x_mat, b_vec, r_eff));
+    rcpp_result_gen = Rcpp::wrap(native_cpp_obj_fun_(name, y_vec, x_mat, b_vec));
     return rcpp_result_gen;
 END_RCPP
 }
 // native_cpp_obj_grad_fun_
-arma::vec native_cpp_obj_grad_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, double r_eff);
-RcppExport SEXP _ncpen_native_cpp_obj_grad_fun_(SEXP nameSEXP, SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP, SEXP r_effSEXP) {
+arma::vec native_cpp_obj_grad_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec);
+RcppExport SEXP _ncpen_native_cpp_obj_grad_fun_(SEXP nameSEXP, SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,8 +30,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec& >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type x_mat(x_matSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type b_vec(b_vecSEXP);
-    Rcpp::traits::input_parameter< double >::type r_eff(r_effSEXP);
-    rcpp_result_gen = Rcpp::wrap(native_cpp_obj_grad_fun_(name, y_vec, x_mat, b_vec, r_eff));
+    rcpp_result_gen = Rcpp::wrap(native_cpp_obj_grad_fun_(name, y_vec, x_mat, b_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// native_cpp_obj_hess_fun_
+arma::mat native_cpp_obj_hess_fun_(std::string name, arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec);
+RcppExport SEXP _ncpen_native_cpp_obj_hess_fun_(SEXP nameSEXP, SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type y_vec(y_vecSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type x_mat(x_matSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type b_vec(b_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(native_cpp_obj_hess_fun_(name, y_vec, x_mat, b_vec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -57,8 +69,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // native_cpp_p_ncpen_fun_
-Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, arma::vec& w_vec, double lam, double gam, double tau, double iter_max, double b_eps, double k_eps, arma::uword p_eff, double r_eff, SEXP family, SEXP penalty);
-RcppExport SEXP _ncpen_native_cpp_p_ncpen_fun_(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP, SEXP w_vecSEXP, SEXP lamSEXP, SEXP gamSEXP, SEXP tauSEXP, SEXP iter_maxSEXP, SEXP b_epsSEXP, SEXP k_epsSEXP, SEXP p_effSEXP, SEXP r_effSEXP, SEXP familySEXP, SEXP penaltySEXP) {
+Rcpp::List native_cpp_p_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec, arma::vec& w_vec, double lam, double gam, double tau, double alp, double iter_max, double b_eps, double k_eps, arma::uword p_eff, SEXP family, SEXP penalty);
+RcppExport SEXP _ncpen_native_cpp_p_ncpen_fun_(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP b_vecSEXP, SEXP w_vecSEXP, SEXP lamSEXP, SEXP gamSEXP, SEXP tauSEXP, SEXP alpSEXP, SEXP iter_maxSEXP, SEXP b_epsSEXP, SEXP k_epsSEXP, SEXP p_effSEXP, SEXP familySEXP, SEXP penaltySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -69,41 +81,41 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
     Rcpp::traits::input_parameter< double >::type gam(gamSEXP);
     Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< double >::type alp(alpSEXP);
     Rcpp::traits::input_parameter< double >::type iter_max(iter_maxSEXP);
     Rcpp::traits::input_parameter< double >::type b_eps(b_epsSEXP);
     Rcpp::traits::input_parameter< double >::type k_eps(k_epsSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type p_eff(p_effSEXP);
-    Rcpp::traits::input_parameter< double >::type r_eff(r_effSEXP);
     Rcpp::traits::input_parameter< SEXP >::type family(familySEXP);
     Rcpp::traits::input_parameter< SEXP >::type penalty(penaltySEXP);
-    rcpp_result_gen = Rcpp::wrap(native_cpp_p_ncpen_fun_(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty));
+    rcpp_result_gen = Rcpp::wrap(native_cpp_p_ncpen_fun_(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, alp, iter_max, b_eps, k_eps, p_eff, family, penalty));
     return rcpp_result_gen;
 END_RCPP
 }
 // native_cpp_ncpen_fun_
-Rcpp::List native_cpp_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat0, bool x_std, bool intc, arma::vec& w_vec0, arma::vec& lam_vec0, double r_lam, double gam, double tau, arma::uword p_max, double iter_max, double b_eps, double k_eps, arma::uword p_eff, double r_eff, SEXP family, SEXP penalty);
-RcppExport SEXP _ncpen_native_cpp_ncpen_fun_(SEXP y_vecSEXP, SEXP x_mat0SEXP, SEXP x_stdSEXP, SEXP intcSEXP, SEXP w_vec0SEXP, SEXP lam_vec0SEXP, SEXP r_lamSEXP, SEXP gamSEXP, SEXP tauSEXP, SEXP p_maxSEXP, SEXP iter_maxSEXP, SEXP b_epsSEXP, SEXP k_epsSEXP, SEXP p_effSEXP, SEXP r_effSEXP, SEXP familySEXP, SEXP penaltySEXP) {
+Rcpp::List native_cpp_ncpen_fun_(arma::vec& y_vec, arma::mat& x_mat0, arma::vec& w_vec0, arma::vec& lam_vec0, double gam, double tau, double alp, arma::uword d_max, double iter_max, double b_eps, double k_eps, arma::uword p_eff, SEXP family, SEXP penalty, bool loc, arma::vec& ob_vec, int div);
+RcppExport SEXP _ncpen_native_cpp_ncpen_fun_(SEXP y_vecSEXP, SEXP x_mat0SEXP, SEXP w_vec0SEXP, SEXP lam_vec0SEXP, SEXP gamSEXP, SEXP tauSEXP, SEXP alpSEXP, SEXP d_maxSEXP, SEXP iter_maxSEXP, SEXP b_epsSEXP, SEXP k_epsSEXP, SEXP p_effSEXP, SEXP familySEXP, SEXP penaltySEXP, SEXP locSEXP, SEXP ob_vecSEXP, SEXP divSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec& >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type x_mat0(x_mat0SEXP);
-    Rcpp::traits::input_parameter< bool >::type x_std(x_stdSEXP);
-    Rcpp::traits::input_parameter< bool >::type intc(intcSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type w_vec0(w_vec0SEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type lam_vec0(lam_vec0SEXP);
-    Rcpp::traits::input_parameter< double >::type r_lam(r_lamSEXP);
     Rcpp::traits::input_parameter< double >::type gam(gamSEXP);
     Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< arma::uword >::type p_max(p_maxSEXP);
+    Rcpp::traits::input_parameter< double >::type alp(alpSEXP);
+    Rcpp::traits::input_parameter< arma::uword >::type d_max(d_maxSEXP);
     Rcpp::traits::input_parameter< double >::type iter_max(iter_maxSEXP);
     Rcpp::traits::input_parameter< double >::type b_eps(b_epsSEXP);
     Rcpp::traits::input_parameter< double >::type k_eps(k_epsSEXP);
     Rcpp::traits::input_parameter< arma::uword >::type p_eff(p_effSEXP);
-    Rcpp::traits::input_parameter< double >::type r_eff(r_effSEXP);
     Rcpp::traits::input_parameter< SEXP >::type family(familySEXP);
     Rcpp::traits::input_parameter< SEXP >::type penalty(penaltySEXP);
-    rcpp_result_gen = Rcpp::wrap(native_cpp_ncpen_fun_(y_vec, x_mat0, x_std, intc, w_vec0, lam_vec0, r_lam, gam, tau, p_max, iter_max, b_eps, k_eps, p_eff, r_eff, family, penalty));
+    Rcpp::traits::input_parameter< bool >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type ob_vec(ob_vecSEXP);
+    Rcpp::traits::input_parameter< int >::type div(divSEXP);
+    rcpp_result_gen = Rcpp::wrap(native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max, iter_max, b_eps, k_eps, p_eff, family, penalty, loc, ob_vec, div));
     return rcpp_result_gen;
 END_RCPP
 }

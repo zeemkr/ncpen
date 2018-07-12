@@ -2,11 +2,11 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{ncpen}
 \alias{ncpen}
-\title{Fits a generalized linear model (GLM) with various nonconvex penalties}
+\title{Nonconvex Penalized Estimations}
 \usage{
-ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
-  penalty = c("scad", "mcp", "tlp", "lasso", "classo", "sridge", "mbridge",
-  "mlog"), lambda = NULL, n.lambda = 100, r.lambda = 0.001,
+ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "multinomial", "cox",
+  "poisson"), penalty = c("scad", "mcp", "tlp", "lasso", "classo", "sridge",
+  "mbridge", "mlog"), lambda = NULL, n.lambda = 100, r.lambda = 0.001,
   pen.weight = NULL, tau = switch(penalty, scad = 3.7, mcp = 3, tlp = 0.1,
   lasso = 1, classo = 2, sridge = 2, mbridge = 0.1, mlog = 0.1),
   gamma = 1e-06, ridge = 1e-06, df.max = 50, proj.min = 50,
@@ -19,7 +19,7 @@ ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson"),
 \item{x.mat}{(numeric matrix) design matrix. Each row is an observation vector.}
 
 \item{family}{(character) regression model. Supported models are \code{gaussian},
-\code{binomial} and \code{poisson}. Default is \code{gaussian}.}
+\code{binomial}, \code{multinomial}, \code{cox} and \code{poisson}. Default is \code{gaussian}.}
 
 \item{penalty}{(character) penalty function. Supported penalties are
 \code{scad} (smoothly clipped absolute deviation),
@@ -76,9 +76,12 @@ An object with S3 class \code{ncpen}.
   \item{df}{the number of non-zero coefficients for each \code{lambda} value.}
 }
 \description{
-Fits a generalized linear model by penalized maximum likelihood estimation.
-The coefficients path is computed for the penalized regression model over a grid of values for the regularization parameter \eqn{\lambda}.
-Fits gaussian (linear), binomial (logistic) and poisson regression models with various non-convex penalties such as SCAD, MCP and clipped Lasso.
+Fits generalized linear models by penalized maximum likelihood estimation.
+The coefficients path is computed for the penalized regression model over a grid of
+values for the regularization parameter \eqn{\lambda}.
+Fits Gaussian (linear), binomial Logit, multinomial Logit,
+Cox proportional hazard, and Poisson regression models
+with various non-convex penalties.
 }
 \details{
 The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm

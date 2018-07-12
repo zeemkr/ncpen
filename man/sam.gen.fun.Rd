@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{sam.gen.fun}
 \alias{sam.gen.fun}
-\title{Generate a simulated dataset.}
+\title{Generate a Simulated Dataset.}
 \usage{
 sam.gen.fun(n = 100, p = 50, q = 10, bmin = 0.5, bmax = 1,
   corr = 0.5, family = "gaussian", seed = NA)

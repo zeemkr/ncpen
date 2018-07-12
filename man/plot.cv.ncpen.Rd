@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{plot.cv.ncpen}
 \alias{plot.cv.ncpen}
-\title{Plot cv curve from a \code{cv.ncpen} object}
+\title{Plot Cross-validation Curve from a \code{cv.ncpen} Object}
 \usage{
 \method{plot}{cv.ncpen}(x, type = c("error", "deviance"), log.scale = FALSE,
   ...)
@@ -25,8 +25,8 @@ s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
 x.mat = s0$x.mat
 y.vec = s0$y.vec
 
-cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-plot.cv.ncpen(cvfit, type="deviance")
+#cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
+#plot.cv.ncpen(cvfit, type="deviance")
 
 }
 \references{

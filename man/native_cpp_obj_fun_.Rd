@@ -4,7 +4,7 @@
 \alias{native_cpp_obj_fun_}
 \title{Native object function.}
 \usage{
-native_cpp_obj_fun_(name, y_vec, x_mat, b_vec, r_eff)
+native_cpp_obj_fun_(name, y_vec, x_mat, b_vec)
 }
 \arguments{
 \item{name}{.}
@@ -14,8 +14,6 @@ native_cpp_obj_fun_(name, y_vec, x_mat, b_vec, r_eff)
 \item{x_mat}{.}
 
 \item{b_vec}{.}
-
-\item{r_eff}{.}
 }
 \value{
 .

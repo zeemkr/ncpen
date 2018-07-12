@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{plot.ncpen}
 \alias{plot.ncpen}
-\title{Plots coefficients from an \code{ncpen} object.}
+\title{Plots Coefficients from an \code{ncpen} Object.}
 \usage{
 \method{plot}{ncpen}(x, log.scale = FALSE, ...)
 }

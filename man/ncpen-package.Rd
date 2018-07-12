@@ -6,7 +6,10 @@
 \title{ncpen: A package for non-convex penalized estimation in generalized linear models}
 \description{
 This package fits the generalized linear models with various non-convex penalties.
-A unified algorithm is implemented in \bold{ncpen} based on the convex concave procedure or difference convex algorithm that can be applied to most of existing non-convex penalties.
+Supported regression models are Gaussian (linear), binomial Logit, multinomial Logit, Cox proportional hazard
+and Poisson.
+A unified algorithm is implemented in \bold{ncpen} based on the convex concave procedure
+or difference convex algorithm that can be applied to most of existing non-convex penalties.
 The available penalties in the package are
 the least absolute shrinkage and selection operator(LASSO),
 smoothly clipped absolute deviation (SCAD),
@@ -18,7 +21,7 @@ modified bridge (MBRIDGE),
 and modified log (MLOG) penalties.
 }
 \details{
-Accepts a design matrix \eqn{X} and vector of responses \eqn{y},
+The package accepts a design matrix \eqn{X} and vector of responses \eqn{y},
 and produces the regularization path over a grid of values for the tuning parameter \code{lambda}.
 Also provides user-friendly processes for plotting, selecting tuning parameters using cross-validation or generalized information criterion (GIC),
 \eqn{\ell_2}-regularization, penalty weights, standardization and intercept.
