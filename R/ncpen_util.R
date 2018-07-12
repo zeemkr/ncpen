@@ -258,7 +258,7 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #' Convert a \code{\link{data.frame}} to a \code{ncpen} usable \code{\link{matrix}}.
 #'
 #' @description
-#' \code{to.x.matrix} automates the processes of \code{\link{to.indicators}} and \code{\link{interact.data}}.
+#' This automates the processes of \code{\link{to.indicators}} and \code{\link{interact.data}}.
 #' First, it converts categorical variables to a serise of indicators.
 #' All other numerical and logical variables are preserved.
 #' Then, if \code{interact.all == TRUE}, all the variables are interacted.
@@ -287,12 +287,14 @@ interact.data = function(data, base.cols = NULL, exclude.pair = NULL) {
 #'                 PRM  = c(0,1,0,1,0),
 #'                 PMI  = c(1,1,0,0,0));
 #'
-#' to.x.matrix(df, interact.all = TRUE, base.cols = c("age"), exclude.pair = list(c("FTHB", "PRM")));
+#' to.ncpen.x.mat(df, interact.all = TRUE,
+#'    base.cols = c("age"),
+#'    exclude.pair = list(c("FTHB", "PRM")));
 #'
 #'
 #'
 #' @export
-to.x.matrix = function(df, base = NULL, interact.all = FALSE, base.cols = NULL, exclude.pair  = NULL) {
+to.ncpen.x.mat = function(df, base = NULL, interact.all = FALSE, base.cols = NULL, exclude.pair  = NULL) {
      # prepay.data = read.csv(file = "https://raw.githubusercontent.com/zeemkr/data/master/mtg_term_2011_2012.csv");
      # head(prepay.data);
      # df = prepay.data[, 3:ncol(prepay.data)];
@@ -327,6 +329,48 @@ to.x.matrix = function(df, base = NULL, interact.all = FALSE, base.cols = NULL, 
      }
 
      return (as.matrix(buff));
+}
+
+
+#' @title
+#' Create ncpen Data Structure Using a Formula
+#'
+#'
+#' @description
+#' This function creates ncpen y \code{vector} and x \code{matrix} from data using formula.
+#'
+#' @param formula (formula) regression formula. Intercept will not be creagted.
+#' @param data (numeric matrix or data.frame) contains both y and X.
+#'
+#'
+#' @return List of y vector and x matrix.
+#'   \item{y.vec}{y \code{vector}}
+#'   \item{x.mat}{x \code{matrix}}
+#'
+#' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
+#'
+#'
+#' @examples
+#' data = data.frame(y = 1:5, x1 = 6:10, x2 = 11:15);
+#' formula = log(y) ~ log(x1) + x2;
+#' make.ncpen.data(formula, data);
+#'
+#' @export
+make.ncpen.data = function(formula, data) {
+     # compse y.vec and x.mat ---------------------------------
+     # formula = log(y) ~ log(x1) + x2;
+     # formula = y ~ .;
+     # data = data.frame(y = 1:5, x1 = 6:10, x2 = 11:15);
+
+     formula.str = as.character(formula);
+     y.var = as.formula(paste("~ 0 + ", formula.str[2]));
+     y.vec = model.matrix(y.var, data);
+
+     x.var = as.formula(paste(formula.str[2], "~ 0 + ", formula.str[3]));
+     x.mat = model.matrix(x.var, data);
+     #---------------------------------------------------------
+
+     return(list(y.vec = y.vec, x.mat = x.mat));
 }
 
 # df = data.frame(1:3, 4:6, 7:9, 10:12, 13:15);
