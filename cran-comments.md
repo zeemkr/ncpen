@@ -1,3 +1,20 @@
+## New version submission (7/10/2018)
+Update include
+* Additions of multinomial Logit and Cox proportional hazard models.
+* Performance improvements.
+* Minor bug fixes.
+
+### Test environments
+* Windows Server 2016, R 3.5.1
+* Windows 10, R 3.5.1
+* Ubuntu 14.04.5 LTS (on Travis CI), R 3.4.2
+
+### R CMD check results
+0 errors | 0 warnings | 0 notes
+
+
+
+
 ## Resubmission 2
 This is the second resubmission. We appreciate your patience in this process.
 We have addressed comments on our first resubmission.
