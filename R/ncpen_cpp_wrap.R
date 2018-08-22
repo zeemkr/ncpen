@@ -164,7 +164,7 @@ ncpen = function(y.vec,x.mat,
           stop("the number of zero (unpenalized) elements in pen.weight should be samller than the number of input variables")
      }
      ncpen.fit = native_cpp_ncpen_fun_(y.vec, x.mat, pen.weight, lambda, gamma, tau, 1,
-                                       df.max,iter.max, iter.max, iter.max, b.eps,k.eps,proj.min, TRUE, 1e-7, 1,
+                                       df.max,iter.max,b.eps,k.eps,proj.min,
                                        family, penalty,FALSE,rep(0,p),50);
      # ncpen.fit = ncpen.fun(y.vec, x.mat, pen.weight, lambda, gamma, tau, alp=1,
      #                       df.max,iter.max,b.eps,k.eps,proj.min,
@@ -311,7 +311,7 @@ cv.ncpen = function(y.vec,x.mat,
      penalty = match.arg(penalty)
      if(n.fold<2) stop("n.fold must be larger than 2")
      ncpen.fit = ncpen(y.vec,x.mat,family,penalty,lambda,n.lambda,r.lambda,pen.weight,
-                       tau,gamma,ridge,df.max,proj.min,iter.max,iter.max,iter.max,b.eps,k.eps, x.standardize,intercept)
+                       tau,gamma,ridge,df.max,proj.min,iter.max,b.eps,k.eps,x.standardize,intercept)
 
      n = dim(x.mat)[1]
      p = dim(x.mat)[2]
@@ -331,7 +331,7 @@ cv.ncpen = function(y.vec,x.mat,
                                               x.mat[-tset,],
                                               pen.weight,lambda,
                                               gamma,tau,1,
-                                              df.max,iter.max,b.eps,k.eps,proj.min, TRUE, 1e-7, 1,
+                                              df.max,iter.max,b.eps,k.eps,proj.min,
                                               family, penalty,FALSE,rep(0,p),50);
 
 

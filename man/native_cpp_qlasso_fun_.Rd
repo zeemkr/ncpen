@@ -4,8 +4,8 @@
 \alias{native_cpp_qlasso_fun_}
 \title{Native QLASSO function.}
 \usage{
-native_cpp_qlasso_fun_(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, iiter_max,
-  b_eps, k_eps, p_eff, q_rank, cut, c_eps)
+native_cpp_qlasso_fun_(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, b_eps, k_eps,
+  p_eff, q_rank)
 }
 \arguments{
 \item{q_mat}{.}
@@ -20,8 +20,6 @@ native_cpp_qlasso_fun_(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, iiter_max,
 
 \item{iter_max}{.}
 
-\item{iiter_max}{.}
-
 \item{b_eps}{.}
 
 \item{k_eps}{.}
@@ -29,10 +27,6 @@ native_cpp_qlasso_fun_(q_mat, l_vec, b_vec0, w_vec, lam, iter_max, iiter_max,
 \item{p_eff}{.}
 
 \item{q_rank}{.}
-
-\item{cut}{.}
-
-\item{c_eps}{.}
 }
 \value{
 .
