@@ -5,7 +5,8 @@
 \title{Native ncpen function.}
 \usage{
 native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max,
-  iter_max, b_eps, k_eps, p_eff, family, penalty, loc, ob_vec, div)
+  iter_max, qiter_max, qiiter_max, b_eps, k_eps, p_eff, cut, c_eps, add, family,
+  penalty, loc, ob_vec, div)
 }
 \arguments{
 \item{y_vec}{.}
@@ -26,11 +27,21 @@ native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max,
 
 \item{iter_max}{.}
 
+\item{qiter_max}{.}
+
+\item{qiiter_max}{.}
+
 \item{b_eps}{.}
 
 \item{k_eps}{.}
 
 \item{p_eff}{.}
+
+\item{cut}{.}
+
+\item{c_eps}{.}
+
+\item{add}{.}
 
 \item{family}{.}
 

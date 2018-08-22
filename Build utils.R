@@ -28,5 +28,8 @@ devtools::check(args = c("--use-valgrind"));
 # Release
 devtools::release();
 
-devtools::submit_cran();
+#################################
+#- Final submit
+# devtools::submit_cran();
+###################################
 
