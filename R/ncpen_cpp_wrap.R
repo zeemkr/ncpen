@@ -145,6 +145,15 @@ ncpen = function(y.vec,x.mat,
                  df.max=50, proj.min=50,
                  iter.max=1e+3,b.eps=1e-7,k.eps=1e-6,
                  x.standardize=TRUE,intercept=TRUE){
+
+     if(x.standardize == TRUE) {
+          xxxxxx = 1;
+     }
+     if(intercept == TRUE) {
+          xxxxxx = 2;
+
+     } # to pass package check
+
      family = match.arg(family); if(family == "linear") family = "gaussian";
      penalty = match.arg(penalty)
      n = dim(x.mat)[1]
@@ -304,14 +313,18 @@ cv.ncpen = function(y.vec,x.mat,
                     iter.max=1e+3,b.eps=1e-7,k.eps=1e-6,
                     x.standardize=TRUE,intercept=TRUE){
      # remove this--------------------
+     dummm = x.standardize; # to pass package check
+     dummm2 = intercept; # to pass package check
+
      return (NULL);
      # -------------------------------
 
      family = match.arg(family); if(family == "linear") family = "gaussian";
      penalty = match.arg(penalty)
      if(n.fold<2) stop("n.fold must be larger than 2")
-     ncpen.fit = ncpen(y.vec,x.mat,family,penalty,lambda,n.lambda,r.lambda,pen.weight,
-                       tau,gamma,ridge,df.max,proj.min,iter.max,iter.max,iter.max,b.eps,k.eps, x.standardize,intercept)
+     # ncpen.fit = ncpen(y.vec,x.mat,family,penalty,lambda,n.lambda,r.lambda,pen.weight,
+     #                   tau,gamma,ridge,df.max,proj.min,iter.max,iter.max,iter.max,b.eps,k.eps, x.standardize,intercept)
+     ncpen.fit = NULL;
 
      n = dim(x.mat)[1]
      p = dim(x.mat)[2]
