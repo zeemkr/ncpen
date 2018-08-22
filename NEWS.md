@@ -13,12 +13,6 @@ output: html_document
 2. Significant performance improvements.
 3. Minor bug fixes.
 
----
-title: "NEWS"
-author: "Dongshin Kim"
-date: "February 19, 2018"
-output: html_document
----
 
 ## ncpen R package
 

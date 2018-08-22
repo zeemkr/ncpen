@@ -8,9 +8,20 @@ using namespace arma;
 
 /* End of includes --------------------------------------------------------*/
 
+// Global functions ----------------------------
+bool NCPEN_DEVELOP_MODE = false;
+
+int set_dev_mode(bool dev_mode) {
+     NCPEN_DEVELOP_MODE = dev_mode;
+
+     return 0;
+}
+//----------------------------------------------------
+
 /*--------------------------------------------------------
 * Utility functions
 --------------------------------------------------------*/
+// This is for a scalar number.
 template <typename T> int sign(T val) {
      return (T(0) < val) - (val < T(0));
 }
@@ -26,80 +37,80 @@ template <typename T> int sign(T val) {
 //      return v;
 // }
 
-arma::vec rm_row(arma::uword rm_idx, arma::vec& v) {
-     //     Rcout << "rm_idx: " << rm_idx << std::endl;
-     arma::uword len = v.n_rows;
-     arma::vec ret(len-1);
-     ret.head(rm_idx) = v.head(rm_idx);
-     ret.tail(len - rm_idx - 1) = v.tail(len - rm_idx - 1);
+// arma::vec rm_row(arma::uword rm_idx, arma::vec& v) {
+//      //     Rcout << "rm_idx: " << rm_idx << std::endl;
+//      arma::uword len = v.n_rows;
+//      arma::vec ret(len-1);
+//      ret.head(rm_idx) = v.head(rm_idx);
+//      ret.tail(len - rm_idx - 1) = v.tail(len - rm_idx - 1);
+//
+//      return ret;
+// }
 
-     return ret;
-}
 
+// arma::vec rm_row(arma::vec rm_vec, arma::uword start, arma::uword end) {
+//      rm_vec = sort(rm_vec);
+//      arma::uword len = (end-start + 1) - rm_vec.n_rows;
+//      arma::vec ret(len);
+//
+//      arma::uword ii = 0;
+//      arma::uword rm_i = 0;
+//      for(arma::uword i = 0; i<len; i++) {
+//           if(rm_vec(rm_i) != i) {
+//                ret(ii) = i;
+//                ii++;
+//           } else {
+//                rm_i++;
+//           }
+//      }
+//
+//      return ret;
+// }
 
-arma::vec rm_row(arma::vec rm_vec, arma::uword start, arma::uword end) {
-     rm_vec = sort(rm_vec);
-     arma::uword len = (end-start + 1) - rm_vec.n_rows;
-     arma::vec ret(len);
+// int which_max(arma::vec& v) { //do not use uword to return -1
+//      if(v.n_rows <=0) return -1;
+//
+//      arma::uword max_idx = 0;
+//      double max_val = v[0];
+//
+//      for(arma::uword i=1; i<v.n_rows; i++) {
+//           if(v(i) > max_val) {
+//                max_val = v(i);
+//                max_idx = i;
+//           }
+//      }
+//
+//      return max_idx;
+// }
 
-     arma::uword ii = 0;
-     arma::uword rm_i = 0;
-     for(arma::uword i = 0; i<len; i++) {
-          if(rm_vec(rm_i) != i) {
-               ret(ii) = i;
-               ii++;
-          } else {
-               rm_i++;
-          }
-     }
-
-     return ret;
-}
-
-int which_max(arma::vec& v) { //do not use uword to return -1
-     if(v.n_rows <=0) return -1;
-
-     arma::uword max_idx = 0;
-     double max_val = v[0];
-
-     for(arma::uword i=1; i<v.n_rows; i++) {
-          if(v(i) > max_val) {
-               max_val = v(i);
-               max_idx = i;
-          }
-     }
-
-     return max_idx;
-}
-
-arma::uvec rm_row(arma::uvec rm_vec, arma::uword start, arma::uword end) {
-     rm_vec = sort(rm_vec);
-     arma::uword len = (end-start + 1) - rm_vec.n_rows;
-     arma::uvec ret(len);
-
-     arma::uword ii = 0;
-     arma::uword rm_i = 0;
-     for(arma::uword i = 0; ; i++) {
-          //Rcout << "i: " <<i<<"  ii: " <<ii<<"  rm_i: " <<rm_i <<endl;
-          if(rm_i == rm_vec.n_rows) {
-               for(;ii<len;) {
-                    ret(ii) = i;
-                    ii++;
-                    i++;
-               }
-               break;
-          }
-
-          if(rm_vec(rm_i) != i) {
-               ret(ii) = i;
-               ii++;
-          } else {
-               rm_i++;
-          }
-     }
-
-     return ret;
-}
+// arma::uvec rm_row(arma::uvec rm_vec, arma::uword start, arma::uword end) {
+//      rm_vec = sort(rm_vec);
+//      arma::uword len = (end-start + 1) - rm_vec.n_rows;
+//      arma::uvec ret(len);
+//
+//      arma::uword ii = 0;
+//      arma::uword rm_i = 0;
+//      for(arma::uword i = 0; ; i++) {
+//           //Rcout << "i: " <<i<<"  ii: " <<ii<<"  rm_i: " <<rm_i <<endl;
+//           if(rm_i == rm_vec.n_rows) {
+//                for(;ii<len;) {
+//                     ret(ii) = i;
+//                     ii++;
+//                     i++;
+//                }
+//                break;
+//           }
+//
+//           if(rm_vec(rm_i) != i) {
+//                ret(ii) = i;
+//                ii++;
+//           } else {
+//                rm_i++;
+//           }
+//      }
+//
+//      return ret;
+// }
 
 // call by value
 // arma::vec arma_u2d(arma::uvec& v) {
@@ -386,6 +397,8 @@ pen_fun_ptr get_pen_fun_ptr(std::string name) {
           return mlog_pen_fun;
      } else if(name.compare("lasso") == 0) {
           return lasso_pen_fun;
+     } else if(name.compare("ridge") == 0) {
+          return scad_pen_fun;
      } else {
           throw std::invalid_argument("Invalid penalty funtion option. Only available \"scad\", \"mcp\", \"tlp\", \"classo\", \"sridge\", \"mbridge\", \"mlog\" or \"lasso\".");
           return NULL;
@@ -409,6 +422,8 @@ pen_grad_fun_ptr get_pen_grad_fun_ptr(std::string name) {
           return mlog_pen_grad_fun;
      } else if(name.compare("lasso") == 0) {
           return lasso_pen_grad_fun;
+     } else if(name.compare("ridge") == 0) {
+          return scad_pen_grad_fun;
      } else {
           throw std::invalid_argument("Invalid penalty gradient funtion option. Only available \"scad\", \"mcp\", \"tlp\", \"classo\", \"sridge\", \"mbridge\", \"mlog\" or \"lasso\".");
           return NULL;
@@ -882,7 +897,12 @@ arma::vec nr_fun(std::string fam, arma::vec& y_vec, arma::mat& x_mat, double ite
      obj_hess_fun_ptr obj_hess_fun = get_obj_hess_fun_ptr(fam);
 
      //   b.vec = rep(0,dim(x.mat)[2])
-     arma::vec b_vec = arma::zeros<arma::vec>(x_mat.n_cols);
+     arma::vec b_vec;
+     if(fam == "cox") {
+          b_vec = arma::zeros<arma::vec>(x_mat.n_cols-1);
+     } else {
+          b_vec = arma::zeros<arma::vec>(x_mat.n_cols);
+     }
      //   for(iter in 1:iter.max){
      arma::uword iter = 0;
      for(;iter <iter_max; iter++) {
@@ -922,8 +942,14 @@ double soft_fun(double est, double del) {
 // #######################################################
 double get_qlasso_fun_est(int pos, arma::mat& q_mat, arma::vec& b_vec, arma::vec& l_vec) {
      //est = -(2*sum(q.mat[-pos,pos]*b.vec[-pos])+l.vec[pos])/q.mat[pos,pos]/2;
-     arma::vec q_mat_col = q_mat.col(pos);
-     return -(2*arma::sum(rm_row(pos, q_mat_col)%rm_row(pos, b_vec))+l_vec(pos))/q_mat(pos, pos)/2;
+
+     // arma::vec q_mat_col = q_mat.col(pos);
+     // return -(2*arma::sum(rm_row(pos, q_mat_col)%rm_row(pos, b_vec))+l_vec(pos))/q_mat(pos, pos)/2;
+
+     arma::vec q_vec1 = q_mat.col(pos); q_vec1.shed_row(pos);
+     arma::vec b_vec1 = b_vec; b_vec1.shed_row(pos);
+
+     return -(2*arma::sum(q_vec1%b_vec1)+l_vec(pos))/q_mat(pos, pos)/2;
 }
 
 double get_qlasso_fun_del(int pos, arma::mat& q_mat, arma::vec& w_vec, double lam) {
@@ -938,7 +964,8 @@ double get_qlasso_fun_del(int pos, arma::mat& q_mat, arma::vec& w_vec, double la
 // Rcpp::List qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec& w_vec,
 //                                   double lam, double iter_max, double b_eps, double k_eps, arma::uword p_eff, arma::uword q_rank) {
 int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec& w_vec,
-               double lam, double iter_max, double b_eps, double k_eps, arma::uword p_eff, arma::uword q_rank, p_ncpen_ret& ret_buff) {
+               double lam, double iter_max, double iiter_max, double b_eps, double k_eps,
+               arma::uword p_eff, arma::uword q_rank, bool cut, double c_eps, p_ncpen_ret& ret_buff) {
 
      arma::vec b_vec = b_vec0;
      //   p = length(b.vec)
@@ -957,24 +984,27 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
      arma::vec p_vec(b_vec.n_rows);
      bool kkt0 = false;
      bool kkt1 = false;
-     // Vriables for loop resue----------------------
-
+     // Variables for loop resue----------------------
      arma::uword iter = 0;
+     arma::uvec a_set;
      //   for(iter in 1:iter.max){#iter
      for(;iter < iter_max; iter++){ // iter
           // ##### active set
           //p0.eff = p.eff                                  ### (Add)
           arma::uword pp_eff = p_eff; //### p0.eff => pp.eff
-          //ob.vec = b.vec                                  ### (Mod) oob.vec => ob.vec
-          ob_vec = b_vec; // (Mod) oob.vec => ob.vec
+
           //a1.set = c(1:p)[(b.vec!=0)&(w.vec!=0)]
           arma::uvec a1_set = arma::find( ((b_vec!= 0) % (w_vec!=0))> 0 );
-          //a2.set = c(1:p)[(b.vec!=0)&(w.vec==0)]
-          arma::uvec a2_set = arma::find( ((b_vec!= 0) % (w_vec==0))> 0 );
+          arma::uvec a2_set = arma::find(w_vec == 0);
+          a_set = arma::join_cols(a1_set, a2_set);
           //for(iiter in 1:iter.max){#iiter
           //for(arma::uword iiter = 0; iiter < iter_max; iiter++) { // iiter
           arma::uword iiter = 0;
-          for(; iiter < iter_max; iiter++) { // iiter
+          bool con = false;
+          for(; iiter < iiter_max; iiter++) { // iiter
+               ob_vec = b_vec;
+               //ab.vec = b.vec[a.set]
+               arma::vec ab_vec = b_vec(a_set);
                //for(pos in a1.set){
                for(arma::uword idx = 0; idx < a1_set.n_rows; idx++) {
                     arma::uword pos = a1_set(idx);
@@ -1001,38 +1031,32 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
                     //b.vec[pos] = est
                     b_vec(pos) = est;
                }
-               //if(sum(abs(b.vec-ob.vec))<b.eps) break           ### (Mod) oob.vec => ob.vec
-               if(arma::sum(arma::abs(b_vec-ob_vec))<b_eps) {break;}
+
+               con = arma::sum(arma::abs(b_vec-ob_vec)) < b_eps;
+               // if(con) break                                                   ### add con
+               if(con) break;
+
                //#####################################
                //##### projection: reduced model #####
                //#####################################
-               //b.vec[abs(b.vec)<b.eps] = 0                                ### add this
-               b_vec(arma::find(arma::abs(b_vec) < b_eps)).fill(0);
-               //ob.vec = b.vec                                   ### (Mod) oob.vec => ob.vec
-               // ob_vec = b_vec; // deleted 20180707
+               //b.vec[abs(b.vec)<c.eps] = 0                                ### add this
+               if(cut == true) {
+                    b_vec(arma::find(arma::abs(b_vec) < c_eps)).fill(0);
+               }
 
                //############################################# Add
                //##### iiter projection
                //if(iiter>p0.eff){
-               if(iiter > pp_eff){ //### p0.eff => pp.eff
+               if(iiter > pp_eff) { //### p0.eff => pp.eff
+                    arma::vec oob_vec = b_vec;
                     //a.set = c(1:p)[b.vec!=0]
-                    arma::uvec a_set = arma::find(b_vec != 0);
+                    a_set = arma::find(b_vec != 0);
+
                     //if(length(a.set)<q.rank){
-                    if(a_set.n_rows < q_rank){ //### please check the inequality here! if length(a.set)>q.rank=n then the inverse may not exist!!!
+                    if(a_set.n_rows <= q_rank){ //### please check the inequality here! if length(a.set)>q.rank=n then the inverse may not exist!!!
                          //pb.vec = b.vec*0
                          arma::vec pb_vec = arma::zeros<arma::vec>(b_vec.n_rows);
 
-                         //[s 2017011]
-                         // //pb.vec[a.set] = -solve(q.mat[a.set,a.set])%*%(l.vec[a.set]+lam*w.vec[a.set]*sign(b.vec[a.set]))/2
-                         // pb_vec(a_set) = -arma::inv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
-                         //
-                         // //pbf = t(pb.vec)%*%(q.mat)%*%pb.vec + sum(l.vec*pb.vec)+lam*sum(abs(w.vec*pb.vec))
-                         // double pbf = arma::as_scalar(pb_vec.t()*q_mat*pb_vec) + arma::sum(l_vec%pb_vec)+lam*arma::sum(arma::abs(w_vec%pb_vec));
-                         //
-                         // //bf  = t( b.vec)%*%(q.mat)%*% b.vec + sum(l.vec* b.vec)+lam*sum(abs(w.vec* b.vec))
-                         // double bf = arma::as_scalar(b_vec.t()*q_mat*b_vec) + arma::sum(l_vec%b_vec)+lam*arma::sum(arma::abs(w_vec%b_vec));
-
-                         //pb.vec[a.set] = -ginv(q.mat[a.set,a.set])%*%(l.vec[a.set]+lam*w.vec[a.set]*sign(b.vec[a.set]))/2                  #### solve -> ginv
                          //pb_vec(a_set) = -arma::pinv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
                          pb_vec(a_set) = -arma::inv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
                          //pbf = t(pb.vec[a.set])%*%(q.mat[a.set,a.set])%*%pb.vec[a.set] + sum(l.vec[a.set]*pb.vec[a.set])+lam*sum(abs(w.vec[a.set]*pb.vec[a.set]))
@@ -1046,25 +1070,33 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
                               //ob.vec = b.vec = pb.vec;
                               // ob_vec = pb_vec; # deleted 20180707
                               b_vec = pb_vec;
-                              //pp.eff = p.eff                                                      ### add
-                              pp_eff = p_eff;                                                      //### add
                               //cat("projection on active set in quad.lasso works.","lam=",lam,"df=",sum(b.vec!=0),"\n")  ### add "lam="
-                              //Rcout << "projection on active set in quad.lasso works. lam=" << lam << ", df=" << sum(b_vec!=0) << std::endl;
+                              if(NCPEN_DEVELOP_MODE == true) {
+                                 Rcpp::Rcout << "Projection on active set in qlasso_fun works. lam=" << lam << ", df=" << sum(b_vec!=0) << ", iiter=" << iiter << std::endl;
+                              }
                               //} else { p0.eff = 2*p0.eff; cat("iiter projenction fails","\n");  }
                          } else {
                               //p0.eff = 2*p0.eff;
-                              pp_eff = 2*pp_eff;
                               //cat("projection on active set in quad.lasso fails.","lam=",lam,"df=",sum(b.vec!=0),"\n")  ### add "lam="
-                              //Rcout << "projection on active set in quad.lasso fails. lam" << lam << ", df=" << sum(b_vec!=0) << std::endl;
+                              if(NCPEN_DEVELOP_MODE == true) {
+                                 Rcpp::Rcout << "projection on active set in qlasso_fun fails. lam" << lam << ", df=" << sum(b_vec!=0) << ", iiter=" << iiter << std::endl;
+                              }
+
+                              b_vec = oob_vec;
                          }
+                         pp_eff = 2*pp_eff;
                     }
                }
-               //############################################# Add
-               // if(sum(abs(b.vec-ob.vec))<b.eps) break ### iiter break
-               if(arma::sum(arma::abs(b_vec-ob_vec))<b_eps) {break;}
+
+               con = arma::sum(arma::abs(b_vec-ob_vec)) < b_eps;
+               // if(con) break                                                   ### add con
+               if(con) break;
 
           }//iiter
-          //Rcout << "CPP native_qlasso_fun | iiter: " << iiter << std::endl;
+
+          if(NCPEN_DEVELOP_MODE == true) {
+               Rcpp::Rcout << "qlasso_fun : a_set=" << a_set.n_rows << ", lambda=" << lam << ", iiter=" << iiter << ", con=" << con << std::endl;
+          }
 
           //b.vec[abs(b.vec)<1e-7] = 0      ### (Add)
           //[s/e 20170111] b_vec(arma::find(arma::abs(b_vec) < SMALL_NUMBER)).fill(0);
@@ -1073,12 +1105,12 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
           //##### null set
           //###################
           //n1.set = c(1:p)[(b.vec==0)&(w.vec!=0)]
-          arma::uvec n1_set = arma::find( ((b_vec== 0) % (w_vec!=0))> 0 );
-          //n2.set = c(1:p)[(b.vec==0)&(w.vec==0)]
-          arma::uvec n2_set = arma::find( ((b_vec== 0) % (w_vec==0))> 0 );
+          arma::uvec n_set = arma::find( ((b_vec==0) % (w_vec!=0))> 0 );
+
+
           //for(pos in n1.set){
-          for(arma::uword idx = 0; idx < n1_set.n_rows; idx++) {
-               arma::uword pos = n1_set(idx);
+          for(arma::uword idx = 0; idx < n_set.n_rows; idx++) {
+               arma::uword pos = n_set(idx);
                //est = -(2*sum(q.mat[-pos,pos]*b.vec[-pos])+l.vec[pos])/q.mat[pos,pos]/2
                //double est = -(2*arma::sum(rm_row(pos, q_mat_col)%rm_row(pos, b_vec))+l_vec(pos))/q_mat(pos, pos)/2;
                double est = get_qlasso_fun_est(pos, q_mat, b_vec, l_vec);
@@ -1089,18 +1121,11 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
                b_vec(pos) = soft_fun(est, del);
           }
 
-          //for(pos in n2.set){
-          for(arma::uword idx = 0; idx < n2_set.n_rows; idx++) {
-               arma::uword pos = n2_set(idx);
-               //est = -(2*sum(q.mat[-pos,pos]*b.vec[-pos])+l.vec[pos])/q.mat[pos,pos]/2
-               //double est = -(2*arma::sum(rm_row(pos, q_mat_col)%rm_row(pos, b_vec))+l_vec(pos))/q_mat(pos, pos)/2;
-               double est = get_qlasso_fun_est(pos, q_mat, b_vec, l_vec);
-               //b.vec[pos] = est
-               b_vec(pos) = est;
-          }
 
           //b.vec[abs(b.vec)<1e-7] = 0    ### (Add)
-          b_vec(arma::find(arma::abs(b_vec) < b_eps)).fill(0); //### 1e-7 => b.eps
+          if(cut == true) {
+               b_vec(arma::find(arma::abs(b_vec) < c_eps)).fill(0);
+          }
 
 
           // ##################################
@@ -1108,21 +1133,14 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
           // ##################################
           //if(iter>p.eff){
           if(iter > p_eff){ //### please check the inequality here! if length(a.set)>q.rank=n then the inverse may not exist!!!
+               arma::vec oob_vec = b_vec;
                //a.set = c(1:p)[b.vec!=0]
                arma::uvec a_set = arma::find(b_vec != 0);
-               //if(length(a.set)<q.rank){
-               if(a_set.n_rows<q_rank){
+               //if(length(a.set)<=q.rank){
+               if(a_set.n_rows <= q_rank) {
                     //pb.vec = b.vec*0
                     arma::vec pb_vec = b_vec*0;
-                    //[s 20170111]
-                    // //pb.vec[a.set] = -solve(q.mat[a.set,a.set])%*%(l.vec[a.set]+lam*w.vec[a.set]*sign(b.vec[a.set]))/2        ### (Mod) Check parentheses
-                    // pb_vec(a_set) = -arma::inv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
-                    // //pbf = t(pb.vec)%*%(q.mat)%*%pb.vec + sum(l.vec*pb.vec)+lam*sum(abs(w.vec*pb.vec))
-                    // double pbf = arma::as_scalar(pb_vec.t()*q_mat*pb_vec) + arma::sum(l_vec%pb_vec)+lam*arma::sum(arma::abs(w_vec%pb_vec));
-                    // //bf  = t( b.vec)%*%(q.mat)%*% b.vec + sum(l.vec* b.vec)+lam*sum(abs(w.vec* b.vec))
-                    // double bf = arma::as_scalar(b_vec.t()*q_mat*b_vec) + arma::sum(l_vec%b_vec)+lam*arma::sum(arma::abs(w_vec%b_vec));
 
-                    //pb.vec[a.set] = -ginv(q.mat[a.set,a.set])%*%(l.vec[a.set]+lam*w.vec[a.set]*sign(b.vec[a.set]))/2                  ### solve => ginv
                     //pb_vec(a_set) = -arma::pinv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
                     pb_vec(a_set) = -arma::inv(q_mat(a_set, a_set))*(l_vec(a_set)+lam*w_vec(a_set)%arma::sign(b_vec(a_set)))/2;
                     ///pbf = t(pb.vec[a.set])%*%(q.mat[a.set,a.set])%*%pb.vec[a.set] + sum(l.vec[a.set]*pb.vec[a.set])+lam*sum(abs(w.vec[a.set]*pb.vec[a.set]))
@@ -1135,19 +1153,28 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
                          //b.vec = pb.vec;
                          b_vec = pb_vec;
                          //cat("projection on full set in quad.lasso works.","lam=",lam,"df=",sum(b.vec!=0),"\n")  ### add "lam="
-                         //Rcout << "projection on full set in quad.lasso works. lam=" << lam << ", df=" << sum(b_vec!=0) << std::endl;
+                         if(NCPEN_DEVELOP_MODE == true) {
+                              Rcpp::Rcout << "Projection on full set in qlasso_fun works. lam=" << lam << ", df=" << sum(b_vec!=0) << ", iter=" << iter << std::endl;
+                         }
                     } else {
-                         //p.eff = 2*p.eff;
-                         p_eff = 2*p_eff;
+                         b_vec = oob_vec;
                          //cat("projection on full set in quad.lasso fails.","lam=",lam,"df=",sum(b.vec!=0),"\n")  ### add "lam="
+                         if(NCPEN_DEVELOP_MODE == true) {
+                              Rcpp::Rcout << "Projection on full set in qlasso_fun fails. lam" << lam << ", df=" << sum(b_vec!=0) << ", iter=" << iter << std::endl;
+                         }
                          //Rcout << "projection on full set in quad.lasso fails. lam" << lam << ", df=" << sum(b_vec!=0) << std::endl;
                     }
+                    //p.eff = 2*p.eff;
+                    p_eff = 2*p_eff;
                }
           }
           //##### iter projection
 
           //b.vec[abs(b.vec)<b.eps] = 0                                ### add this
-          b_vec(arma::find(arma::abs(b_vec) < b_eps)).fill(0); //### 1e-7 => b.eps
+          if(cut == true) {
+               b_vec(arma::find(arma::abs(b_vec) < c_eps)).fill(0);
+          }
+
 
           // #####################
           // ##### check KKT #####
@@ -1160,10 +1187,8 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
           g_vec = 2*q_mat*b_vec+l_vec;
           //p.vec = lam*w.vec*sign(b.vec)
           p_vec = lam*w_vec%arma::sign(b_vec);
-          //a.set = c(1:p)[b.vec!=0]                                               #### (Add)
-          arma::uvec a_set = arma::find(b_vec!=0); //                                               #### (Add
-          //n.set = c(1:p)[b.vec==0]                                               #### (Add)
-          arma::uvec n_set = arma::find(b_vec==0); //                                               #### (Add
+          a_set = arma::find( ((b_vec!=0) + (w_vec==0)) >0 ); //                                               #### (Add
+          n_set = arma::find( ((b_vec==0) % (w_vec!=0)) >0 ); //                                               #### (Add
           //kkt0 = sum(abs((g.vec[a.set]+p.vec[a.set]))<k.eps)==length(a.set)      #### (Mod) sum => sum(abs( )); last sum => length
           kkt0 = arma::sum(arma::abs(g_vec(a_set)+p_vec(a_set))<k_eps)==a_set.n_rows;    //  #### (Mod) sum => sum(abs( )); last sum => length
           //kkt0 = get_kkt0(b_vec, g_vec, p_vec, k_eps);
@@ -1181,6 +1206,10 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
           // #ob.vec = b.vec                            ### (Del)
      }//#iter
 
+     if(NCPEN_DEVELOP_MODE == true) {
+          // bool con2 = kkt0&&kkt1;
+          Rcpp::Rcout << "qlasso_fun : a_set=" << a_set.n_rows << ", lambda=" << lam << ", iter=" << iter << ", kkt0=" << kkt0 << ", kkt1=" << kkt1 << std::endl;
+     }
      //return(list(g.vec=g.vec+p.vec,b.vec=b.vec,f.vec=f.vec[1:iter],con=(kkt0&kkt1)))
      arma::vec f_vec_head = f_vec.head(iter);
      // return Rcpp::List::create(Rcpp::Named("g.vec") = g_vec + p_vec,
@@ -1200,12 +1229,13 @@ int qlasso_fun(arma::mat& q_mat, arma::vec& l_vec, arma::vec& b_vec0, arma::vec&
 // pointwise nonconvex penalized estimation
 // p.ncpen.fun = function(y.vec,x.mat,b.vec,w.vec,lam,gam,tau,iter.max,b.eps,k.eps,p.eff){
 int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec& w_vec,
-                double lam, double gam, double tau, double alp, double iter_max, double b_eps, double k_eps, arma::uword p_eff,
+                double lam, double gam, double tau, double alp, double iter_max, double qiter_max, double qiiter_max,
+                double b_eps, double k_eps, arma::uword p_eff, bool cut, double c_eps,
                 obj_fun_ptr obj_fun, obj_grad_fun_ptr obj_grad_fun, obj_hess_fun_ptr obj_hess_fun,
                 pen_fun_ptr pen_fun, pen_grad_fun_ptr pen_grad_fun, p_ncpen_ret& ret_buff) {
 
-     //q.rank = length(y.vec)        ### (Mod)
-     int q_rank = y_vec.n_rows;
+     //q.rank = dim(x.mat)[2]        ### (Mod)
+     int q_rank = x_mat.n_cols;
      //p = length(b.vec)             ### (Add)
      arma::vec b_vec = b_vec0;
      //int p = b_vec.n_rows;
@@ -1221,6 +1251,8 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
      //f.vec = rep(0,iter.max)
      arma::vec f_vec = zeros<vec>(iter_max);
 
+     arma::uvec a_set;
+
      //for(iter in 1:iter.max){
      arma::uword iter = 0;
      for(; iter<iter_max; iter++) {
@@ -1233,8 +1265,6 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           w_diag_mat.diag() = w_vec;
           q_mat = h_mat/2 + (1-alp)*lam*w_diag_mat;
 
-          //l.vec = g.vec - drop(h.mat%*%b.vec)+w.vec*pen.grad.fun(b.vec,lam,gam,tau)-lam*w.vec*sign(b.vec)   ## (Mod)
-          //arma::vec l_vec = g_vec - h_mat*b_vec +     w_vec%pen_grad_fun(b_vec, lam, gam, tau)-      lam*w_vec%arma::sign(b_vec);
           //l.vec = g.vec - drop(h.mat%*%b.vec) + alp*w.vec*pen.grad.fun(b.vec,lam,gam,tau) - alp*lam*w.vec*sign(b.vec)
           arma::vec l_vec = g_vec - h_mat*b_vec + alp*w_vec%pen_grad_fun(b_vec, lam, gam, tau) - alp*lam*w_vec%arma::sign(b_vec);
 
@@ -1242,12 +1272,12 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           if(pen_fun == sridge_pen_fun) {
                q_mat = q_mat + gam*w_diag_mat/2;
                l_vec = l_vec - gam*w_vec%b_vec;
-               Rcpp::Rcout << "pen_fun == sridge_pen_fun works." << endl;
+               // Rcpp::Rcout << "pen_fun == sridge_pen_fun works." << endl;
           }
 
           //b.vec = qlasso.fun(q.mat,l.vec,b.vec,w.vec,lam*alp,iter.max,b.eps,k.eps,p.eff,q.rank)$b.vec
           p_ncpen_ret ret_buff;
-          qlasso_fun(q_mat, l_vec, b_vec, w_vec, lam*alp, iter_max, b_eps, k_eps, p_eff, q_rank, ret_buff);
+          qlasso_fun(q_mat, l_vec, b_vec, w_vec, lam*alp, qiter_max, qiiter_max, b_eps, k_eps, p_eff, q_rank, cut, c_eps, ret_buff);
           b_vec = ret_buff.b_vec;
 
           //t.vec = w.vec*pen.grad.fun(ob.vec,lam,gam,tau)-lam*w.vec*sign(ob.vec)                          ### (Add)  use ob.vec
@@ -1280,7 +1310,9 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           //if(ob>(oob+b.eps)){#mlqa
           if(ob>oob+b_eps) {
                //cat("starting golden section algorithm in pncpen.fun","\n")
-               //Rcout << "starting golden section algorithm in pncpen.fun" << std::endl;
+               if(NCPEN_DEVELOP_MODE == true) {
+                    Rcpp::Rcout << "starting golden section algorithm in p_ncpen_fun." << std::endl;
+               }
                //for(iiter in 1:iter.max){
                //for(arma::uword iiter = 0; iiter < iter_max; iiter++) { // iiter
 
@@ -1336,10 +1368,9 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           //p.vec = alp*lam*w.vec*sign(b.vec);
           p_vec = alp*lam*w_vec%arma::sign(b_vec);
 
-          //a.set = c(1:p)[b.vec!=0]                                            # Add
-          arma::uvec a_set = arma::find(b_vec!=0);
-          //n.set = c(1:p)[b.vec==0]                                            # Add
-          arma::uvec n_set = arma::find(b_vec==0);
+          a_set = arma::find( ((b_vec!=0) + (w_vec==0)) >0 ); //                                               #### Add
+          arma::uvec n_set = arma::find( ((b_vec==0) % (w_vec!=0)) >0 ); //                                               #### (Add
+
           //kkt0 = sum(abs(g.vec[a.set]+p.vec[a.set])<k.eps)==length(a.set)     # Mod sum(abs( )<k.eps)==  a.set; last sum => length
           kkt0 = arma::sum(arma::abs(g_vec(a_set)+p_vec(a_set))<k_eps) == a_set.n_rows;
           //kkt1 = sum(abs(g.vec[n.set])-alp*lam*w.vec[n.set]<k.eps)==length(n.set)
@@ -1349,6 +1380,12 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           //########## moved to inside for loop; was outside
 
           //#if(sum(abs(b.vec-ob.vec))<b.eps) break                            ### (Del)
+          if(NCPEN_DEVELOP_MODE == true) {
+               //bool con2 = kkt0&&kkt1;
+               Rcpp::Rcout << "_________p_ncpen_fun : a_set=" << a_set.n_rows <<
+                    ", lambda=" << lam << ", iter=" << iter << ", kkt0=" << kkt0 << ", kkt1=" << kkt1 << std::endl;
+          }
+
           //if(kkt0&kkt1) break #iter break                                    ### (Add)
           if(kkt0&&kkt1) {
                iter++; // for f_vec.head(iter);
@@ -1357,7 +1394,12 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
           //ob.vec = b.vec
           ob_vec = b_vec;
      }
-     //Rcout << "CPP p_ncpen_fun | iter:" << iter << std::endl;
+
+     if(NCPEN_DEVELOP_MODE == true) {
+          //bool con2 = kkt0&&kkt1;
+          Rcpp::Rcout << "_________p_ncpen_fun : a_set=" << a_set.n_rows <<
+               ", lambda=" << lam << ", iter=" << iter << ", kkt0=" << kkt0 << ", kkt1=" << kkt1 << std::endl;
+     }
 
      //return(list(g.vec=g.vec+p.vec,b.vec=b.vec,f.vec=f.vec[1:iter],con=(kkt0&kkt1)))
      arma::vec f_vec_head = f_vec.head(iter);
@@ -1385,8 +1427,8 @@ int p_ncpen_fun(arma::vec& y_vec, arma::mat& x_mat, arma::vec& b_vec0, arma::vec
 //                      d.max,iter.max,b.eps,k.eps,p.eff,fam,pen,loc,ob.vec,div){
 
 int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& lam_vec0,
-              double gam, double tau, double alp, arma::uword d_max, double iter_max, double b_eps, double k_eps,
-              arma::uword p_eff,
+              double gam, double tau, double alp, arma::uword d_max, double iter_max, double qiter_max, double qiiter_max, double b_eps, double k_eps,
+              arma::uword p_eff, bool cut, double c_eps, arma::uword add,
               std::string fam, std::string pen,
               bool loc, arma::vec& ob_vec, int div,
               ncpen_ret& ret_buff) {
@@ -1404,29 +1446,45 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
      arma::vec w_vec = w_vec0;
      arma::vec lam_vec = lam_vec0;
 
-     //n = dim(x.mat)[1]
-     //arma::uword n = x_mat.n_rows; // not used.
-     //p = dim(x.mat)[2]
+
+
+     // ##### mod
+     // if(fam!="cox"){ p = dim(x.mat)[2] } else { p = dim(x.mat)[2]-1 }
      arma::uword p = x_mat.n_cols;
+     if(fam == "cox") {p = p-1; } // last column is ceonsored indicator vector
+
+     arma::vec b_vec(p);
+     arma::uvec a_set;
+
+     if(pen == "ridge") {
+          b_vec.fill(0.001);
+          a_set = linspace<arma::uvec>(0, p-1, p);
+          d_max = p;
+          cut = false;
+     } else {
+          b_vec.fill(0);
+          a_set = arma::find( ((b_vec!=0) + (w_vec==0)) >0 );
+          arma::mat ax_mat;
+          if(a_set.n_rows > 0) {
+               if(fam != "cox") {
+                    ax_mat = x_mat.cols(a_set);
+               } else {
+                    arma::uvec ca_set = a_set;
+                    ca_set.resize(ca_set.n_rows+1);
+                    // index starts from 0.
+                    // At the beginning, p = p-1.
+                    // So, p is the index for the last columin of x_mat which contains censored indicators.
+                    ca_set(ca_set.n_rows-1) = p;
+                    ax_mat = x_mat.cols(ca_set);
+               }
+               b_vec(a_set) = nr_fun(fam, y_vec, ax_mat, iter_max, b_eps);
+          }
+
+     }
+
+     arma::uvec n_set = arma::find( ((b_vec==0) % (w_vec!=0)) >0 );
      //r = length(lam.vec)
      arma::uword r = lam_vec.n_rows;
-
-     // // if(fam=="multinomial"){  ####
-     // if(fam == "multinomial") {
-     // //   k = max(y.vec);
-     //      arma::uword k = arma::max(y_vec);
-     // //   p = (k-1)*dim(x.mat)[2]
-     //      p = (k-1)*x_mat.n_cols;
-     // //   x.mat = kronecker(diag(k-1),x.mat)
-     //      x_mat = arma::kron(arma::diagmat(arma::ones<arma::vec>(k-1)), x_mat);
-     // //   w.vec = rep(w.vec, k-1);
-     //      arma::mat w_mat(w_vec.n_rows, k-1);
-     //      w_mat.each_col() = w_vec;
-     //      w_vec = arma::vectorise(w_mat);
-     // }
-     if(fam == "cox") {
-          p = p-1; // last column is ceonsored indicator vector
-     }
 
      //b.mat = matrix(0,p,r)
      arma::mat b_mat = arma::zeros<arma::mat>(p, r);
@@ -1438,8 +1496,6 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
      arma::vec f_vec = arma::zeros<arma::vec>(r);
      //d.vec = rep(0,r)
      arma::vec d_vec = arma::zeros<arma::vec>(r);
-     //b.vec = w.vec*0
-     arma::vec b_vec = arma::zeros<arma::vec>(p);
 
      //arma::vec g_vec(b_vec.n_rows);
      //arma::vec p_vec(b_vec.n_rows);
@@ -1452,8 +1508,6 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
           //Rcout <<"for pos:" <<pos<<endl;
           //lam = lam.vec[pos]
           double lam = lam_vec(pos);
-          //cat("lam=",lam,"\n")
-          //Rcout << "lam=" << lam << std::endl;
 
           //if(loc==TRUE) b.vec = ob.vec
           if(loc == true) {b_vec = ob_vec;}
@@ -1464,7 +1518,7 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
           arma::vec p_vec = alp*lam*w_vec%arma::sign(b_vec);
 
           //a.set = c(1:p)[b.vec!=0]
-          arma::uvec a_set = arma::find(b_vec!=0);
+          a_set = arma::find(b_vec!=0);
           //n.set = c(1:p)[b.vec==0]
           arma::uvec n_set = arma::find(b_vec==0);
           //kkt0 = sum(abs(g.vec[a.set]+p.vec[a.set])<k.eps)==length(a.set)     # Mod sum(abs( )<k.eps)==  a.set; last sum => length
@@ -1473,24 +1527,34 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
           kkt1 = arma::sum(arma::abs(g_vec(n_set))-alp*lam*w_vec(n_set)<k_eps)== n_set.n_rows;
 
           //if(!(kkt0&kkt1)){
+          arma::uword iter = 0;
           if(!(kkt0&&kkt1)){
                //for(iter in 1:iter.max){#iter
-               arma::uword iter = 0;
                for(; iter < iter_max; iter++) { //#iter
                     //p.set = n.set[(abs(g.vec[n.set])-alp*lam*w.vec[n.set])>k.eps]
                     arma::uvec p_set = n_set( arma::find( (arma::abs(g_vec(n_set))-alp*lam*w_vec(n_set))>k_eps ) );
-                    //Rcout << "1" << std::endl;
-                    //add = p.set[which.max(abs(g.vec[p.set]))]
-                    arma::vec abs_g_p = arma::abs(g_vec(p_set));
-                    if(abs_g_p.n_rows > 0) {
-                         //Rcout << "abs_g_p.n_rows = " << abs_g_p.n_rows << std::endl;
-                         arma::uword add = p_set(which_max(abs_g_p));
-                         //Rcout << "3" << std::endl;
-                         //a.set = c(a.set,add)
-                         //a_set.insert_rows(a_set.n_rows, 1);
-                         a_set.resize(a_set.n_rows + 1);
-                         //Rcout << "4" << std::endl;
-                         a_set(a_set.n_rows-1) = add;
+
+                    //if(length(p.set)<=1){
+                    if(p_set.n_rows == 1) {
+                         //ad = p.set[which.max(abs(g.vec[p.set]))]
+                         arma::vec abs_g_p = arma::abs(g_vec(p_set));
+                         if(abs_g_p.n_rows > 0) {
+                              //arma::uword ad = p_set(which_max(abs_g_p)); // ad is scalar
+                              arma::uword ad = p_set(arma::index_max(abs_g_p)); // ad is scalar
+                              //a.set = c(a.set,ad) ### mod add => ad
+                              a_set.resize(a_set.n_rows + 1);
+                              a_set(a_set.n_rows-1) = ad;
+                         }
+                    } else if (p_set.n_rows > 1) {
+                         //od = order(abs(g.vec[p.set]),decreasing=T)
+                         arma::vec abs_g_p = arma::abs(g_vec(p_set));
+                         arma::uvec od = sort_index(abs_g_p, "descend");
+                         //ed = min(length(p.set),add)
+                         arma::uword ed = std::min(p_set.n_rows, add);
+                         //ad= p.set[od[1:ed]]
+                         arma::uvec ad = p_set(od.rows(0, ed-1));
+                         //a.set = c(a.set,ad) ### mod add => ad
+                         a_set = join_cols(a_set, ad); //### mod add => ad
                     }
 
                     //#############################################################################################################
@@ -1500,30 +1564,38 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
                     // cpp
                     //b.vec[a.set] = p.ncpen.fun(y.vec,ax.mat,b.vec[a.set],w.vec[a.set],lam,gam,tau,alp,iter.max,b.eps,k.eps,p.eff,fam,pen)$b.vec
                     arma::mat ax_mat;
-                    if(fam == "cox") {
-                         arma::uvec ca_set = a_set;
-                         ca_set.resize(ca_set.n_rows+1);
-                         // index starts from 0.
-                         // At the beginning, p = p-1.
-                         // So, p is the index for the last columin of x_mat which contains censored indicators.
-                         ca_set(ca_set.n_rows-1) = p;
-                         ax_mat = x_mat.cols(ca_set);
+                    if(pen == "ridge") {
+                         p_ncpen_ret ret_buff;
+                         p_ncpen_fun(y_vec, x_mat, b_vec, w_vec, lam, gam, tau, alp, iter_max, qiter_max, qiiter_max,
+                                     b_eps, k_eps, p_eff, cut, c_eps,
+                                     obj_fun, obj_grad_fun, obj_hess_fun, pen_fun, pen_grad_fun, ret_buff);
+                         b_vec = ret_buff.b_vec;
                     } else {
-                         ax_mat = x_mat.cols(a_set);
+                         if(fam == "cox") {
+                              arma::uvec ca_set = a_set;
+                              ca_set.resize(ca_set.n_rows+1);
+                              // index starts from 0.
+                              // At the beginning, p = p-1.
+                              // So, p is the index for the last columin of x_mat which contains censored indicators.
+                              ca_set(ca_set.n_rows-1) = p;
+                              ax_mat = x_mat.cols(ca_set);
+                         } else {
+                              ax_mat = x_mat.cols(a_set);
+                         }
+
+                         arma::vec ab_vec = b_vec(a_set);
+                         arma::vec aw_vec = w_vec(a_set);
+                         // b_vec(a_set) = Rcpp::as<arma::vec>(
+                         //      p_ncpen_fun(y_vec, ax_mat, ab_vec, aw_vec, lam, gam, tau, iter_max, b_eps, k_eps, p_eff, r_eff,
+                         //                  obj_fun, obj_grad_fun, obj_hess_fun, pen_fun, pen_grad_fun)["b.vec"]);
+                         //b_vec(a_set).print();
+
+                         p_ncpen_ret ret_buff;
+                         p_ncpen_fun(y_vec, ax_mat, ab_vec, aw_vec, lam, gam, tau, alp, iter_max, qiter_max, qiiter_max,
+                                     b_eps, k_eps, p_eff, cut, c_eps,
+                                     obj_fun, obj_grad_fun, obj_hess_fun, pen_fun, pen_grad_fun, ret_buff);
+                         b_vec(a_set) = ret_buff.b_vec;
                     }
-
-                    arma::vec ab_vec = b_vec(a_set);
-                    arma::vec aw_vec = w_vec(a_set);
-                    // b_vec(a_set) = Rcpp::as<arma::vec>(
-                    //      p_ncpen_fun(y_vec, ax_mat, ab_vec, aw_vec, lam, gam, tau, iter_max, b_eps, k_eps, p_eff, r_eff,
-                    //                  obj_fun, obj_grad_fun, obj_hess_fun, pen_fun, pen_grad_fun)["b.vec"]);
-                    //b_vec(a_set).print();
-
-                    p_ncpen_ret ret_buff;
-                    p_ncpen_fun(y_vec, ax_mat, ab_vec, aw_vec, lam, gam, tau, alp, iter_max, b_eps, k_eps, p_eff,
-                                obj_fun, obj_grad_fun, obj_hess_fun, pen_fun, pen_grad_fun, ret_buff);
-                    b_vec(a_set) = ret_buff.b_vec;
-
                     //#############################################################################################################
 
                     //g.vec = obj.grad.fun(y.vec,x.mat,b.vec) + alp*w.vec*pen.grad.fun(b.vec,lam,gam,tau) - alp*lam*w.vec*sign(b.vec) + 2*(1-alp)*lam*w.vec*b.vec
@@ -1540,10 +1612,21 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
                     kkt0 = arma::sum(arma::abs(g_vec(a_set)+p_vec(a_set))<k_eps) == a_set.n_rows;
                     //kkt1 = sum(abs(g.vec[n.set])-alp*lam*w.vec[n.set]<k.eps)==length(n.set)
                     kkt1 = arma::sum(arma::abs(g_vec(n_set))-alp*lam*w_vec(n_set)<k_eps)== n_set.n_rows;
+
+                    if(NCPEN_DEVELOP_MODE == true) {
+                         //bool con2 = kkt0&&kkt1;
+                         Rcpp::Rcout << "______________________________________________________ncpen_fun : a_set=" << a_set.n_rows <<
+                              ", lambda=" << lam << ", iter=" << iter << ", kkt0=" << kkt0 << ", kkt1=" << kkt1 << std::endl;
+                    }
                     //if(kkt0&kkt1) break #iter break
                     if(kkt0&&kkt1) { break; } // iter break
                } //iter
-               // Rcout <<"ncpen_fun | pos:" <<pos+1<<"    iter:"<<iter+1<<endl;
+          }
+
+          if(NCPEN_DEVELOP_MODE == true) {
+               //bool con2 = kkt0&&kkt1;
+               Rcpp::Rcout << "______________________________________________________ncpen_fun : a_set=" << a_set.n_rows <<
+                    ", lambda=" << lam << ", pos=" << pos << ", kkt0=" << kkt0 << ", kkt1=" << kkt1 << std::endl;
           }
 
           //b.mat[,pos] = b.vec
@@ -1600,13 +1683,13 @@ int ncpen_fun(arma::vec& y_vec, arma::mat& x_mat0,arma::vec& w_vec0, arma::vec& 
      arma::vec ret_lam_vec = lam_vec.head(pos);
      arma::vec ret_d_vec = d_vec.head(pos);
 
-     // return Rcpp::List::create(Rcpp::Named("b.mat") = ret_b_mat,
-     //                           Rcpp::Named("g.mat") = ret_g_mat,
+     // return Rcpp::List::create(Rcpp::Named("beta") = ret_b_mat,
+     //                           Rcpp::Named("gradient") = ret_g_mat,
      //                           Rcpp::Named("f.vec") = ret_f_vec,
-     //                           Rcpp::Named("c.mat") = ret_c_mat,
-     //                           Rcpp::Named("lam.vec") = ret_lam_vec,
-     //                           Rcpp::Named("d.vec") = ret_d_vec,
-     //                           Rcpp::Named("w.vec") = w_vec,
+     //                           Rcpp::Named("conv") = ret_c_mat,
+     //                           Rcpp::Named("lambda") = ret_lam_vec,
+     //                           Rcpp::Named("df") = ret_d_vec,
+     //                           Rcpp::Named("w.lambda") = w_vec,
      //                           Rcpp::Named("warnings") = warning_code_vec);
 
      ret_buff.b_mat = ret_b_mat;
