@@ -1,8 +1,6 @@
 [![Travis-CI Build Status](https://travis-ci.org/zeemkr/ncpen.svg?branch=master)](https://travis-ci.org/zeemkr/ncpen)
 
 # ncpen
-# !! This source is not working yet!!
-
 `ncpen` package fits the generalized linear models with various nonconvex penalties.
 Supported regression models are Gaussian (linear), binomial Logit, multinomial Logit, Cox proportional hazard
 and Poisson.

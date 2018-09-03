@@ -1,26 +1,16 @@
 ---
 title: "NEWS"
 author: "Dongshin Kim"
-date: "February 19, 2018"
+date: "September 3, 2018"
 output: html_document
 ---
 
-## Update news (7/10/2018)
-!! This version is not working yet!!
-
-
+## Update news (9/3/2018)
 1. Multinomial Logit and Cox proportional hazard models are added.
 2. Significant performance improvements.
 3. Minor bug fixes.
 
----
-title: "NEWS"
-author: "Dongshin Kim"
-date: "February 19, 2018"
-output: html_document
----
-
-## ncpen R package
+## ncpen R package (2/19/2018)
 
 We are releasing ncpen R pakcage: non-convex penalty estimation. Any comnents are welcome.
 
