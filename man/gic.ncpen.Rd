@@ -2,49 +2,62 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{gic.ncpen}
 \alias{gic.ncpen}
-\title{Compute the GIC Values for the Selection of the Regularization Parameter lambda.}
+\title{gic.ncpen: compute the generalized information criterion (GIC) for the selection of lambda}
 \usage{
-gic.ncpen(ncpen.fit, y.vec, x.mat, df.weight = log(length(y.vec)),
-  verbose = TRUE)
+gic.ncpen(fit, weight = NULL, verbose = TRUE, ...)
 }
 \arguments{
-\item{ncpen.fit}{Fitted \code{ncpen} model object.}
+\item{fit}{(ncpen object) fitted \code{ncpen} object.}
 
-\item{y.vec}{the response vector.}
+\item{weight}{(numeric) the weight factor for various information criteria.
+Default is BIC if \code{n>p} and GIC if \code{n<p} (see details).}
 
-\item{x.mat}{the design matrix.}
+\item{verbose}{(logical) whether to plot the GIC curve.}
 
-\item{df.weight}{the weight factor for various information criteria. For example, AIC if \code{df.weight=2},
-BIC if \code{df.weight=log(n)}. Default is BIC.}
-
-\item{verbose}{(logical) whether to plot the GIC curve. Default is \code{verbose=TRUE}.}
+\item{...}{other graphical parameters to \code{\link{plot}}.}
 }
 \value{
 The coefficients \code{\link{matrix}}.
-  \item{opt.beta}{the optimal coefficients \code{\link{vector}} selected by GIC.}
-  \item{lambda}{the sequence of lambda values in the \code{ncpen} object.}
-  \item{gic}{the GIC values for all lambda values.}
+  \item{gic}{the GIC values.}
+  \item{lambda}{the sequence of lambda values used to calculate GIC.}
+  \item{opt.beta}{the optimal coefficients selected by GIC.}
   \item{opt.lambda}{the optimal lambda value.}
-  \item{plot}{the GIC curve.}
 }
 \description{
-This function provides the selection of the regularization parameter lambda based
-on the generalized information criterion (GIC) including AIC and BIC.
-It computes the GIC values at a grid of values for the regularization parameter lambda.
+The function provides the selection of the regularization parameter lambda based
+on the GIC including AIC and BIC.
+}
+\details{
+User can supply various \code{weight} values (see references). For example,
+\code{weight=2},
+\code{weight=log(n)},
+\code{weight=log(log(p))log(n)},
+\code{weight=log(log(n))log(p)},
+corresponds to AIC, BIC (fixed dimensional model), modified BIC (diverging dimensional model) and GIC (high dimensional model).
 }
 \examples{
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
-gic.ncpen(fit,y.vec,x.mat,verbose=TRUE)
-
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat)
+gic.ncpen(fit,pch="*",type="b")
+### multinomial regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="classo")
+gic.ncpen(fit,pch="*",type="b")
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
-
-Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on High Dimensions. \emph{Journal of Machine Learning Research}, \bold{13}, 1037-1057.
+Wang, H., Li, R. and Tsai, C.L. (2007). Tuning parameter selectors for the smoothly clipped absolute deviation method.
+\emph{Biometrika}, 94(3), 553-568.
+Wang, H., Li, B. and Leng, C. (2009). Shrinkage tuning parameter selection with a diverging number of parameters.
+\emph{Journal of the Royal Statistical Society: Series B (Statistical Methodology)}, 71(3), 671-683.
+Kim, Y., Kwon, S. and Choi, H. (2012). Consistent Model Selection Criteria on High Dimensions.
+\emph{Journal of Machine Learning Research}, 13, 1037-1057.
+Fan, Y. and Tang, C.Y. (2013). Tuning parameter selection in high dimensional penalized likelihood.
+\emph{Journal of the Royal Statistical Society: Series B (Statistical Methodology)}, 75(3), 531-552.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
 \code{\link{ncpen}}

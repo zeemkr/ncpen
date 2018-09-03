@@ -2,35 +2,39 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{coef.ncpen}
 \alias{coef.ncpen}
-\title{Extract the Coefficients from an \code{ncpen} Object}
+\title{coef.ncpen: extract the coefficients from an \code{ncpen} object}
 \usage{
 \method{coef}{ncpen}(object, ...)
 }
 \arguments{
-\item{object}{Fitted \code{ncpen} object.}
+\item{object}{(ncpen object) fitted \code{ncpen} object.}
 
-\item{...}{Other parameters to coef. Not supported.}
+\item{...}{other S3 parameters. Not used.}
 }
 \value{
-The coefficients \code{\link{matrix}}.
+\item{beta}{The coefficients matrix or list for \code{multinomial}.}
 }
 \description{
-This function returns the coefficients matrix for all lambda values.
+The function returns the coefficients matrix for all lambda values.
 }
 \examples{
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat)
 coef(fit)
-
+### multinomial regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="classo")
+coef(fit)
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
-\code{\link{ncpen}}, \code{\link{plot.ncpen}}, \code{\link{predict.ncpen}}
+\code{\link{ncpen}}
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee

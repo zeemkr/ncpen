@@ -2,64 +2,61 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{predict.ncpen}
 \alias{predict.ncpen}
-\title{Make Predictions from an \code{ncpen} Object.}
+\title{predict.ncpen: make predictions from an \code{ncpen} object}
 \usage{
-\method{predict}{ncpen}(object, new.x.mat = NULL, type = c("regression",
-  "probability", "response"), cut = 0.5, ...)
+\method{predict}{ncpen}(object, type = c("y", "reg", "prob", "rmse", "like"),
+  new.y.vec = NULL, new.x.mat = NULL, prob.cut = 0.5, ...)
 }
 \arguments{
-\item{object}{fitted \code{ncpen} object.}
-
-\item{new.x.mat}{(numeric \code{\link{matrix}}). A matrix of new observations at which predictions are to be made.}
+\item{object}{(ncpen object) fitted \code{ncpen} object.}
 
 \item{type}{(character) type of prediction.
-\code{"regression"} returns the linear predictors;
-\code{"probability"} returns the fitted probabilities which is only available for \code{family="binomial"};
-\code{"response"} returns followings depending on the models: the fitted values for \code{"gaussian"},
-fitted class using \code{cut} value for \code{"binomial"}, and fitted means for \code{"poisson"}.}
+\code{y} returns new responses from \code{new.x.mat}.
+\code{reg} returns new linear predictors from \code{new.x.mat}.
+\code{prob} returns new class probabilities from \code{new.x.mat} for \code{binomial} and \code{multinomial}.
+\code{rmse} returns RMSE from \code{new.y.vec} and \code{new.x.mat}.
+\code{prob} returns LIKE from \code{new.y.vec} and \code{new.x.mat}.}
 
-\item{cut}{(numeric) threshold value of probability for logistic regression model. Default value is 0.5.
-This argument is only required for logistic regression (binomial).}
+\item{new.y.vec}{(numeric vector). vector of new response at which predictions are to be made.}
 
-\item{...}{Other parameters to prediction. Not supported.}
+\item{new.x.mat}{(numeric matrix). matrix of new design at which predictions are to be made.}
+
+\item{prob.cut}{(numeric) threshold value of probability for \code{binomial}.}
+
+\item{...}{other S3 parameters. Not used.}
 }
 \value{
-the \code{\link{matrix}} of the fitted values depending on \code{type} for all lambda values.
+prediction values depending on \code{type} for all lambda values.
 }
 \description{
-This function provides predictions from a fitted \code{ncpen} object.
+The function provides various types of predictions from a fitted \code{ncpen} object:
+response, regression, probability, root mean squared error (RMSE), negative log-likelihood (LIKE).
 }
 \examples{
-
-### Linear regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian")
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
-predict(fit, new.x.mat=x.mat[1:20,], type="regression")
-
-### Logistic regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial")
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-predict(fit, new.x.mat=x.mat[1:20,], type="probability")
-predict(fit, new.x.mat=x.mat[1:20,], type="response")
-
-### Poisson regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson")
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="poisson")
-predict(fit, new.x.mat=x.mat[1:20,], type="regression")
-predict(fit, new.x.mat=x.mat[1:20,], type="response")
-
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec[1:190],x.mat=x.mat[1:190,])
+predict(fit,"y",new.x.mat=x.mat[190:200,])
+### logistic regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec[1:190],x.mat=x.mat[1:190,],family="binomial",penalty="classo")
+predict(fit,"y",new.x.mat=x.mat[190:200,])
+predict(fit,"y",new.x.mat=x.mat[190:200,],prob.cut=0.3)
+predict(fit,"reg",new.x.mat=x.mat[190:200,])
+predict(fit,"prob",new.x.mat=x.mat[190:200,])
+### multinomial regression with sridge penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec[1:190],x.mat=x.mat[1:190,],family="multinomial",penalty="classo")
+predict(fit,"y",new.x.mat=x.mat[190:200,])
+predict(fit,"reg",new.x.mat=x.mat[190:200,])
+predict(fit,"prob",new.x.mat=x.mat[190:200,])
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
 \code{\link{ncpen}}

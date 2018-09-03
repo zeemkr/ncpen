@@ -2,38 +2,50 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{coef.cv.ncpen}
 \alias{coef.cv.ncpen}
-\title{Extracts the Optimal Vector of Coefficients from a \code{cv.ncpen} Object.}
+\title{coef.cv.ncpen: extracts the optimal coefficients from \code{cv.ncpen}.}
 \usage{
-\method{coef}{cv.ncpen}(object, type = c("error", "deviance"), ...)
+\method{coef}{cv.ncpen}(object, type = c("rmse", "like"), ...)
 }
 \arguments{
-\item{object}{fitted \code{cv.ncpen} object.}
+\item{object}{(cv.ncpen object) fitted \code{cv.ncpen} object.}
 
-\item{type}{(character) a cross-validated error type which is either "error" or "deviance". Each error type is defined in \code{\link{cv.ncpen}}.}
+\item{type}{(character) a cross-validated error type which is either \code{rmse} or \code{like}.}
 
-\item{...}{Other arguments to coef. Not supported.}
+\item{...}{other S3 parameters. Not used.
+Each error type is defined in \code{\link{cv.ncpen}}.}
 }
 \value{
-the optimal coefficients vector selected by cross-validation method.
+the optimal coefficients vector selected by cross-validation.
+ \item{type}{error type.}
+ \item{lambda}{the optimal lambda selected by  CV.}
+ \item{beta}{the optimal coefficients selected by CV.}
 }
 \description{
-This function returns the optimal vector of coefficients.
+The function returns the optimal vector of coefficients.
 }
 \examples{
-
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-#cvfit = cv.ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-#coef.cv.ncpen(cvfit, type="deviance")
-
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10)
+coef(fit)
+### logistic regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="binomial",penalty="classo")
+coef(fit)
+### multinomial regression with sridge penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="multinomial",penalty="sridge")
+coef(fit)
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
-\code{\link{cv.ncpen}}, \code{\link{plot.cv.ncpen}}
+\code{\link{cv.ncpen}}, \code{\link{plot.cv.ncpen}} , \code{\link{gic.ncpen}}
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee

@@ -2,150 +2,176 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{ncpen}
 \alias{ncpen}
-\title{Nonconvex Penalized Estimations}
+\title{ncpen: nonconvex penalized estimation}
 \usage{
 ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "multinomial", "cox",
-  "poisson"), penalty = c("scad", "mcp", "tlp", "lasso", "classo", "sridge",
-  "mbridge", "mlog"), lambda = NULL, n.lambda = 100, r.lambda = 0.001,
-  pen.weight = NULL, tau = switch(penalty, scad = 3.7, mcp = 3, tlp = 0.1,
-  lasso = 1, classo = 2, sridge = 2, mbridge = 0.1, mlog = 0.1),
-  gamma = 1e-06, ridge = 1e-06, df.max = 50, proj.min = 50,
-  iter.max = 1000, b.eps = 1e-07, k.eps = 1e-06, x.standardize = TRUE,
-  intercept = TRUE)
+  "poisson"), penalty = c("scad", "mcp", "tlp", "lasso", "classo", "ridge",
+  "sridge", "mbridge", "mlog"), x.standardize = TRUE, intercept = TRUE,
+  lambda = NULL, n.lambda = NULL, r.lambda = NULL, w.lambda = NULL,
+  gamma = NULL, tau = NULL, alpha = NULL, df.max = 50, cf.max = 100,
+  proj.min = 10, add.max = 10, niter.max = 30, qiter.max = 10,
+  aiter.max = 100, b.eps = 1e-07, k.eps = 1e-04, c.eps = 1e-06,
+  cut = TRUE, local = FALSE, local.initial = NULL)
 }
 \arguments{
-\item{y.vec}{(numeric vector) response vector.}
+\item{y.vec}{(numeric vector) response vector.
+Must be 0,1 for \code{binomial} and 1,2,..., for \code{multinomial}.}
 
-\item{x.mat}{(numeric matrix) design matrix. Each row is an observation vector.}
+\item{x.mat}{(numeric matrix) design matrix without intercept.
+The censoring indicator must be included at the last column of the design matrix for \code{cox}.}
 
-\item{family}{(character) regression model. Supported models are \code{gaussian},
-\code{binomial}, \code{multinomial}, \code{cox} and \code{poisson}. Default is \code{gaussian}.}
+\item{family}{(character) regression model. Supported models are
+\code{gaussian},
+\code{binomial},
+\code{poisson},
+\code{multinomial},
+and \code{cox}.
+Default is \code{gaussian}.}
 
-\item{penalty}{(character) penalty function. Supported penalties are
+\item{penalty}{(character) penalty function.
+Supported penalties are
 \code{scad} (smoothly clipped absolute deviation),
 \code{mcp} (minimax concave penalty),
 \code{tlp} (truncated LASSO penalty),
 \code{lasso} (least absolute shrinkage and selection operator),
-\code{classo} (clipped LASSO),
-\code{sridge} (sparse ridge),
+\code{classo} (clipped lasso = mcp + lasso),
+\code{ridge} (ridge),
+\code{sridge} (sparse ridge = mcp + ridge),
 \code{mbridge} (modified bridge) and
 \code{mlog} (modified log).
 Default is \code{scad}.}
 
-\item{lambda}{(numeric vector): user-specified sequence of \code{lambda} values.}
+\item{x.standardize}{(logical) whether to standardize \code{x.mat} prior to fitting the model (see details).
+The estimated coefficients are always restored to the original scale.}
 
-\item{n.lambda}{(numeric) the number of \code{lambda} values. Default is 100.}
+\item{intercept}{(logical) whether to include an intercept in the model.}
 
-\item{r.lambda}{(numeric) ratio of the smallest value for \code{lambda} to \code{lambda.max} (which derived from data) for which all coefficients are zero. Default is 1e-3.}
+\item{lambda}{(numeric vector) user-specified sequence of \code{lambda} values.
+Default is supplied automatically from samples.}
 
-\item{pen.weight}{(numeric vector) penalty weights for each coefficient. If a penalty weight is set to zero,
-the corresponding coefficient is always non-zero without shrinkage.
-Note: the penalty weights are internally rescaled to sum to the number of variables, and the \code{lambda} sequence reflects this change.}
+\item{n.lambda}{(numeric) the number of \code{lambda} values.
+Default is 100.}
 
-\item{tau}{(numeric) concavity parameter of the concave penalties (see reference). Default is 3.7 for \code{scad}, 3 for \code{mcp}, 2 for \code{classo} and \code{sridge}, 0.1 for \code{tlp}, \code{mbridge} and \code{mlog}.}
+\item{r.lambda}{(numeric) ratio of the smallest \code{lambda} value to largest.
+Default is 0.001 when n>p, and 0.01 for other cases.}
 
-\item{gamma}{(numeric) additional tuning parameter for the \code{classo} and \code{sbridge}. Default value is 1e-6.}
+\item{w.lambda}{(numeric vector) penalty weights for each coefficient (see references).
+If a penalty weight is set to 0, the corresponding coefficient is always nonzero.}
 
-\item{ridge}{(numeric) ridge effect (amount of ridge penalty). Default value is 1e-6.}
+\item{gamma}{(numeric) additional tuning parameter for controlling shrinkage effect of \code{classo} and \code{sridge} (see references).
+Default is half of the smallest \code{lambda}.}
 
-\item{df.max}{(numeric) the maximum number of nonzero coefficients. Default is 50.}
+\item{tau}{(numeric) concavity parameter of the penalties (see reference).
+Default is 3.7 for \code{scad}, 2.1 for \code{mcp}, \code{classo} and \code{sridge}, 0.001 for \code{tlp}, \code{mbridge} and \code{mlog}.}
 
-\item{proj.min}{(numeric) the minimum number of iterations which will be applied to projections (see details). Default value is 50.}
+\item{alpha}{(numeric) ridge effect (weight between the penalty and ridge penalty) (see details).
+Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alpha} is set to 0.}
 
-\item{iter.max}{(numeric) maximum number of iterations. Default value is 1e+3.}
+\item{df.max}{(numeric) the maximum number of nonzero coefficients.}
 
-\item{b.eps}{(numeric) convergence threshold for \eqn{L2} norms of coefficients vector. Default value is 1e-7.}
+\item{cf.max}{(numeric) the maximum of absolute value of nonzero coefficients.}
 
-\item{k.eps}{(numeric) convergence threshold for KKT conditions. Default value is 1e-6.}
+\item{proj.min}{(numeric) the projection cycle inside CD algorithm (largely internal use. See details).}
 
-\item{x.standardize}{(logical) whether to standardize the \code{x.mat} prior to fitting the model.
-The estimated coefficients are always restored to the original scale. Default value is \code{TRUE}.}
+\item{add.max}{(numeric) the maximum number of variables added in CCCP iterations (largely internal use. See referecnes).}
 
-\item{intercept}{(logical) whether to include an intercept in the model. Default value is \code{TRUE}.}
+\item{niter.max}{(numeric) maximum number of iterations in CCCP.}
+
+\item{qiter.max}{(numeric) maximum number of quadratic approximations in each CCCP iteration.}
+
+\item{aiter.max}{(numeric) maximum number of iterations in CD algorithm.}
+
+\item{b.eps}{(numeric) convergence threshold for coefficients vector.}
+
+\item{k.eps}{(numeric) convergence threshold for KKT conditions.}
+
+\item{c.eps}{(numeric) convergence threshold for KKT conditions (largely internal use).}
+
+\item{cut}{(logical) convergence threshold for KKT conditions  (largely internal use).}
+
+\item{local}{(logical) whether to use local initial estimator for path construction. It may take a long time.}
+
+\item{local.initial}{(nemeric vector) initial estiamtor for \code{local=TRUE}.}
 }
 \value{
 An object with S3 class \code{ncpen}.
+  \item{y.vec}{response vector.}
+  \item{x.mat}{design matrix.}
   \item{family}{regression model.}
-  \item{x.standardize}{flag for standardization of \code{x.mat}.}
-  \item{intercept}{flag for an intercept in the model.}
-  \item{coefficients}{a matrix of fitted coefficients for a \code{lambda} sequence.
-  The number of rows is same as the number of coefficients (\code{ncol(x.mat)+1} if \code{intercept=TRUE} and
-  \code{ncol(x.mat)} if \code{intercept=FALSE}). The number of columns is equal to \code{nlambda}.}
-  \item{pen.weight}{penalty weights for each coefficient.}
-  \item{lambda}{sequence of \code{lambda} values used.}
-  \item{df}{the number of non-zero coefficients for each \code{lambda} value.}
+  \item{penalty}{penalty.}
+  \item{x.standardize}{whether to standardize \code{x.mat=TRUE}.}
+  \item{intercept}{whether to include the intercept.}
+  \item{std}{scale factor for \code{x.standardize}.}
+  \item{lambda}{sequence of \code{lambda} values.}
+  \item{w.lambda}{penalty weights.}
+  \item{gamma}{extra shrinkage parameter for \code{classo} and {sridge} only.}
+  \item{alpha}{ridge effect.}
+  \item{local}{whether to use local initial estimator.}
+  \item{local.initial}{local initial estimator for \code{local=TRUE}.}
+  \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are representd as vectors.}
+  \item{df}{the number of non-zero coefficients.}
 }
 \description{
 Fits generalized linear models by penalized maximum likelihood estimation.
-The coefficients path is computed for the penalized regression model over a grid of
-values for the regularization parameter \eqn{\lambda}.
-Fits Gaussian (linear), binomial Logit, multinomial Logit,
-Cox proportional hazard, and Poisson regression models
-with various non-convex penalties.
+The coefficients path is computed for the regression model over a grid of the regularization parameter \code{lambda}.
+Fits Gaussian (linear), binomial Logit (logistic), Poisson, multinomial Logit regression models, and
+Cox proportional hazard model with various non-convex penalties.
 }
 \details{
-The sequence of models indexed by the regularization parameter \code{lambda} is fit by the unified algorithm
-using concave convex procedure and coordinate descent algorithm.
-Note that the objective function is \deqn{ RSS / 2n +  penalty } for \code{family="gaussian"},
-and \deqn{(negative  log-likelihood) / n + penalty }
-for \code{family="binomial"} or \code{family="poisson"}, where log-likelihood is computed with assuming the canonical link
-(logit for \code{binomial}; log for \code{poisson}).
-
-The algorithm fits the coefficients in the active set using the projection method
-after \code{proj.min} iteration instead of cycling coordinates, which makes the algorithm fast and stable.
+The sequence of models indexed by \code{lambda} is fit
+by using concave convex procedure (CCCP) and coordinate descent (CD) algorithm (see references).
+The objective function is \deqn{ (sum of squared residuals)/2n + [alpha*penalty + (1-alpha)*ridge] } for \code{gaussian}
+and \deqn{ (log-likelihood)/n - [alpha*penalty + (1-alpha)*ridge] } for the others,
+assuming the canonical link.
+The algorithm applies the warm start strategy (see references) and tries projections
+after \code{proj.min} iterations in CD algorithm, which makes the algorithm fast and stable.
+\code{x.standardize} makes each column of \code{x.mat} to have the same Euclidean length
+but the coefficients will be rescaled into the original.
+In \code{multinomial} case, the coefficients are expressed in vector form. Use \code{\link{coef.ncpen}}.
 }
 \examples{
-
-### Linear regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="gaussian", seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-# 1. SCAD
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
-coef(fit)
-plot(fit)
-predict(fit, new.x.mat=x.mat[1:20,],type="regression")
-gic.ncpen(fit,y.vec,x.mat)
-
-# 2. CLASSO
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="classo")
-plot(fit)
-predict(fit, new.x.mat=x.mat[1:20,],type="regression")
-
-# 3. TLP
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian", penalty="tlp")
-plot(fit)
-predict(fit, new.x.mat=x.mat[1:20,],type="regression")
-
-### Logistic regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="binomial", seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="binomial")
-predict(fit, new.x.mat=x.mat[1:20,],type="probability")
-predict(fit, new.x.mat=x.mat[1:20,],type="response")
-
-### Poison regression
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5,family="poisson", seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="poisson")
-predict(fit, new.x.mat=x.mat[1:20,],type="response")
-gic.ncpen(fit,y.vec,x.mat)
-plot(fit)
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat)
+### logistic regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
+### poison regression with mlog penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
+### multinomial regression with sridge penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="sridge")
+coef.ncpen(fit)
+### cox regression with mbridge penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
-
-Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems. \emph{Computational Statistics and Data Analysis}, \bold{94}, 275-286.
-
-Choi, H., Kim, Y. and Kwon, S. (2013). Sparse bridge estimation with a diverging number of parameters. \emph{Statistics and Its Interface}, \bold{6}, 231-242.
+Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.
+\emph{Journal of the American statistical Association}, 96, 1348-60.
+Zhang, C.H. (2010). Nearly unbiased variable selection under minimax concave penalty.
+\emph{The Annals of statistics}, 38(2), 894-942.
+Shen, X., Pan, W., Zhu, Y. and Zhou, H. (2013). On constrained and regularized high-dimensional regression.
+\emph{Annals of the Institute of Statistical Mathematics}, 65(5), 807-832.
+Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO.
+\emph{Computational Statistics and Data Analysis}, 92C, 53-67.
+Kwon, S. Kim, Y. and Choi, H.(2013). Sparse bridge estimation with a diverging number of parameters.
+\emph{Statistics and Its Interface}, 6, 231-242.
+Huang, J., Horowitz, J.L. and Ma, S. (2008). Asymptotic properties of bridge estimators in sparse high-dimensional regression models.
+\emph{The Annals of Statistics}, 36(2), 587-613.
+Zou, H. and Li, R. (2008). One-step sparse estimates in nonconcave penalized likelihood models.
+\emph{Annals of statistics}, 36(4), 1509.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
-\code{\link{plot.ncpen}}, \code{\link{coef.ncpen}}, \code{\link{cv.ncpen}}
+\code{\link{coef.ncpen}}, \code{\link{plot.ncpen}}, \code{\link{gic.ncpen}}, \code{\link{predict.ncpen}}, \code{\link{cv.ncpen}}
 }
 \author{
 Dongshin Kim, Sunghoon Kwon, Sangin Lee

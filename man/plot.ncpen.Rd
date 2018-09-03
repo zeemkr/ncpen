@@ -2,31 +2,39 @@
 % Please edit documentation in R/ncpen_cpp_wrap.R
 \name{plot.ncpen}
 \alias{plot.ncpen}
-\title{Plots Coefficients from an \code{ncpen} Object.}
+\title{plot.ncpen: plots coefficients from an \code{ncpen} object.}
 \usage{
-\method{plot}{ncpen}(x, log.scale = FALSE, ...)
+\method{plot}{ncpen}(x, log.scale = FALSE, mult.type = c("mat", "vec"), ...)
 }
 \arguments{
-\item{x}{Fitted \code{ncpen} model object.}
+\item{x}{(ncpen object) Fitted \code{ncpen} object.}
 
-\item{log.scale}{(logical) log scale of horizontal axis (a sequence of lambda values). Default value is FALSE.}
+\item{log.scale}{(logical) whether to use log scale of lambda for horizontal axis.}
+
+\item{mult.type}{(character) additional option for \code{multinomial} whether to draw the coefficients class-wise or not.
+Default is \code{mat} that uses class-wise coefficients.}
 
 \item{...}{other graphical parameters to \code{\link{plot}}}
 }
 \description{
-Produces a plot of the coefficients paths for a fitted \code{ncpen} object.
+Produces a plot of the coefficients paths for a fitted \code{ncpen} object. Class-wise paths can be drawn for \code{multinomial}.
 }
 \examples{
-s0 = sam.gen.fun(n=100,p=20,q=10,bmin=0.5,bmax=1,corr=0.5, seed = 1234)
-x.mat = s0$x.mat
-y.vec = s0$y.vec
-
-fit = ncpen(y.vec=y.vec, x.mat=x.mat, family="gaussian")
-plot(fit,log.scale=FALSE)
-
+### linear regression with scad penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat)
+plot(fit)
+### multinomial regression with classo penalty
+sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="classo")
+plot(fit)
+plot(fit,mult.type="vec",log.scale=TRUE)
 }
 \references{
-Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
+Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
+\emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }
 \seealso{
 \code{\link{ncpen}}
