@@ -4,15 +4,15 @@
 \alias{cv.ncpen}
 \title{cv.ncpen: cross validation for \code{ncpen}}
 \usage{
-cv.ncpen(y.vec, x.mat, n.fold = 10, fold.id = NULL, family = c("gaussian",
-  "binomial", "multinomial", "cox", "poisson"), penalty = c("scad", "mcp",
-  "tlp", "lasso", "classo", "ridge", "sridge", "mbridge", "mlog"),
-  x.standardize = TRUE, intercept = TRUE, lambda = NULL,
-  n.lambda = NULL, r.lambda = NULL, w.lambda = NULL, gamma = NULL,
-  tau = NULL, alpha = NULL, df.max = 50, cf.max = 100, proj.min = 10,
-  add.max = 10, niter.max = 30, qiter.max = 10, aiter.max = 100,
-  b.eps = 1e-06, k.eps = 1e-04, c.eps = 1e-06, cut = TRUE,
-  local = FALSE, local.initial = NULL)
+cv.ncpen(y.vec, x.mat, family = c("gaussian", "linear", "binomial", "logit",
+  "multinomial", "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso",
+  "classo", "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
+  intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
+  w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,
+  df.max = 50, cf.max = 100, proj.min = 10, add.max = 10,
+  niter.max = 30, qiter.max = 10, aiter.max = 100, b.eps = 1e-06,
+  k.eps = 1e-04, c.eps = 1e-06, cut = TRUE, local = FALSE,
+  local.initial = NULL, n.fold = 10, fold.id = NULL)
 }
 \arguments{
 \item{y.vec}{(numeric vector) response vector.
@@ -21,16 +21,12 @@ Must be 0,1 for \code{binomial} and 1,2,..., for \code{multinomial}.}
 \item{x.mat}{(numeric matrix) design matrix without intercept.
 The censoring indicator must be included at the last column of the design matrix for \code{cox}.}
 
-\item{n.fold}{(numeric) number of folds for CV.}
-
-\item{fold.id}{(numeric vector) fold ids from 1 to k that indicate fold configuration.}
-
 \item{family}{(character) regression model. Supported models are
-\code{gaussian},
-\code{binomial},
-\code{poisson},
+\code{gaussian} (or \code{linear}),
+\code{binomial} (or \code{logit}),
 \code{multinomial},
-and \code{cox}.
+\code{cox},
+and \code{poisson},
 Default is \code{gaussian}.}
 
 \item{penalty}{(character) penalty function.
@@ -97,6 +93,10 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 \item{local}{(logical) whether to use local initial estimator for path construction. It may take a long time.}
 
 \item{local.initial}{(nemeric vector) initial estiamtor for \code{local=TRUE}.}
+
+\item{n.fold}{(numeric) number of folds for CV.}
+
+\item{fold.id}{(numeric vector) fold ids from 1 to k that indicate fold configuration.}
 }
 \value{
 An object with S3 class \code{cv.ncpen}.
@@ -121,27 +121,31 @@ To choose an optimal coefficients form the cv results, use \code{\link{coef.cv.n
 sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10)
-coef.cv.ncpen(fit)
+coef(fit)
+
 ### logistic regression with classo penalty
 sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="binomial",penalty="classo")
-coef.cv.ncpen(fit)
-### poison regression with mlog penalty
-sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="poisson",penalty="mlog")
-coef.cv.ncpen(fit)
+coef(fit)
+
 ### multinomial regression with sridge penalty
 sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="multinomial",penalty="sridge")
-coef.cv.ncpen(fit)
+coef(fit)
+
 ### cox regression with mcp penalty
 sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="cox",penalty="scad")
-coef.cv.ncpen(fit)
+coef(fit)
+
+### poison regression with mlog penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="poisson",penalty="mlog")
+coef(fit)
 }
 \references{
 Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.

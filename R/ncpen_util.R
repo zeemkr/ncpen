@@ -362,6 +362,10 @@ make.ncpen.data = function(formula, data) {
      # formula = y ~ .;
      # data = data.frame(y = 1:5, x1 = 6:10, x2 = 11:15);
 
+     if(!is.data.frame(data)) {
+          data = data.frame(data);
+     }
+
      formula.str = as.character(formula);
      y.var = as.formula(paste("~ 0 + ", formula.str[2]));
      y.vec = model.matrix(y.var, data);

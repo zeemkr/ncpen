@@ -16,11 +16,11 @@
 #' @param x.mat (numeric matrix) design matrix without intercept.
 #' The censoring indicator must be included at the last column of the design matrix for \code{cox}.
 #' @param family (character) regression model. Supported models are
-#' \code{gaussian},
-#' \code{binomial},
-#' \code{poisson},
+#' \code{gaussian} (or \code{linear}),
+#' \code{binomial} (or \code{logit}),
 #' \code{multinomial},
-#' and \code{cox}.
+#' \code{cox},
+#' and \code{poisson},
 #' Default is \code{gaussian}.
 #' @param penalty (character) penalty function.
 #' Supported penalties are
@@ -116,31 +116,40 @@
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat)
+#'
 #' ### logistic regression with classo penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
+#'
 #' ### multinomial regression with sridge penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="sridge")
-#' coef.ncpen(fit)
+#'
 #' ### cox regression with mbridge penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
+#'
+#' ### poison regression with mlog penalty
+#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+#' x.mat = sam$x.mat; y.vec = sam$y.vec
+#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
 #' @export
 ncpen = function(y.vec,x.mat,
-                 family=c("gaussian","binomial","multinomial","cox","poisson"),
+                 family=c("gaussian","linear","binomial","logit","multinomial","cox","poisson"),
                  penalty=c("scad","mcp","tlp","lasso","classo","ridge","sridge","mbridge","mlog"),
                  x.standardize=TRUE,intercept=TRUE,
                  lambda=NULL,n.lambda=NULL,r.lambda=NULL,w.lambda=NULL,gamma=NULL,tau=NULL,alpha=NULL,
                  df.max=50,cf.max=100,proj.min=10,add.max=10,niter.max=30,qiter.max=10,aiter.max=100,
                  b.eps=1e-7,k.eps=1e-4,c.eps=1e-6,cut=TRUE,local=FALSE,local.initial=NULL){
+     if(family[1] == "linear") {
+          family[1] = "gaussian";
+     } else if(family[1] == "logit") {
+          family[1] = "binomial";
+     }
+
   family = match.arg(family); penalty = match.arg(penalty)
   tun = control.ncpen(y.vec,x.mat,family,penalty,x.standardize,intercept,
                   lambda,n.lambda,r.lambda,w.lambda,gamma,tau,alpha,aiter.max,b.eps)
@@ -173,14 +182,12 @@ ncpen = function(y.vec,x.mat,
 #' Must be 0,1 for \code{binomial} and 1,2,..., for \code{multinomial}.
 #' @param x.mat (numeric matrix) design matrix without intercept.
 #' The censoring indicator must be included at the last column of the design matrix for \code{cox}.
-#' @param n.fold (numeric) number of folds for CV.
-#' @param fold.id (numeric vector) fold ids from 1 to k that indicate fold configuration.
 #' @param family (character) regression model. Supported models are
-#' \code{gaussian},
-#' \code{binomial},
-#' \code{poisson},
+#' \code{gaussian} (or \code{linear}),
+#' \code{binomial} (or \code{logit}),
 #' \code{multinomial},
-#' and \code{cox}.
+#' \code{cox},
+#' and \code{poisson},
 #' Default is \code{gaussian}.
 #' @param penalty (character) penalty function.
 #' Supported penalties are
@@ -224,6 +231,8 @@ ncpen = function(y.vec,x.mat,
 #' @param cut (logical) convergence threshold for KKT conditions  (largely internal use).
 #' @param local (logical) whether to use local initial estimator for path construction. It may take a long time.
 #' @param local.initial (nemeric vector) initial estiamtor for \code{local=TRUE}.
+#' @param n.fold (numeric) number of folds for CV.
+#' @param fold.id (numeric vector) fold ids from 1 to k that indicate fold configuration.
 #' @details
 #' Two kinds of CV errors are returned: root mean squard error and negative log likelihood.
 #' The resutls depends on the random partition made interally.
@@ -260,35 +269,46 @@ ncpen = function(y.vec,x.mat,
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10)
-#' coef.cv.ncpen(fit)
+#' coef(fit)
+#'
 #' ### logistic regression with classo penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="binomial",penalty="classo")
-#' coef.cv.ncpen(fit)
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="poisson",penalty="mlog")
-#' coef.cv.ncpen(fit)
+#' coef(fit)
+#'
 #' ### multinomial regression with sridge penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="multinomial",penalty="sridge")
-#' coef.cv.ncpen(fit)
+#' coef(fit)
+#'
 #' ### cox regression with mcp penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="cox",penalty="scad")
-#' coef.cv.ncpen(fit)
+#' coef(fit)
+#'
+#' ### poison regression with mlog penalty
+#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+#' x.mat = sam$x.mat; y.vec = sam$y.vec
+#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="poisson",penalty="mlog")
+#' coef(fit)
 #' @export
-cv.ncpen = function(y.vec,x.mat,n.fold=10,fold.id=NULL,
-                    family=c("gaussian","binomial","multinomial","cox","poisson"),
+cv.ncpen = function(y.vec,x.mat,
+                    family=c("gaussian","linear","binomial","logit","multinomial","cox","poisson"),
                     penalty=c("scad","mcp","tlp","lasso","classo","ridge","sridge","mbridge","mlog"),
                     x.standardize=TRUE,intercept=TRUE,
                     lambda=NULL,n.lambda=NULL,r.lambda=NULL,w.lambda=NULL,gamma=NULL,tau=NULL,alpha=NULL,
                     df.max=50,cf.max=100,proj.min=10,add.max=10,niter.max=30,qiter.max=10,aiter.max=100,
-                    b.eps=1e-6,k.eps=1e-4,c.eps=1e-6,cut=TRUE,local=FALSE,local.initial=NULL){
+                    b.eps=1e-6,k.eps=1e-4,c.eps=1e-6,cut=TRUE,local=FALSE,local.initial=NULL,
+                    n.fold=10,fold.id=NULL){
+     if(family[1] == "linear") {
+          family[1] = "gaussian";
+     } else if(family[1] == "logit") {
+          family[1] = "binomial";
+     }
+
   family = match.arg(family); penalty = match.arg(penalty)
   fit = ncpen(y.vec,x.mat,family,penalty,
               x.standardize,intercept,
