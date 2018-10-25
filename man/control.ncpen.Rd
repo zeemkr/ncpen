@@ -4,8 +4,8 @@
 \alias{control.ncpen}
 \title{control.ncpen: do preliminary works for \code{ncpen}.}
 \usage{
-control.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "multinomial",
-  "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso", "classo",
+control.ncpen(y.vec, x.mat, family = c("gaussian", "binomial", "poisson",
+  "multinomial", "cox"), penalty = c("scad", "mcp", "tlp", "lasso", "classo",
   "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
   intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
   w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,

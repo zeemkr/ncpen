@@ -359,8 +359,8 @@ cv.ncpen.reg = function(formula,data,
      if(family == "cox") {
           x.mat = cbind(x.mat, cox.censor);
      }
-     #---------------------------------------------------------
 
+     #---------------------------------------------------------
      cvncp = cv.ncpen(y.vec, x.mat, family, penalty,
                    x.standardize,intercept,
                    lambda,n.lambda,r.lambda,w.lambda,gamma,tau,alpha,

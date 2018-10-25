@@ -1,7 +1,7 @@
 #' @exportPattern "^[[:alpha:]]+"
 #' @importFrom Rcpp evalCpp
 #' @importFrom graphics abline lines plot par
-#' @importFrom stats formula median model.matrix rbinom rnorm rpois runif as.formula
+#' @importFrom stats formula median model.matrix rbinom rnorm rpois runif as.formula complete.cases
 #' @useDynLib ncpen, .registration = TRUE
 ######################################################### ncpen
 #' @title
@@ -18,15 +18,15 @@
 #' @param family (character) regression model. Supported models are
 #' \code{gaussian} (or \code{linear}),
 #' \code{binomial} (or \code{logit}),
+#' \code{poisson},
 #' \code{multinomial},
-#' \code{cox},
-#' and \code{poisson},
+#' and \code{cox},
 #' Default is \code{gaussian}.
 #' @param penalty (character) penalty function.
 #' Supported penalties are
 #' \code{scad} (smoothly clipped absolute deviation),
 #' \code{mcp} (minimax concave penalty),
-#' \code{tlp} (truncated LASSO penalty),
+#' \code{tlp} (truncated lasso penalty),
 #' \code{lasso} (least absolute shrinkage and selection operator),
 #' \code{classo} (clipped lasso = mcp + lasso),
 #' \code{ridge} (ridge),
@@ -58,7 +58,7 @@
 #' @param niter.max (numeric) maximum number of iterations in CCCP.
 #' @param qiter.max (numeric) maximum number of quadratic approximations in each CCCP iteration.
 #' @param aiter.max (numeric) maximum number of iterations in CD algorithm.
-#' @param b.eps (numeric) convergence threshold for coefficients vector.
+#' @param b.eps (numeric) convergence threshold for coefficients vector in CD algorithm
 #' @param k.eps (numeric) convergence threshold for KKT conditions.
 #' @param c.eps (numeric) convergence threshold for KKT conditions (largely internal use).
 #' @param cut (logical) convergence threshold for KKT conditions  (largely internal use).
@@ -89,26 +89,37 @@
 #'   \item{alpha}{ridge effect.}
 #'   \item{local}{whether to use local initial estimator.}
 #'   \item{local.initial}{local initial estimator for \code{local=TRUE}.}
-#'   \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are representd as vectors.}
+#'   \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are represented as vectors.}
 #'   \item{df}{the number of non-zero coefficients.}
 #' @author Dongshin Kim, Sunghoon Kwon, Sangin Lee
 #' @references
+#' Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The \code{ncpen} package.
+#' \emph{Submitted}.
+#'
 #' Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.
 #' \emph{Journal of the American statistical Association}, 96, 1348-60.
+#'
 #' Zhang, C.H. (2010). Nearly unbiased variable selection under minimax concave penalty.
 #' \emph{The Annals of statistics}, 38(2), 894-942.
+#'
 #' Shen, X., Pan, W., Zhu, Y. and Zhou, H. (2013). On constrained and regularized high-dimensional regression.
 #' \emph{Annals of the Institute of Statistical Mathematics}, 65(5), 807-832.
+#'
 #' Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO.
 #' \emph{Computational Statistics and Data Analysis}, 92C, 53-67.
+#'
 #' Kwon, S. Kim, Y. and Choi, H.(2013). Sparse bridge estimation with a diverging number of parameters.
 #' \emph{Statistics and Its Interface}, 6, 231-242.
+#'
 #' Huang, J., Horowitz, J.L. and Ma, S. (2008). Asymptotic properties of bridge estimators in sparse high-dimensional regression models.
 #' \emph{The Annals of Statistics}, 36(2), 587-613.
+#'
 #' Zou, H. and Li, R. (2008). One-step sparse estimates in nonconcave penalized likelihood models.
 #' \emph{Annals of statistics}, 36(4), 1509.
+#'
 #' Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
 #' \emph{Computational Statistics and Data Analysis}, 94, 275-286.
+#'
 #' @seealso
 #' \code{\link{coef.ncpen}}, \code{\link{plot.ncpen}}, \code{\link{gic.ncpen}}, \code{\link{predict.ncpen}}, \code{\link{cv.ncpen}}
 #' @examples
@@ -122,6 +133,11 @@
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
 #'
+#' ### poison regression with mlog penalty
+#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+#' x.mat = sam$x.mat; y.vec = sam$y.vec
+#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
+#'
 #' ### multinomial regression with sridge penalty
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
@@ -131,14 +147,9 @@
 #' sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
-#'
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
 #' @export
 ncpen = function(y.vec,x.mat,
-                 family=c("gaussian","linear","binomial","logit","multinomial","cox","poisson"),
+                 family=c("gaussian","linear","binomial","logit","poisson","multinomial","cox"),
                  penalty=c("scad","mcp","tlp","lasso","classo","ridge","sridge","mbridge","mlog"),
                  x.standardize=TRUE,intercept=TRUE,
                  lambda=NULL,n.lambda=NULL,r.lambda=NULL,w.lambda=NULL,gamma=NULL,tau=NULL,alpha=NULL,
@@ -150,6 +161,15 @@ ncpen = function(y.vec,x.mat,
           family[1] = "binomial";
      }
 
+     # Data type conversion ------------------------
+     if(!is.vector(y.vec)) {
+          y.vec = as.vector(y.vec);
+     }
+
+     if(!is.matrix(x.mat)) {
+          x.mat = as.matrix(x.mat);
+     }
+     # ---------------------------------------------
   family = match.arg(family); penalty = match.arg(penalty)
   tun = control.ncpen(y.vec,x.mat,family,penalty,x.standardize,intercept,
                   lambda,n.lambda,r.lambda,w.lambda,gamma,tau,alpha,aiter.max,b.eps)
@@ -162,6 +182,33 @@ ncpen = function(y.vec,x.mat,
                               df.max,niter.max,qiter.max,aiter.max,
                               b.eps,k.eps,proj.min,cut,c.eps,add.max,family,penalty,local,local.initial,cf.max)
   if(x.standardize==TRUE){ fit$beta = fit$beta/tun$std  }
+  # 201800906 -------------------------
+  # coefficient names
+  coef.names = NULL;
+  n.coef = ncol(x.mat);
+  if(family == "cox") {
+       n.coef = n.coef - 1;
+  }
+
+  if(!is.null(colnames(x.mat))) { # if matrix has colnames
+       if(intercept == TRUE && family != "cox") {
+            coef.names = c("intercept", colnames(x.mat)[1:n.coef]);
+       } else {
+            coef.names = colnames(x.mat)[1:n.coef];
+       }
+  } else {
+       if(intercept == TRUE && family != "cox") {
+            coef.names = c("intercept", paste("x", 1:n.coef, sep = ""));
+       } else {
+            coef.names = paste("x", 1:n.coef, sep = "");
+       }
+  }
+
+  if(family == "multinomial") {
+       coef.names = rep(coef.names, nrow(fit$beta)/length(coef.names));
+  }
+  rownames(fit$beta) = coef.names;
+  # -----------------------------------
   ret = list(y.vec=tun$y.vec,x.mat=tun$x.mat,
              family=family,penalty=penalty,
              x.standardize=x.standardize,intercept=tun$intercept,std=tun$std,
@@ -185,9 +232,9 @@ ncpen = function(y.vec,x.mat,
 #' @param family (character) regression model. Supported models are
 #' \code{gaussian} (or \code{linear}),
 #' \code{binomial} (or \code{logit}),
+#' \code{poisson},
 #' \code{multinomial},
-#' \code{cox},
-#' and \code{poisson},
+#' and \code{cox}.
 #' Default is \code{gaussian}.
 #' @param penalty (character) penalty function.
 #' Supported penalties are
@@ -296,7 +343,7 @@ ncpen = function(y.vec,x.mat,
 #' coef(fit)
 #' @export
 cv.ncpen = function(y.vec,x.mat,
-                    family=c("gaussian","linear","binomial","logit","multinomial","cox","poisson"),
+                    family=c("gaussian","linear","binomial","logit","poisson","multinomial","cox"),
                     penalty=c("scad","mcp","tlp","lasso","classo","ridge","sridge","mbridge","mlog"),
                     x.standardize=TRUE,intercept=TRUE,
                     lambda=NULL,n.lambda=NULL,r.lambda=NULL,w.lambda=NULL,gamma=NULL,tau=NULL,alpha=NULL,
@@ -308,6 +355,15 @@ cv.ncpen = function(y.vec,x.mat,
      } else if(family[1] == "logit") {
           family[1] = "binomial";
      }
+     # Data type conversion ------------------------
+     if(!is.vector(y.vec)) {
+          y.vec = as.vector(y.vec);
+     }
+
+     if(!is.matrix(x.mat)) {
+          x.mat = as.matrix(x.mat);
+     }
+     # ---------------------------------------------
 
   family = match.arg(family); penalty = match.arg(penalty)
   fit = ncpen(y.vec,x.mat,family,penalty,
@@ -322,7 +378,7 @@ cv.ncpen = function(y.vec,x.mat,
   if(min(table(idx))<4) stop("at least 3 samples in each fold")
   rmse = like = list()
   for(s in 1:n.fold){
-    cat("cv fold number:",s,"\n")
+    # cat("cv fold number:",s,"\n")
     yset = idx==s; xset = yset; if(family=="multinomial"){ oxset = xset; xset = rep(xset,max(fit$y.vec)-1) }
     fold.fit = native_cpp_ncpen_fun_(fit$y.vec[!yset],fit$x.mat[!xset,],
                                      fit$w.lambda,fit$lambda,fit$gamma,fit$tau,fit$alpha,
@@ -469,7 +525,7 @@ cv.ncpen = function(y.vec,x.mat,
 #' tun = control.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="cox",penalty="scad")
 #' @export
 control.ncpen = function(y.vec,x.mat,
-                         family=c("gaussian","binomial","multinomial","cox","poisson"),
+                         family=c("gaussian","binomial","poisson","multinomial","cox"),
                          penalty=c("scad","mcp","tlp","lasso","classo","ridge","sridge","mbridge","mlog"),
                          x.standardize=TRUE,intercept=TRUE,
                          lambda=NULL,n.lambda=NULL,r.lambda=NULL,w.lambda=NULL,gamma=NULL,tau=NULL,alpha=NULL,
@@ -589,10 +645,17 @@ coef.ncpen = function(object, ...){
   p = ifelse(fit$fam=="multinomial",p/(k-1),p)
   p = ifelse(fit$int==T,p-1,p)
   lam.name = paste("lambda",1:length(fit$lam),sep="")
-  var.name = paste("x",1:p,sep="")
-  if(fit$int==TRUE){ var.name = c("intercept",var.name) }
+  # 201800906 -------------------------
+  # coefficient names
+  # var.name = paste("x",1:p,sep="")
+  # if(fit$int==TRUE){ var.name = c("intercept",var.name) }
+  #------------------------------------
   beta = fit$beta
   if(fit$fam=="multinomial"){
+       # 201800906 -------------------------
+       # coefficient names
+       var.name = rownames(beta)[1:(nrow(beta)/(k-1))];
+       # ------------------------------------
     beta = list();
     for(i in 1:dim(fit$beta)[2]){
       beta[[i]] = cbind(matrix(fit$beta[,i],ncol=k-1),0)
@@ -601,7 +664,11 @@ coef.ncpen = function(object, ...){
     }
     names(beta) = lam.name
   } else {
-    colnames(beta) = lam.name; rownames(beta) = var.name
+    colnames(beta) = lam.name;
+    # 201800906 -------------------------
+    # coefficient names
+    # rownames(beta) = var.name
+    # -----------------------------------
   }
   return(beta)
 }
@@ -915,8 +982,26 @@ coef.cv.ncpen = function(object,type=c("rmse","like"), ...){
   type = match.arg(type)
   if(type=="rmse"){ opt = which.min(cv.fit$rmse) }
   if(type=="like"){ opt = which.min(cv.fit$like) }
-  beta=cv.fit$ncpen.fit$beta[,opt]
-  if(cv.fit$ncpen.fit$fam=="multinomial"){ k = max(cv.fit$ncpen.fit$y.vec); beta = cbind(matrix(beta,ncol=k-1),0) }
+  # 201800906 -------------------------------------
+  # coefficient names
+  # beta=cv.fit$ncpen.fit$beta[,opt];
+  beta=matrix(cv.fit$ncpen.fit$beta[,opt], ncol = 1);
+
+  if(cv.fit$ncpen.fit$fam!="multinomial"){
+       colnames(beta) = "coef";
+       rownames(beta) = rownames(cv.fit$ncpen.fit$beta);
+  } else {
+  # -----------------------------------------------
+  # if(cv.fit$ncpen.fit$fam=="multinomial"){
+       k = max(cv.fit$ncpen.fit$y.vec);
+       beta = cbind(matrix(beta,ncol=k-1),0);
+
+       # 201800906 -------------------------------------
+       # coefficient names
+       colnames(beta) = paste("class", 1:k, sep = "");
+       rownames(beta) = rownames(cv.fit$ncpen.fit$beta)[1:nrow(beta)];
+       # -----------------------------------------------
+  }
   return(list(type=match.arg(type),lambda=cv.fit$ncpen.fit$lambda[opt],beta=beta))
 }
 ######################################################### plot.cv.ncpen

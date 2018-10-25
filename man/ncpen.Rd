@@ -5,7 +5,7 @@
 \title{ncpen: nonconvex penalized estimation}
 \usage{
 ncpen(y.vec, x.mat, family = c("gaussian", "linear", "binomial", "logit",
-  "multinomial", "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso",
+  "poisson", "multinomial", "cox"), penalty = c("scad", "mcp", "tlp", "lasso",
   "classo", "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
   intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
   w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,
@@ -24,16 +24,16 @@ The censoring indicator must be included at the last column of the design matrix
 \item{family}{(character) regression model. Supported models are
 \code{gaussian} (or \code{linear}),
 \code{binomial} (or \code{logit}),
+\code{poisson},
 \code{multinomial},
-\code{cox},
-and \code{poisson},
+and \code{cox},
 Default is \code{gaussian}.}
 
 \item{penalty}{(character) penalty function.
 Supported penalties are
 \code{scad} (smoothly clipped absolute deviation),
 \code{mcp} (minimax concave penalty),
-\code{tlp} (truncated LASSO penalty),
+\code{tlp} (truncated lasso penalty),
 \code{lasso} (least absolute shrinkage and selection operator),
 \code{classo} (clipped lasso = mcp + lasso),
 \code{ridge} (ridge),
@@ -82,7 +82,7 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 
 \item{aiter.max}{(numeric) maximum number of iterations in CD algorithm.}
 
-\item{b.eps}{(numeric) convergence threshold for coefficients vector.}
+\item{b.eps}{(numeric) convergence threshold for coefficients vector in CD algorithm}
 
 \item{k.eps}{(numeric) convergence threshold for KKT conditions.}
 
@@ -109,7 +109,7 @@ An object with S3 class \code{ncpen}.
   \item{alpha}{ridge effect.}
   \item{local}{whether to use local initial estimator.}
   \item{local.initial}{local initial estimator for \code{local=TRUE}.}
-  \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are representd as vectors.}
+  \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are represented as vectors.}
   \item{df}{the number of non-zero coefficients.}
 }
 \description{
@@ -141,6 +141,11 @@ sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomia
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
 
+### poison regression with mlog penalty
+sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
+x.mat = sam$x.mat; y.vec = sam$y.vec
+fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
+
 ### multinomial regression with sridge penalty
 sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
 x.mat = sam$x.mat; y.vec = sam$y.vec
@@ -150,27 +155,32 @@ fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="sridge")
 sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 x.mat = sam$x.mat; y.vec = sam$y.vec
 fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
-
-### poison regression with mlog penalty
-sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
 }
 \references{
+Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The \code{ncpen} package.
+\emph{Submitted}.
+
 Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.
 \emph{Journal of the American statistical Association}, 96, 1348-60.
+
 Zhang, C.H. (2010). Nearly unbiased variable selection under minimax concave penalty.
 \emph{The Annals of statistics}, 38(2), 894-942.
+
 Shen, X., Pan, W., Zhu, Y. and Zhou, H. (2013). On constrained and regularized high-dimensional regression.
 \emph{Annals of the Institute of Statistical Mathematics}, 65(5), 807-832.
+
 Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO.
 \emph{Computational Statistics and Data Analysis}, 92C, 53-67.
+
 Kwon, S. Kim, Y. and Choi, H.(2013). Sparse bridge estimation with a diverging number of parameters.
 \emph{Statistics and Its Interface}, 6, 231-242.
+
 Huang, J., Horowitz, J.L. and Ma, S. (2008). Asymptotic properties of bridge estimators in sparse high-dimensional regression models.
 \emph{The Annals of Statistics}, 36(2), 587-613.
+
 Zou, H. and Li, R. (2008). One-step sparse estimates in nonconcave penalized likelihood models.
 \emph{Annals of statistics}, 36(4), 1509.
+
 Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.
 \emph{Computational Statistics and Data Analysis}, 94, 275-286.
 }

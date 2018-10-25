@@ -5,7 +5,7 @@
 \title{cv.ncpen: cross validation for \code{ncpen}}
 \usage{
 cv.ncpen(y.vec, x.mat, family = c("gaussian", "linear", "binomial", "logit",
-  "multinomial", "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso",
+  "poisson", "multinomial", "cox"), penalty = c("scad", "mcp", "tlp", "lasso",
   "classo", "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
   intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
   w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,
@@ -24,9 +24,9 @@ The censoring indicator must be included at the last column of the design matrix
 \item{family}{(character) regression model. Supported models are
 \code{gaussian} (or \code{linear}),
 \code{binomial} (or \code{logit}),
+\code{poisson},
 \code{multinomial},
-\code{cox},
-and \code{poisson},
+and \code{cox}.
 Default is \code{gaussian}.}
 
 \item{penalty}{(character) penalty function.

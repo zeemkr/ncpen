@@ -28,10 +28,12 @@ Also provides user-friendly processes for plotting, selecting tuning parameters 
 }
 \note{
 This project is funded by Julian Virtue Professorship from
-Center for Applied Research at Graziadio School of Business and Management at
-Pepperdine University.
+Center for Applied Research at Pepperdine Graziadio Business School
 }
 \references{
+Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The \code{ncpen} package.
+\emph{Submitted}.
+
 Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO. \emph{Computational Statistics and Data Analysis}, \bold{92C}, 53-67.
 
 Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems. \emph{Computational Statistics and Data Analysis}, \bold{94}, 275-286.

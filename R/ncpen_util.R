@@ -362,6 +362,13 @@ make.ncpen.data = function(formula, data) {
      # formula = y ~ .;
      # data = data.frame(y = 1:5, x1 = 6:10, x2 = 11:15);
 
+     data = data[, all.vars(formula)];
+     complete.ids = complete.cases(data);
+     if(sum(!complete.ids) >0 ) {
+          data = data[complete.ids, ];
+          warning(paste(sum(!complete.ids), " observations deleted due to missingness", sep = ""));
+     }
+
      if(!is.data.frame(data)) {
           data = data.frame(data);
      }
