@@ -31,5 +31,6 @@ Pepperdine Graziadio Business School.)
 Dongshin Kim, Sunghoon Kwon, Sangin Lee
 
 **References**
+* Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The ncpen package (working paper).
 * Kwon, S., Lee, S. and Kim, Y. (2015) <https://doi.org/10.1016/j.csda.2015.07.001>,
 * Lee, S., Kwon, S. and Kim, Y. (2016) <https://doi.org/10.1016/j.csda.2015.08.019>.
