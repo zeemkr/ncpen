@@ -7,7 +7,7 @@
 make.ncpen.data(formula, data)
 }
 \arguments{
-\item{formula}{(formula) regression formula. Intercept will not be creagted.}
+\item{formula}{(formula) regression formula. Intercept will not be created.}
 
 \item{data}{(numeric matrix or data.frame) contains both y and X.}
 }
