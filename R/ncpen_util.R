@@ -339,7 +339,7 @@ to.ncpen.x.mat = function(df, base = NULL, interact.all = FALSE, base.cols = NUL
 #' @description
 #' This function creates ncpen y \code{vector} and x \code{matrix} from data using formula.
 #'
-#' @param formula (formula) regression formula. Intercept will not be creagted.
+#' @param formula (formula) regression formula. Intercept will not be created.
 #' @param data (numeric matrix or data.frame) contains both y and X.
 #'
 #'
@@ -374,11 +374,13 @@ make.ncpen.data = function(formula, data) {
      }
 
      formula.str = as.character(formula);
-     y.var = as.formula(paste("~ 0 + ", formula.str[2]));
+     y.var = as.formula(paste("~", formula.str[2]));
      y.vec = model.matrix(y.var, data);
+     y.vec = y.vec[, 2]; # exclude intercept
 
-     x.var = as.formula(paste(formula.str[2], "~ 0 + ", formula.str[3]));
+     x.var = as.formula(paste(formula.str[2], "~", formula.str[3]));
      x.mat = model.matrix(x.var, data);
+     x.mat = x.mat[, 2:ncol(x.mat)]; # exclude intercept
      #---------------------------------------------------------
 
      return(list(y.vec = y.vec, x.mat = x.mat));
