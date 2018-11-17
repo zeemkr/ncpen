@@ -22,7 +22,7 @@ int set_dev_mode(bool dev_mode) {
 * Utility functions
 --------------------------------------------------------*/
 // This is for a scalar number.
-template <typename T> int sign(T val) {
+template <typename T> int sign_scalar_(T val) {
      return (T(0) < val) - (val < T(0));
 }
 
@@ -927,7 +927,7 @@ arma::vec nr_fun(std::string fam, arma::vec& y_vec, arma::mat& x_mat, double ite
 //      return(sign(est)*(abs(est)-del)*(abs(est)>del))
 // }
 double soft_fun(double est, double del) {
-     return sign(est)*(std::abs(est)-del)*(std::abs(est)>del);
+     return sign_scalar_(est)*(std::abs(est)-del)*(std::abs(est)>del);
 }
 // End of soft-thresholding function ------------------------------------------
 

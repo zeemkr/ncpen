@@ -26,10 +26,12 @@ devtools::check(args = c("--use-valgrind"));
 #devtools::build_win();
 
 # Release
+# submit cran with working through chekcing questions.
 devtools::release();
 
 #################################
 #- Final submit
+# submit cran without working through chekcing questions.
 # devtools::submit_cran();
 #################################
 

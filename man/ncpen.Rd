@@ -158,7 +158,7 @@ fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
 }
 \references{
 Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The \code{ncpen} package.
-\emph{Submitted}.
+\emph{http://arxiv.org/abs/1811.05061}.
 
 Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.
 \emph{Journal of the American statistical Association}, 96, 1348-60.
