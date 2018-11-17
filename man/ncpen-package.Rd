@@ -28,8 +28,7 @@ Also provides user-friendly processes for plotting, selecting tuning parameters 
 }
 \note{
 This research is funded by Julian Virtue Professorship from Center for Applied Research at Pepperdine
-Graziadio Business School and the National Research Foundation of Korea (NRF) funded
-by Korean government (No. 2017R1C1B2010113 and 2017R1D1A1B03031239).
+Graziadio Business School and the National Research Foundation of Korea.
 }
 \references{
 Kim, D., Lee, S. and Kwon, S. (2018). A unified algorithm for the non-convex penalized estimation: The \code{ncpen} package.

@@ -25,8 +25,7 @@ A recent manual is avaialbe at [ncpen manual](https://github.com/zeemkr/ncpen_re
 an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/tree/master/example_mortgage).
 
 (This research is funded by Julian Virtue Professorship from Center for Applied Research at Pepperdine
-Graziadio Business School and the National Research Foundation of Korea (NRF) funded
-by Korean government (No. 2017R1C1B2010113 and 2017R1D1A1B03031239).)
+Graziadio Business School and the National Research Foundation of Korea.)
 
 **Authors**
 
