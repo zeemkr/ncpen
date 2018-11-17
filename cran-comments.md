@@ -4,7 +4,7 @@
      * performance improvements,
      * minor bug fixes, and
      * link to the working paper.
-* The current version on CRAN is breaking due to the issue with RcppArmadillo. This version fixes that issue.
+* The current version (0.2.0) on CRAN is breaking due to the issue with RcppArmadillo. This version fixes that issue.
 * Sample running time has been reduced.
 
 ### Test environments

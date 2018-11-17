@@ -48,22 +48,6 @@ Note the censoring indicator locates at the last column of \code{x.mat} for \cod
 sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
 x.mat = sam$x.mat; y.vec = sam$y.vec
 head(x.mat); head(y.vec)
-### logistic regression with classo penalty
-sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-head(x.mat); head(y.vec)
-### poison regression with mlog penalty
-sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-head(x.mat); head(y.vec)
-### multinomial regression with sridge penalty
-sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-head(x.mat); head(y.vec)
-### cox regression with mcp penalty
-sam =  sam.gen.ncpen(n=200,p=20,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-head(x.mat); head(y.vec)
 }
 \references{
 Kwon, S., Lee, S. and Kim, Y. (2016). Moderately clipped LASSO.

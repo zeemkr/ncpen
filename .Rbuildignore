@@ -1,5 +1,6 @@
+^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
-^Build utils\.R$
+^Build_utils\.R$
 ^cran-comments\.md$

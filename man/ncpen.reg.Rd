@@ -133,48 +133,14 @@ In \code{multinomial} case, the coefficients are expressed in vector form. Use \
 }
 \examples{
 ### linear regression with scad penalty
-sam =  sam.gen.ncpen(n=200,p=5,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+sam =  sam.gen.ncpen(n=200,p=5,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="gaussian")
 x.mat = sam$x.mat; y.vec = sam$y.vec
 data = cbind(y.vec, x.mat)
 colnames(data) = c("y", paste("xv", 1:ncol(x.mat), sep = ""))
-fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data)
+fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data,
+                 family="gaussian", penalty="scad")
 fit2 = ncpen(y.vec=y.vec,x.mat=x.mat);
 
-### logistic regression with classo penalty
-sam =  sam.gen.ncpen(n=200,p=5,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-data = cbind(y.vec, x.mat)
-colnames(data) = c("y", paste("xv", 1:ncol(x.mat), sep = ""))
-fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data,
-       family="binomial",penalty="classo")
-fit2 = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
-
-### multinomial regression with sridge penalty
-sam =  sam.gen.ncpen(n=200,p=5,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-data = cbind(y.vec, x.mat)
-colnames(data) = c("y", paste("xv", 1:ncol(x.mat), sep = ""))
-fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data,
-       family="multinomial",penalty="sridge")
-fit2 = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="sridge")
-
-### cox regression with mbridge penalty
-sam =  sam.gen.ncpen(n=200,p=5,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-data = cbind(y.vec, x.mat)
-colnames(data) = c("y", paste("xv", 1:ncol(x.mat), sep = ""))
-fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data,
-       family="cox",penalty="mbridge")
-fit2 = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
-
-### poison regression with mlog penalty
-sam =  sam.gen.ncpen(n=200,p=5,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-data = cbind(y.vec, x.mat)
-colnames(data) = c("y", paste("xv", 1:ncol(x.mat), sep = ""))
-fit1 = ncpen.reg(formula = y ~ xv1 + xv2 + xv3 + xv4 + xv5, data = data,
-       family="poisson",penalty="mlog")
-fit2 = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
 }
 \references{
 Fan, J. and Li, R. (2001). Variable selection via nonconcave penalized likelihood and its oracle properties.

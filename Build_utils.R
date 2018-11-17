@@ -24,6 +24,8 @@ devtools::use_travis();
 #devtools::check();
 devtools::check(args = c("--use-valgrind"));
 devtools::spell_check();
+devtools::check_rhub();
+devtools::check_win_devel();
 #devtools::build_win();
 
 # Release

@@ -22,22 +22,12 @@ The function Produces a plot of the cross-validated errors from \code{cv.ncpen} 
 \examples{
 ### linear regression with scad penalty
 par(mfrow=c(1,2))
-sam =  sam.gen.ncpen(n=500,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+sam =  sam.gen.ncpen(n=500,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="gaussian")
 x.mat = sam$x.mat; y.vec = sam$y.vec
-fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50)
+fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="gaussian", penalty="scad")
 plot(fit)
 plot(fit,log.scale=F)
-### logistic regression with classo penalty
-sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="binomial",penalty="scad")
-plot(fit,type="rmse")
-plot(fit,type="like")
-### multinomial regression with sridge penalty
-sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-x.mat = sam$x.mat; y.vec = sam$y.vec
-fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="multinomial",penalty="sridge")
-plot(fit,type="like")
+
 }
 \references{
 Lee, S., Kwon, S. and Kim, Y. (2016). A modified local quadratic approximation algorithm for penalized optimization problems.

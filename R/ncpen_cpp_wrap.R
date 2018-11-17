@@ -124,29 +124,10 @@
 #' \code{\link{coef.ncpen}}, \code{\link{plot.ncpen}}, \code{\link{gic.ncpen}}, \code{\link{predict.ncpen}}, \code{\link{cv.ncpen}}
 #' @examples
 #' ### linear regression with scad penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="gaussian")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat)
+#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="gaussian", penalty="scad")
 #'
-#' ### logistic regression with classo penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="binomial",penalty="classo")
-#'
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="poisson",penalty="mlog")
-#'
-#' ### multinomial regression with sridge penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="multinomial",penalty="sridge")
-#'
-#' ### cox regression with mbridge penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = ncpen(y.vec=y.vec,x.mat=x.mat,family="cox",penalty="mbridge")
 #' @export
 ncpen = function(y.vec,x.mat,
                  family=c("gaussian","linear","binomial","logit","poisson","multinomial","cox"),
@@ -313,34 +294,12 @@ ncpen = function(y.vec,x.mat,
 #' \code{\link{plot.cv.ncpen}}, \code{\link{coef.cv.ncpen}}, \code{\link{ncpen}}, \code{\link{predict.ncpen}}
 #' @examples
 #' ### linear regression with scad penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="gaussian")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10)
+#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="gaussian", penalty="scad")
 #' coef(fit)
 #'
-#' ### logistic regression with classo penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="binomial",penalty="classo")
-#' coef(fit)
-#'
-#' ### multinomial regression with sridge penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="multinomial",penalty="sridge")
-#' coef(fit)
-#'
-#' ### cox regression with mcp penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="cox",penalty="scad")
-#' coef(fit)
-#'
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=10,family="poisson",penalty="mlog")
-#' coef(fit)
+
 #' @export
 cv.ncpen = function(y.vec,x.mat,
                     family=c("gaussian","linear","binomial","logit","poisson","multinomial","cox"),
@@ -1022,22 +981,12 @@ coef.cv.ncpen = function(object,type=c("rmse","like"), ...){
 #' @examples
 #' ### linear regression with scad penalty
 #' par(mfrow=c(1,2))
-#' sam =  sam.gen.ncpen(n=500,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5)
+#' sam =  sam.gen.ncpen(n=500,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="gaussian")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50)
+#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="gaussian", penalty="scad")
 #' plot(fit)
 #' plot(fit,log.scale=F)
-#' ### logistic regression with classo penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="binomial",penalty="scad")
-#' plot(fit,type="rmse")
-#' plot(fit,type="like")
-#' ### multinomial regression with sridge penalty
-#' sam =  sam.gen.ncpen(n=200,p=10,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' fit = cv.ncpen(y.vec=y.vec,x.mat=x.mat,n.lambda=50,family="multinomial",penalty="sridge")
-#' plot(fit,type="like")
+#'
 #' @export plot.cv.ncpen
 #' @export
 plot.cv.ncpen = function(x,type=c("rmse","like"),log.scale=FALSE,...){
@@ -1088,22 +1037,6 @@ plot.cv.ncpen = function(x,type=c("rmse","like"),log.scale=FALSE,...){
 #' @examples
 #' ### linear regression
 #' sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5)
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' head(x.mat); head(y.vec)
-#' ### logistic regression with classo penalty
-#' sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="binomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' head(x.mat); head(y.vec)
-#' ### poison regression with mlog penalty
-#' sam =  sam.gen.ncpen(n=200,p=20,q=5,cf.min=0.5,cf.max=1,corr=0.5,family="poisson")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' head(x.mat); head(y.vec)
-#' ### multinomial regression with sridge penalty
-#' sam =  sam.gen.ncpen(n=200,p=20,q=5,k=3,cf.min=0.5,cf.max=1,corr=0.5,family="multinomial")
-#' x.mat = sam$x.mat; y.vec = sam$y.vec
-#' head(x.mat); head(y.vec)
-#' ### cox regression with mcp penalty
-#' sam =  sam.gen.ncpen(n=200,p=20,q=5,r=0.2,cf.min=0.5,cf.max=1,corr=0.5,family="cox")
 #' x.mat = sam$x.mat; y.vec = sam$y.vec
 #' head(x.mat); head(y.vec)
 #' @export
