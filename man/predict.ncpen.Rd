@@ -4,8 +4,8 @@
 \alias{predict.ncpen}
 \title{predict.ncpen: make predictions from an \code{ncpen} object}
 \usage{
-\method{predict}{ncpen}(object, type = c("y", "reg", "prob", "rmse", "like"),
-  new.y.vec = NULL, new.x.mat = NULL, prob.cut = 0.5, ...)
+\method{predict}{ncpen}(object, type = c("y", "reg", "prob", "rmse",
+  "like"), new.y.vec = NULL, new.x.mat = NULL, prob.cut = 0.5, ...)
 }
 \arguments{
 \item{object}{(ncpen object) fitted \code{ncpen} object.}

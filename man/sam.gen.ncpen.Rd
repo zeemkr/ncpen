@@ -4,9 +4,9 @@
 \alias{sam.gen.ncpen}
 \title{sam.gen.ncpen: generate a simulated dataset.}
 \usage{
-sam.gen.ncpen(n = 100, p = 50, q = 10, k = 3, r = 0.3, cf.min = 0.5,
-  cf.max = 1, corr = 0.5, seed = NULL, family = c("gaussian",
-  "binomial", "multinomial", "cox", "poisson"))
+sam.gen.ncpen(n = 100, p = 50, q = 10, k = 3, r = 0.3,
+  cf.min = 0.5, cf.max = 1, corr = 0.5, seed = NULL,
+  family = c("gaussian", "binomial", "multinomial", "cox", "poisson"))
 }
 \arguments{
 \item{n}{(numeric) the number of samples.}

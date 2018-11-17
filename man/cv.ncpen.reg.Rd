@@ -5,14 +5,15 @@
 \title{cv.ncpen: cross validation for \code{ncpen}}
 \usage{
 cv.ncpen.reg(formula, data, family = c("gaussian", "linear", "binomial",
-  "logit", "multinomial", "cox", "poisson"), penalty = c("scad", "mcp", "tlp",
-  "lasso", "classo", "ridge", "sridge", "mbridge", "mlog"),
+  "logit", "multinomial", "cox", "poisson"), penalty = c("scad", "mcp",
+  "tlp", "lasso", "classo", "ridge", "sridge", "mbridge", "mlog"),
   x.standardize = TRUE, intercept = TRUE, lambda = NULL,
   n.lambda = NULL, r.lambda = NULL, w.lambda = NULL, gamma = NULL,
-  tau = NULL, alpha = NULL, df.max = 50, cf.max = 100, proj.min = 10,
-  add.max = 10, niter.max = 30, qiter.max = 10, aiter.max = 100,
-  b.eps = 1e-06, k.eps = 1e-04, c.eps = 1e-06, cut = TRUE,
-  local = FALSE, local.initial = NULL, n.fold = 10, fold.id = NULL)
+  tau = NULL, alpha = NULL, df.max = 50, cf.max = 100,
+  proj.min = 10, add.max = 10, niter.max = 30, qiter.max = 10,
+  aiter.max = 100, b.eps = 1e-06, k.eps = 1e-04, c.eps = 1e-06,
+  cut = TRUE, local = FALSE, local.initial = NULL, n.fold = 10,
+  fold.id = NULL)
 }
 \arguments{
 \item{formula}{(formula) regression formula. To include/exclude intercept, use \code{intercept} option

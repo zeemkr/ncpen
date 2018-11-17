@@ -35,3 +35,7 @@ devtools::release();
 # devtools::submit_cran();
 #################################
 
+
+#install.packages(c("cli", "digest", "glue", "mime", "openssl", "R6", "Rcpp", "rstudioapi"));
+#install.packages("roxygen2");
+

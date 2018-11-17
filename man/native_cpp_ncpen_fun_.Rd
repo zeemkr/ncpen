@@ -4,9 +4,9 @@
 \alias{native_cpp_ncpen_fun_}
 \title{Native ncpen function.}
 \usage{
-native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp, d_max,
-  iter_max, qiter_max, qiiter_max, b_eps, k_eps, p_eff, cut, c_eps, add, family,
-  penalty, loc, ob_vec, div)
+native_cpp_ncpen_fun_(y_vec, x_mat0, w_vec0, lam_vec0, gam, tau, alp,
+  d_max, iter_max, qiter_max, qiiter_max, b_eps, k_eps, p_eff, cut, c_eps,
+  add, family, penalty, loc, ob_vec, div)
 }
 \arguments{
 \item{y_vec}{.}

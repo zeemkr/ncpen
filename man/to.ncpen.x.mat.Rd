@@ -4,8 +4,8 @@
 \alias{to.ncpen.x.mat}
 \title{Convert a \code{\link{data.frame}} to a \code{ncpen} usable \code{\link{matrix}}.}
 \usage{
-to.ncpen.x.mat(df, base = NULL, interact.all = FALSE, base.cols = NULL,
-  exclude.pair = NULL)
+to.ncpen.x.mat(df, base = NULL, interact.all = FALSE,
+  base.cols = NULL, exclude.pair = NULL)
 }
 \arguments{
 \item{df}{a \code{\link{data.frame}} which includes numercial, logical and categorical columns.}

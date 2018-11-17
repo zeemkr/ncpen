@@ -4,15 +4,15 @@
 \alias{ncpen.reg}
 \title{ncpen.reg: nonconvex penalized estimation}
 \usage{
-ncpen.reg(formula, data, family = c("gaussian", "linear", "binomial", "logit",
-  "multinomial", "cox", "poisson"), penalty = c("scad", "mcp", "tlp", "lasso",
-  "classo", "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
-  intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
-  w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,
-  df.max = 50, cf.max = 100, proj.min = 10, add.max = 10,
-  niter.max = 30, qiter.max = 10, aiter.max = 100, b.eps = 1e-07,
-  k.eps = 1e-04, c.eps = 1e-06, cut = TRUE, local = FALSE,
-  local.initial = NULL)
+ncpen.reg(formula, data, family = c("gaussian", "linear", "binomial",
+  "logit", "multinomial", "cox", "poisson"), penalty = c("scad", "mcp",
+  "tlp", "lasso", "classo", "ridge", "sridge", "mbridge", "mlog"),
+  x.standardize = TRUE, intercept = TRUE, lambda = NULL,
+  n.lambda = NULL, r.lambda = NULL, w.lambda = NULL, gamma = NULL,
+  tau = NULL, alpha = NULL, df.max = 50, cf.max = 100,
+  proj.min = 10, add.max = 10, niter.max = 30, qiter.max = 10,
+  aiter.max = 100, b.eps = 1e-07, k.eps = 1e-04, c.eps = 1e-06,
+  cut = TRUE, local = FALSE, local.initial = NULL)
 }
 \arguments{
 \item{formula}{(formula) regression formula. To include/exclude intercept, use \code{intercept} option

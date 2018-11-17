@@ -5,14 +5,14 @@
 \title{ncpen: nonconvex penalized estimation}
 \usage{
 ncpen(y.vec, x.mat, family = c("gaussian", "linear", "binomial", "logit",
-  "poisson", "multinomial", "cox"), penalty = c("scad", "mcp", "tlp", "lasso",
-  "classo", "ridge", "sridge", "mbridge", "mlog"), x.standardize = TRUE,
-  intercept = TRUE, lambda = NULL, n.lambda = NULL, r.lambda = NULL,
-  w.lambda = NULL, gamma = NULL, tau = NULL, alpha = NULL,
-  df.max = 50, cf.max = 100, proj.min = 10, add.max = 10,
-  niter.max = 30, qiter.max = 10, aiter.max = 100, b.eps = 1e-07,
-  k.eps = 1e-04, c.eps = 1e-06, cut = TRUE, local = FALSE,
-  local.initial = NULL)
+  "poisson", "multinomial", "cox"), penalty = c("scad", "mcp", "tlp",
+  "lasso", "classo", "ridge", "sridge", "mbridge", "mlog"),
+  x.standardize = TRUE, intercept = TRUE, lambda = NULL,
+  n.lambda = NULL, r.lambda = NULL, w.lambda = NULL, gamma = NULL,
+  tau = NULL, alpha = NULL, df.max = 50, cf.max = 100,
+  proj.min = 10, add.max = 10, niter.max = 30, qiter.max = 10,
+  aiter.max = 100, b.eps = 1e-07, k.eps = 1e-04, c.eps = 1e-06,
+  cut = TRUE, local = FALSE, local.initial = NULL)
 }
 \arguments{
 \item{y.vec}{(numeric vector) response vector.

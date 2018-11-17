@@ -4,7 +4,8 @@
 \alias{plot.ncpen}
 \title{plot.ncpen: plots coefficients from an \code{ncpen} object.}
 \usage{
-\method{plot}{ncpen}(x, log.scale = FALSE, mult.type = c("mat", "vec"), ...)
+\method{plot}{ncpen}(x, log.scale = FALSE, mult.type = c("mat", "vec"),
+  ...)
 }
 \arguments{
 \item{x}{(ncpen object) Fitted \code{ncpen} object.}

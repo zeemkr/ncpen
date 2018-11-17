@@ -4,7 +4,8 @@
 \alias{plot.cv.ncpen}
 \title{plot.cv.ncpen: plot cross-validation error curve.}
 \usage{
-\method{plot}{cv.ncpen}(x, type = c("rmse", "like"), log.scale = FALSE, ...)
+\method{plot}{cv.ncpen}(x, type = c("rmse", "like"), log.scale = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{fitted \code{cv.ncpen} object.}
