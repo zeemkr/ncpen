@@ -56,7 +56,7 @@ native_cpp_pen_fun_ <- function(name, b_vec, lam, gam, tau) {
 }
 
 #' @title
-#' Native Penalty Gradiant function.
+#' Native Penalty Gradient function.
 #'
 #' @description
 #' This is internal use only function. Manual left blank on purpose.

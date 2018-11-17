@@ -8,15 +8,15 @@ to.ncpen.x.mat(df, base = NULL, interact.all = FALSE,
   base.cols = NULL, exclude.pair = NULL)
 }
 \arguments{
-\item{df}{a \code{\link{data.frame}} which includes numercial, logical and categorical columns.}
+\item{df}{a \code{\link{data.frame}} which includes numerical, logical and categorical columns.}
 
 \item{base}{a base category removed from the indicator variables. This \code{base} will work as the
 base case for all the categorical variables.}
 
-\item{interact.all}{indicates whether to interall all the columns (\code{TRUE}) or not (\code{FALSE}).}
+\item{interact.all}{indicates whether to interact all the columns (\code{TRUE}) or not (\code{FALSE}).}
 
 \item{base.cols}{indicates columns derived from a same column. For example, if \code{age_sq} is \code{age^2},
-then \code{"age"} is a base column. Catergorical columns will be automatically considered as base columns.}
+then \code{"age"} is a base column. Categorical columns will be automatically considered as base columns.}
 
 \item{exclude.pair}{the pairs will be excluded from interactions. This should be a \code{\link{list}} object of pairs.
 For example, \code{list(c("a1", "a2"), c("d1", "d2"))}.}
@@ -26,7 +26,7 @@ This returns an object of \code{\link{matrix}}.
 }
 \description{
 This automates the processes of \code{\link{to.indicators}} and \code{\link{interact.data}}.
-First, it converts categorical variables to a serise of indicators.
+First, it converts categorical variables to a series of indicators.
 All other numerical and logical variables are preserved.
 Then, if \code{interact.all == TRUE}, all the variables are interacted.
 }

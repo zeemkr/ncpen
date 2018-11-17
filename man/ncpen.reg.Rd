@@ -75,7 +75,7 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 
 \item{proj.min}{(numeric) the projection cycle inside CD algorithm (largely internal use. See details).}
 
-\item{add.max}{(numeric) the maximum number of variables added in CCCP iterations (largely internal use. See referecnes).}
+\item{add.max}{(numeric) the maximum number of variables added in CCCP iterations (largely internal use. See references).}
 
 \item{niter.max}{(numeric) maximum number of iterations in CCCP.}
 
@@ -93,7 +93,7 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 
 \item{local}{(logical) whether to use local initial estimator for path construction. It may take a long time.}
 
-\item{local.initial}{(nemeric vector) initial estiamtor for \code{local=TRUE}.}
+\item{local.initial}{(numeric vector) initial estimator for \code{local=TRUE}.}
 }
 \value{
 An object with S3 class \code{ncpen}.
@@ -110,7 +110,7 @@ An object with S3 class \code{ncpen}.
   \item{alpha}{ridge effect.}
   \item{local}{whether to use local initial estimator.}
   \item{local.initial}{local initial estimator for \code{local=TRUE}.}
-  \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are representd as vectors.}
+  \item{beta}{fitted coefficients. Use \code{coef.ncpen} for \code{multinomial} since the coefficients are represented as vectors.}
   \item{df}{the number of non-zero coefficients.}
 }
 \description{
@@ -128,7 +128,7 @@ assuming the canonical link.
 The algorithm applies the warm start strategy (see references) and tries projections
 after \code{proj.min} iterations in CD algorithm, which makes the algorithm fast and stable.
 \code{x.standardize} makes each column of \code{x.mat} to have the same Euclidean length
-but the coefficients will be rescaled into the original.
+but the coefficients will be re-scaled into the original.
 In \code{multinomial} case, the coefficients are expressed in vector form. Use \code{\link{coef.ncpen}}.
 }
 \examples{

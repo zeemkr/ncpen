@@ -75,7 +75,7 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 
 \item{proj.min}{(numeric) the projection cycle inside CD algorithm (largely internal use. See details).}
 
-\item{add.max}{(numeric) the maximum number of variables added in CCCP iterations (largely internal use. See referecnes).}
+\item{add.max}{(numeric) the maximum number of variables added in CCCP iterations (largely internal use. See references).}
 
 \item{niter.max}{(numeric) maximum number of iterations in CCCP.}
 
@@ -93,7 +93,7 @@ Default value is 1. If penalty is \code{ridge} and \code{sridge} then \code{alph
 
 \item{local}{(logical) whether to use local initial estimator for path construction. It may take a long time.}
 
-\item{local.initial}{(nemeric vector) initial estiamtor for \code{local=TRUE}.}
+\item{local.initial}{(numeric vector) initial estimator for \code{local=TRUE}.}
 
 \item{n.fold}{(numeric) number of folds for CV.}
 
@@ -112,8 +112,8 @@ performs k-fold cross-validation (CV) for nonconvex penalized regression models
 over a sequence of the regularization parameter \code{lambda}.
 }
 \details{
-Two kinds of CV errors are returned: root mean squard error and negative log likelihood.
-The resutls depends on the random partition made interally.
+Two kinds of CV errors are returned: root mean squared error and negative log likelihood.
+The results depends on the random partition made internally.
 To choose an optimal coefficients form the cv results, use \code{\link{coef.cv.ncpen}}.
 \code{ncpen} does not search values of \code{gamma}, \code{tau} and \code{alpha}.
 }

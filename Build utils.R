@@ -23,6 +23,7 @@ devtools::use_travis();
 # R CMD check
 #devtools::check();
 devtools::check(args = c("--use-valgrind"));
+devtools::spell_check();
 #devtools::build_win();
 
 # Release
@@ -37,5 +38,5 @@ devtools::release();
 
 
 #install.packages(c("cli", "digest", "glue", "mime", "openssl", "R6", "Rcpp", "rstudioapi"));
-#install.packages("roxygen2");
+#install.packages("roxygen2", "spelling");
 

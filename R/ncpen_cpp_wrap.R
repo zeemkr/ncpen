@@ -54,7 +54,7 @@
 #' @param df.max (numeric) the maximum number of nonzero coefficients.
 #' @param cf.max (numeric) the maximum of absolute value of nonzero coefficients.
 #' @param proj.min (numeric) the projection cycle inside CD algorithm (largely internal use. See details).
-#' @param add.max (numeric) the maximum number of variables added in CCCP iterations (largely internal use. See referecnes).
+#' @param add.max (numeric) the maximum number of variables added in CCCP iterations (largely internal use. See references).
 #' @param niter.max (numeric) maximum number of iterations in CCCP.
 #' @param qiter.max (numeric) maximum number of quadratic approximations in each CCCP iteration.
 #' @param aiter.max (numeric) maximum number of iterations in CD algorithm.
@@ -63,7 +63,7 @@
 #' @param c.eps (numeric) convergence threshold for KKT conditions (largely internal use).
 #' @param cut (logical) convergence threshold for KKT conditions  (largely internal use).
 #' @param local (logical) whether to use local initial estimator for path construction. It may take a long time.
-#' @param local.initial (nemeric vector) initial estiamtor for \code{local=TRUE}.
+#' @param local.initial (numeric vector) initial estimator for \code{local=TRUE}.
 #' @details
 #' The sequence of models indexed by \code{lambda} is fit
 #' by using concave convex procedure (CCCP) and coordinate descent (CD) algorithm (see references).
@@ -73,7 +73,7 @@
 #' The algorithm applies the warm start strategy (see references) and tries projections
 #' after \code{proj.min} iterations in CD algorithm, which makes the algorithm fast and stable.
 #' \code{x.standardize} makes each column of \code{x.mat} to have the same Euclidean length
-#' but the coefficients will be rescaled into the original.
+#' but the coefficients will be re-scaled into the original.
 #' In \code{multinomial} case, the coefficients are expressed in vector form. Use \code{\link{coef.ncpen}}.
 #' @return An object with S3 class \code{ncpen}.
 #'   \item{y.vec}{response vector.}
@@ -268,7 +268,7 @@ ncpen = function(y.vec,x.mat,
 #' @param df.max (numeric) the maximum number of nonzero coefficients.
 #' @param cf.max (numeric) the maximum of absolute value of nonzero coefficients.
 #' @param proj.min (numeric) the projection cycle inside CD algorithm (largely internal use. See details).
-#' @param add.max (numeric) the maximum number of variables added in CCCP iterations (largely internal use. See referecnes).
+#' @param add.max (numeric) the maximum number of variables added in CCCP iterations (largely internal use. See references).
 #' @param niter.max (numeric) maximum number of iterations in CCCP.
 #' @param qiter.max (numeric) maximum number of quadratic approximations in each CCCP iteration.
 #' @param aiter.max (numeric) maximum number of iterations in CD algorithm.
@@ -277,12 +277,12 @@ ncpen = function(y.vec,x.mat,
 #' @param c.eps (numeric) convergence threshold for KKT conditions (largely internal use).
 #' @param cut (logical) convergence threshold for KKT conditions  (largely internal use).
 #' @param local (logical) whether to use local initial estimator for path construction. It may take a long time.
-#' @param local.initial (nemeric vector) initial estiamtor for \code{local=TRUE}.
+#' @param local.initial (numeric vector) initial estimator for \code{local=TRUE}.
 #' @param n.fold (numeric) number of folds for CV.
 #' @param fold.id (numeric vector) fold ids from 1 to k that indicate fold configuration.
 #' @details
-#' Two kinds of CV errors are returned: root mean squard error and negative log likelihood.
-#' The resutls depends on the random partition made interally.
+#' Two kinds of CV errors are returned: root mean squared error and negative log likelihood.
+#' The results depends on the random partition made internally.
 #' To choose an optimal coefficients form the cv results, use \code{\link{coef.cv.ncpen}}.
 #' \code{ncpen} does not search values of \code{gamma}, \code{tau} and \code{alpha}.
 #' @return An object with S3 class \code{cv.ncpen}.
@@ -885,7 +885,7 @@ predict.ncpen = function(object,type=c("y","reg","prob","rmse","like"),new.y.vec
 #' @description
 #' The function returns fold configuration of the samples for CV.
 #' @param c.vec (numeric vector) vector for construction of CV ids:
-#' censoring indicaor for \code{cox} and response vector for the others.
+#' censoring indicator for \code{cox} and response vector for the others.
 #' @param n.fold (numeric) number of folds for CV.
 #' @param family (character) regression model. Supported models are
 #' \code{gaussian},

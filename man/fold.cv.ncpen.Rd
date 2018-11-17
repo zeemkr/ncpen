@@ -9,7 +9,7 @@ fold.cv.ncpen(c.vec, n.fold = 10, family = c("gaussian", "binomial",
 }
 \arguments{
 \item{c.vec}{(numeric vector) vector for construction of CV ids:
-censoring indicaor for \code{cox} and response vector for the others.}
+censoring indicator for \code{cox} and response vector for the others.}
 
 \item{n.fold}{(numeric) number of folds for CV.}
 

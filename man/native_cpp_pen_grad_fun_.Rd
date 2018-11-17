@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{native_cpp_pen_grad_fun_}
 \alias{native_cpp_pen_grad_fun_}
-\title{Native Penalty Gradiant function.}
+\title{Native Penalty Gradient function.}
 \usage{
 native_cpp_pen_grad_fun_(name, b_vec, lam, gam, tau)
 }

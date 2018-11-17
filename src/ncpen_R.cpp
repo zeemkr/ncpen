@@ -62,7 +62,7 @@ arma::vec native_cpp_pen_fun_(std::string name, arma::vec& b_vec, double lam, do
 }
 
 //' @title
-//' Native Penalty Gradiant function.
+//' Native Penalty Gradient function.
 //'
 //' @description
 //' This is internal use only function. Manual left blank on purpose.
