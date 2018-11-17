@@ -20,7 +20,7 @@ Description: An efficient unified nonconvex penalized estimation algorithm for
     modified bridge (MBRIDGE) and modified log (MLOG).
     For high-dimensional data (data set with many variables),
     the algorithm selects relevant variables producing a parsimonious regression model.
-    Kim, D., Lee, S. and Kwon, S. (2018) <http://arxiv.org/abs/1811.05061>,
+    Kim, D., Lee, S. and Kwon, S. (2018) <arXiv:1811.05061>,
     Lee, S., Kwon, S. and Kim, Y. (2016) <doi:10.1016/j.csda.2015.08.019>,
     Kwon, S., Lee, S. and Kim, Y. (2015) <doi:10.1016/j.csda.2015.07.001>.
     (This research is funded by Julian Virtue Professorship from Center for Applied Research at Pepperdine
