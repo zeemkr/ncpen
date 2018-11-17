@@ -1,10 +1,10 @@
 ## New version (1.0.0) submission (11/16/2018)
-This update include
+This update includes
 * Additions of multinomial Logit and Cox proportional hazard models.
 * Performance improvements.
 * Minor bug fixes.
 * Link to working paper.
-* Also, the current version on CRAN is breaking due to the issue with RcppArmadillo. This version fixes that issue as well.
+* The current version on CRAN is breaking due to the issue with RcppArmadillo. This version fixes that issue as well.
 
 ### Test environments
 * Windows Server 2016, R 3.5.1
