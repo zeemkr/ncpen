@@ -20,7 +20,7 @@ Also provides user-friendly processes for plotting, selecting tuning parameters 
 For a data set with many variables (high-dimensional data),
 the algorithm selects relevant variables producing a parsimonious regression model.
 
-Related research paper can be found at [ncpen paper](http://arxiv.org/abs/1811.05061).
+Related research paper can be found at [ncpen algorithm paper](http://arxiv.org/abs/1811.05061).
 A recent manual is avaialbe at [ncpen manual](https://github.com/zeemkr/ncpen_resources/blob/master/ncpen.pdf) and for
 an example use, see [ncepn example](https://github.com/zeemkr/ncpen_resources/tree/master/example_mortgage).
 
