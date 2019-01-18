@@ -269,6 +269,7 @@ cv.ncpen.reg = function(formula,data,
                     b.eps=1e-6,k.eps=1e-4,c.eps=1e-6,cut=TRUE,local=FALSE,local.initial=NULL,
                     n.fold=10,fold.id=NULL){
 
+     #print("0");
      family = match.arg(family);
      if(!is.data.frame(data)) {
           data = data.frame(data);
@@ -280,13 +281,16 @@ cv.ncpen.reg = function(formula,data,
           data = data[, -ncol(data)];
      }
 
+     #print("1");
      ncp.data = make.ncpen.data(formula, data);
+     #print("1.1");
      y.vec = ncp.data$y.vec;
      x.mat = ncp.data$x.mat;
 
      if(family == "cox") {
           x.mat = cbind(x.mat, cox.censor);
      }
+     #print("2");
 
      #---------------------------------------------------------
      cvncp = cv.ncpen(y.vec, x.mat, family, penalty,
