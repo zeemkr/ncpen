@@ -359,8 +359,9 @@ to.ncpen.x.mat = function(df, base = NULL, interact.all = FALSE, base.cols = NUL
 make.ncpen.data = function(formula, data) {
      # compse y.vec and x.mat ---------------------------------
      # formula = log(y) ~ log(x1) + x2;
-     # formula = term_code ~ .
      # data = analy.data;
+     # data = data.frame(var1=NA, var2=NA, var3 = NA)
+     # formula = log(var2) ~ .
 
      yx.vars = all.vars(formula);
 
@@ -368,7 +369,8 @@ make.ncpen.data = function(formula, data) {
      if(yx.vars[2] == ".") {
           # index of y variavle
           y.which = which(colnames(data) == yx.vars[1]);
-          formula = as.formula(paste(yx.vars[1], "~", paste(colnames(data)[-y.which], collapse = "+") ));
+          y.var.str = as.character(formula)[2];
+          formula = as.formula(paste(y.var.str, "~", paste(colnames(data)[-y.which], collapse = "+") ));
      }
      data = data[, all.vars(formula)];
      complete.ids = complete.cases(data);
