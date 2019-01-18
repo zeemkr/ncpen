@@ -3,6 +3,14 @@
 # intercept check
 # -----------------------------------------
 
+# If erros while rebuilding
+pkgbuild::compile_dll()
+
+# c++11 complie enable
+Sys.setenv("PKG_CXXFLAGS"="-std=c++11"); # cran does not support
+Sys.setenv("PKG_CXXFLAGS"="-std=c++98");
+
+
 # Build mannual
 roxygen2::roxygenize('.', roclets=c('rd', 'collate', 'namespace', 'vignette'));
 outpath = paste(dirname(getwd()), "/doc/ncpen.pdf", sep = "");
